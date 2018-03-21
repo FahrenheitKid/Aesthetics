@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class IsoFix : MonoBehaviour
 {
+    //not wowrking properly!!! 
 
     public bool fix = true;
     //If active is set to true, The fix will be applied at each frame, useful if the camera rotate
