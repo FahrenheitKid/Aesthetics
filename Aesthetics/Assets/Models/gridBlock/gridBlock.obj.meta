@@ -1,19 +1,24 @@
 fileFormatVersion: 2
 guid: 66a808e63521b4a48a51b5445163d78a
-timeCreated: 1521595812
+timeCreated: 1521967087
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: gridbloc
+    100000: gridBlock
     100002: //RootNode
-    400000: gridbloc
+    400000: gridBlock
     400002: //RootNode
-    2100000: gridblocMat
-    2300000: gridbloc
-    3300000: gridbloc
-    4300000: gridbloc
-  externalObjects: {}
+    2100000: palette
+    2300000: gridBlock
+    3300000: gridBlock
+    4300000: gridBlock
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette
+    second: {fileID: 2100000, guid: e5bf58b72f41c634fbd3f0b1800e2665, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

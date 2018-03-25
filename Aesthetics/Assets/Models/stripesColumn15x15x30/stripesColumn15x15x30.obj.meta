@@ -13,7 +13,12 @@ ModelImporter:
     2300000: stripesColumn15x15x30
     3300000: stripesColumn15x15x30
     4300000: stripesColumn15x15x30
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette
+    second: {fileID: 2100000, guid: b2de13055ab5de64b9273af01eb15b86, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
