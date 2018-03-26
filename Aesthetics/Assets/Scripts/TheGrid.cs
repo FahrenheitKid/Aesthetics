@@ -45,28 +45,14 @@ public class TheGrid : MonoBehaviour
         {
             for (int j = 0; j < tiles.GetLength (1); j++)
             {
-                {
-                    if (tiles[i, j] == 1)
-                    {
-
-                        GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xGap * j - mapWidth * xGap, 0, yGap * mapHeight - i * yGap), Quaternion.identity) as GameObject;
+               GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xGap * j - mapWidth * xGap, 0, yGap * mapHeight - i * yGap), Quaternion.identity) as GameObject;
 
                         TilePrefab.transform.parent = transform;
                         TilePrefab.GetComponent<GridBlock> ().init (i, 0, j);
-                        TilePrefab.GetComponent<GridBlock> ().changeColor (GridBlock.gridBlockColor.Pink_B);
+                        TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor)tiles[i,j]);
                         gridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
-                    }
-                    else
-                    {
-                        GameObject TilePrefab = Instantiate (gridBlock_prefab2, new Vector3 (xGap * j - mapWidth * xGap, 0, yGap * mapHeight - i * yGap), Quaternion.identity) as GameObject;
-
-                        TilePrefab.transform.parent = transform;
-                        TilePrefab.GetComponent<GridBlock> ().init (i, 0, j);
-                        TilePrefab.GetComponent<GridBlock> ().changeColor (GridBlock.gridBlockColor.Blue_B);
-                        gridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
-                    }
-
-                }
+                    
+                    
 
             }
         }
