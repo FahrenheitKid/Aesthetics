@@ -74,7 +74,12 @@ public class TheGrid : MonoBehaviour
 
       
         //looks at the center gridblock
-       // Camera.main.GetComponent<CameraScript> ().lookAt (GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject);
+        if(GetGridBlock (mapWidth / 2, mapHeight / 2))
+        {
+
+        Camera.main.transform.parent.transform.position =  GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform.position;
+            //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
+        }
 
     }
 
@@ -135,18 +140,16 @@ public class TheGrid : MonoBehaviour
 
     public GridBlock GetGridBlock (int x, int z)
     {
-        GridBlock block = new GridBlock ();
+        
 
         foreach (GridBlock go in gridBlockList)
         {
-            int xx = go.X;
-            if (go.X == 2)
-                print (xx);
-            //if( == x && go.z == z)
+            if(go.X == x && go.Z == z)
             return go;
+            
         }
 
-        return block;
+        return null;
 
     }
 
