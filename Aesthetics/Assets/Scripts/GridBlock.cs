@@ -48,18 +48,36 @@ public class GridBlock : MonoBehaviour
     private Material[] materials;
 
     [SerializeField]
-    private int x, y, z;
+   private int _x,_y,_z;
+  public int X
+  {
+      get { return _x;}
+      private set { _x = value;}
+  }
 
-    [SerializeField]
+      public int Y
+  {
+      get { return _y;}
+      private set { _y = value;}
+  }
+    public int Z
+  {
+      get { return _z;}
+      private set { _z = value;}
+  }
+  
 
-    public void init (int _x, int _y, int _z)
+
+    public void init (int x, int y, int z)
     {
-
+        _x = x;
+        _y = y;
+        _z = z;
     }
     // Use this for initialization
     void Start ()
     {
-
+        
     }
 
     // Update is called once per frame
