@@ -262,7 +262,10 @@ MonoBehaviour:
     type: 2}
   mapWidth: 0
   mapHeight: 0
+  xGap: 1
+  yGap: 1
   fileNameToLoad: map1.txt
+  gridBlockList: []
 --- !u!1 &632092748
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,6 +278,7 @@ GameObject:
   - component: {fileID: 632092752}
   - component: {fileID: 632092751}
   - component: {fileID: 632092750}
+  - component: {fileID: 632092755}
   - component: {fileID: 632092754}
   m_Layer: 0
   m_Name: Main Camera
@@ -434,6 +438,17 @@ MonoBehaviour:
   outlineShaderMaterial: {fileID: 0}
   renderTexture: {fileID: 1920024503}
   extraRenderTexture: {fileID: 399566440}
+--- !u!114 &632092755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 632092748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c13138643318cab43bc8080bd3f4c34e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705625873
 GameObject:
   m_ObjectHideFlags: 0
