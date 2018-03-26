@@ -48,7 +48,7 @@ public class TheGrid : MonoBehaviour
                GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xGap * j - mapWidth * xGap, 0, yGap * mapHeight - i * yGap), Quaternion.identity) as GameObject;
 
                         TilePrefab.transform.parent = transform;
-                        TilePrefab.GetComponent<GridBlock> ().init (i, 0, j);
+                        TilePrefab.GetComponent<GridBlock> ().init (j, 0, i);
                         TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor)tiles[i,j]);
                         gridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
                     
@@ -59,12 +59,17 @@ public class TheGrid : MonoBehaviour
         Debug.Log ("Building Completed!");
 
       
+        print(mapWidth / 2 + " | " + mapHeight / 2);
+
         //looks at the center gridblock
         if(GetGridBlock (mapWidth / 2, mapHeight / 2))
         {
 
         Camera.main.transform.parent.transform.position =  GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform.position;
             //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
+        }
+        else{
+            print("NAO FOI camera focus");
         }
 
     }

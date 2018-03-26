@@ -1,24 +1,25 @@
 fileFormatVersion: 2
-guid: 298fd09b0167f7445a52453ae3141ea9
-timeCreated: 1521595811
+guid: f0d2d84d53e0b094a817b4fde32e7f99
+timeCreated: 1522089087
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: ionicColumn
-    100002: //RootNode
-    400000: ionicColumn
-    400002: //RootNode
-    2100000: palette
+    100000: Camera
+    100002: ionicColumn
+    100004: Lamp
+    100006: //RootNode
+    400000: Camera
+    400002: ionicColumn
+    400004: Lamp
+    400006: //RootNode
+    2000000: Camera
+    2100000: Material.001
     2300000: ionicColumn
     3300000: ionicColumn
     4300000: ionicColumn
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: palette
-    second: {fileID: 2100000, guid: 19abd4dbba0ff514bb0f19e9c0cc0af7, type: 2}
+    10800000: Lamp
+  externalObjects: {}
   materials:
     importMaterials: 1
     materialName: 0
