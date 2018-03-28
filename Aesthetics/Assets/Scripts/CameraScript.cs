@@ -4,14 +4,25 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
+    
+[SerializeField]
 private float targetAngle = 0;
 const float rotationAmount = 1.5f;
-public float rSpeed = 1.0f;
+
+ [SerializeField, Candlelight.PropertyBackingField]
+    private int _rotationSpeed = 0;
+    public int rotationSpeed
+    {
+        get { return rotationSpeed; }
+        set { rotationSpeed = value; }
+    }
+
+
 	
     // Use this for initialization
     void Start ()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -45,13 +56,18 @@ public float rSpeed = 1.0f;
         if (targetAngle>0)
         {
             transform.RotateAround(transform.position, Vector3.up, -rotationAmount);
-            targetAngle -= rotationAmount;
+            targetAngle -= rotationAmount * rotationSpeed;
         }
         if(targetAngle <0)
         {
             transform.RotateAround(transform.position, Vector3.up, rotationAmount);
-            targetAngle += rotationAmount;
+            targetAngle += rotationAmount* rotationSpeed;
         }
      
+    }
+
+    void ZoomOutUntilSeen()
+    {
+
     }
 }
