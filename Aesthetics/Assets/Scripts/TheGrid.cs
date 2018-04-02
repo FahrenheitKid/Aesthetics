@@ -7,18 +7,80 @@ using UnityEngine;
 public class TheGrid : MonoBehaviour
 {
 
-    public GameObject gridBlock_prefab1;
+    #region Property-Variables
 
-    public GameObject gridBlock_prefab2;
+    [SerializeField, Candlelight.PropertyBackingField]
+    private GameObject _gridBlock_prefab1;
+    public GameObject gridBlock_prefab1
+    {
+        get { return _gridBlock_prefab1; }
+        set { _gridBlock_prefab1 = value; }
+    }
 
-    [SerializeField]
-    private int mapWidth, mapHeight, xGap, yGap;
+    [SerializeField, Candlelight.PropertyBackingField]
+    private GameObject _gridBlock_prefab2;
+    public GameObject gridBlock_prefab2
+    {
+        get { return _gridBlock_prefab2; }
+        set { _gridBlock_prefab2 = value; }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private CameraScript _cameraScript;
+    public CameraScript cameraScript
+    {
+        get { return _cameraScript; }
+        set { _cameraScript = value; }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _mapWidth = 0;
+    public int mapWidth
+    {
+        get { return _mapWidth; }
+        set { _mapWidth = value; }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _mapHeight = 0;
+    public int mapHeight
+    {
+        get { return _mapHeight; }
+        set { _mapHeight = value; }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _xOffset = 1;
+    public int xOffset
+    {
+        get { return _xOffset; }
+        set { _xOffset = value; }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _zOffset = 1;
+    public int zOffset
+    {
+        get { return _zOffset; }
+        set { _zOffset = value; }
+    }
+
     [SerializeField]
     private string fileNameToLoad;
     private int[, ] tiles;
 
-    [SerializeField]
-    public List<GridBlock> gridBlockList;
+    [SerializeField, Candlelight.PropertyBackingField]
+    private List<GridBlock> _GridBlockList = new List<GridBlock> ();
+    public List<GridBlock> GetGridBlockList ()
+    {
+        return _GridBlockList;
+    }
+    public void SetGridBlockList (List<GridBlock> value)
+    {
+        _GridBlockList = new List<GridBlock> (value);
+    }
+
+    #endregion
 
     // Use this for initialization
     void Start ()
@@ -45,36 +107,24 @@ public class TheGrid : MonoBehaviour
         {
             for (int j = 0; j < tiles.GetLength (1); j++)
             {
-                {
-                    if (tiles[i, j] == 1)
-                    {
+                GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xOffset * j - mapWidth * xOffset, 0, zOffset * mapHeight - i * zOffset), Quaternion.identity) as GameObject;
 
-                        GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xGap * j - mapWidth * xGap, 0, yGap * mapHeight - i * yGap), Quaternion.identity) as GameObject;
-
-                        TilePrefab.transform.parent = transform;
-                        TilePrefab.GetComponent<GridBlock> ().init (i, 0, j);
-                        TilePrefab.GetComponent<GridBlock> ().changeColor (GridBlock.gridBlockColor.Pink_B);
-                        gridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
-                    }
-                    else
-                    {
-                        GameObject TilePrefab = Instantiate (gridBlock_prefab2, new Vector3 (xGap * j - mapWidth * xGap, 0, yGap * mapHeight - i * yGap), Quaternion.identity) as GameObject;
-
-                        TilePrefab.transform.parent = transform;
-                        TilePrefab.GetComponent<GridBlock> ().init (i, 0, j);
-                        TilePrefab.GetComponent<GridBlock> ().changeColor (GridBlock.gridBlockColor.Blue_B);
-                        gridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
-                    }
-
-                }
+                TilePrefab.transform.parent = transform;
+                TilePrefab.GetComponent<GridBlock> ().init (j, 0, i);
+                TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor) tiles[i, j]);
+                GetGridBlockList ().Add (TilePrefab.GetComponent<GridBlock> ());
 
             }
         }
         Debug.Log ("Building Completed!");
 
-      
-        //looks at the center gridblock
-       // Camera.main.GetComponent<CameraScript> ().lookAt (GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject);
+        print (mapWidth / 2 + " | " + mapHeight / 2);
+
+        cameraScript.cameraParentToCenterPosition ();
+        //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
+
+        cameraScript.setViewBoundaries ();
+        cameraScript.ZoomOutLoopUntilSeen (100);
 
     }
 
@@ -135,32 +185,15 @@ public class TheGrid : MonoBehaviour
 
     public GridBlock GetGridBlock (int x, int z)
     {
-        GridBlock block = new GridBlock ();
 
-        foreach (GridBlock go in gridBlockList)
+        foreach (GridBlock go in GetGridBlockList ())
         {
-            int xx = go.X;
-            if (go.X == 2)
-                print (xx);
-            //if( == x && go.z == z)
-            return go;
+            if (go.X == x && go.Z == z)
+                return go;
+
         }
 
-        return block;
+        return null;
 
-    }
-
-    void foo ()
-    {
-        GridBlock block = new GridBlock ();
-
-        foreach (GridBlock go in gridBlockList)
-        {
-            int xx = go.X;
-
-            print (xx);
-            //if( == x && go.z == z)
-
-        }
     }
 }
