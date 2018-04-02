@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.19235794, g: 0.59281975, b: 0.77697575, a: 1}
+  m_IndirectSpecularColor: {r: 0.19235185, g: 0.5927958, b: 0.77698183, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -340,7 +340,7 @@ GameObject:
   - component: {fileID: 563714405}
   m_Layer: 0
   m_Name: Grid
-  m_TagString: Untagged
+  m_TagString: Grid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -380,16 +380,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13c7a3599e7cf9a48a3a0942069f0c0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridBlock_prefab1: {fileID: 1550792246163172, guid: fcb322a2029ac3a46ba9da14c92cf22a,
+  _gridBlock_prefab1: {fileID: 1550792246163172, guid: fcb322a2029ac3a46ba9da14c92cf22a,
     type: 2}
-  gridBlock_prefab2: {fileID: 1550792246163172, guid: fcb322a2029ac3a46ba9da14c92cf22a,
+  _gridBlock_prefab2: {fileID: 1550792246163172, guid: fcb322a2029ac3a46ba9da14c92cf22a,
     type: 2}
-  mapWidth: 0
-  mapHeight: 0
-  xGap: 1
-  yGap: 1
-  fileNameToLoad: map2.txt
-  gridBlockList: []
+  _cameraScript: {fileID: 632092755}
+  _mapWidth: 0
+  _mapHeight: 0
+  _xOffset: 1
+  _zOffset: 1
+  fileNameToLoad: map3.txt
+  _GridBlockList: []
 --- !u!1 &632092748
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,8 +574,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c13138643318cab43bc8080bd3f4c34e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridScript: {fileID: 563714405}
   targetAngle: 0
-  _rotationSpeed: 0
+  _stageOrtoSize: 0
+  _ViewportBoundaryPoints:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  _autoZoomAmount: 0.25
+  _xVerticalOffset: 0
+  _zVerticalOffset: 0
+  _xHorizontallOffset: 0.5
+  _zHorizontalOffset: 0.5
 --- !u!1 &759519665
 GameObject:
   m_ObjectHideFlags: 0

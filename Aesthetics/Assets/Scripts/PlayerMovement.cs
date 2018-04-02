@@ -23,40 +23,38 @@ public class PlayerMovement : MonoBehaviour
     void Update ()
     {
 
-       if (Input.GetButton("Horizontal") || Input.GetButton("Vertical"))
-            Move();
+        if (Input.GetButton ("Horizontal") || Input.GetButton ("Vertical"))
+            Move ();
     }
 
     void Move ()
     {
 
-        float horizontalAxis = Input.GetAxis("Vertical");
-        float verticalAxis = Input.GetAxis("Horizontal");
-         
+        float horizontalAxis = Input.GetAxis ("Vertical");
+        float verticalAxis = Input.GetAxis ("Horizontal");
+
         //assuming we only using the single camera:
         var camera = Camera.main;
- 
+
         //camera forward and right vectors:
-        var forward = Quaternion.Euler (new Vector3 (0, 45, 0)) * camera.transform.forward  ;
-        var right = Quaternion.Euler (new Vector3 (0, 45, 0)) * camera.transform.right  * - 1;
- 
+        var forward = Quaternion.Euler (new Vector3 (0, 45, 0)) * camera.transform.forward;
+        var right = Quaternion.Euler (new Vector3 (0, 45, 0)) * camera.transform.right * -1;
+
         //project forward and right vectors on the horizontal plane (y = 0)
         forward.y = 0f;
         right.y = 0f;
-        forward.Normalize();
-        right.Normalize();
- 
-    
-    Vector3 rightMovement = right * speed * Time.deltaTime * Input.GetAxis("Vertical"); 
-    Vector3 upMovement = forward * speed * Time.deltaTime * Input.GetAxis("Horizontal");
+        forward.Normalize ();
+        right.Normalize ();
 
-    Vector3 heading = Vector3.Normalize(rightMovement + upMovement);
+        Vector3 rightMovement = right * speed * Time.deltaTime * Input.GetAxis ("Vertical");
+        Vector3 upMovement = forward * speed * Time.deltaTime * Input.GetAxis ("Horizontal");
+
+        Vector3 heading = Vector3.Normalize (rightMovement + upMovement);
 
         transform.forward = heading;
         transform.position += rightMovement;
         transform.position += upMovement;
 
     }
-
 
 }
