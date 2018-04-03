@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.19235185, g: 0.5927958, b: 0.77698183, a: 1}
+  m_IndirectSpecularColor: {r: 0.19239527, g: 0.5928501, b: 0.77373916, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -150,7 +150,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: f0d2d84d53e0b094a817b4fde32e7f99, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: f0d2d84d53e0b094a817b4fde32e7f99, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -389,7 +389,7 @@ MonoBehaviour:
   _mapHeight: 0
   _xOffset: 1
   _zOffset: 1
-  fileNameToLoad: map3.txt
+  fileNameToLoad: map1.txt
   _GridBlockList: []
 --- !u!1 &632092748
 GameObject:
@@ -611,7 +611,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 759519665}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -6.868704, y: 0.1, z: 2.29}
+  m_LocalPosition: {x: -7, y: 0.1, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1384,7 +1384,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2069428982
 GameObject:
@@ -1469,11 +1469,13 @@ GameObject:
   - component: {fileID: 2085513558}
   - component: {fileID: 2085513560}
   - component: {fileID: 2085513559}
+  - component: {fileID: 2085513563}
   - component: {fileID: 2085513562}
   - component: {fileID: 2085513561}
+  - component: {fileID: 2085513564}
   m_Layer: 0
   m_Name: chr_sword
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1485,7 +1487,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2085513557}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.868704, y: 0.1, z: 7.1844687}
+  m_LocalPosition: {x: -7, y: 0.1, z: 7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1534,20 +1536,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2085513557}
   m_Mesh: {fileID: 4300000, guid: b99ad9640bcbd6a4cabce996d2e37c9a, type: 3}
---- !u!114 &2085513561
-MonoBehaviour:
+--- !u!65 &2085513561
+BoxCollider:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2085513557}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5558a38fe471ed444bfcd97573e761fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 4
---- !u!143 &2085513562
-CharacterController:
+  serializedVersion: 2
+  m_Size: {x: 0.2, y: 2, z: 0.2}
+  m_Center: {x: 0, y: 0.7, z: 0}
+--- !u!65 &2085513562
+BoxCollider:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -1556,10 +1558,33 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1
-  m_Radius: 1
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.6, z: 0}
+  m_Size: {x: 0.50997573, y: 0.93333334, z: 0.5152217}
+  m_Center: {x: 0.0007548332, y: 0.700001, z: 0.007826477}
+--- !u!114 &2085513563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2085513557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f6b86631672c4844af8dd78303bd5a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charCollider: {fileID: 2085513562}
+  blockCollider: {fileID: 2085513561}
+--- !u!54 &2085513564
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2085513557}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

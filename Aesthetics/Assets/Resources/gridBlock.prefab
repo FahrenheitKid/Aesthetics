@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33032396310428058}
   - component: {fileID: 23889657132355128}
   - component: {fileID: 114071070044867920}
+  - component: {fileID: 65456373461953314}
   m_Layer: 0
   m_Name: gridBlock
   m_TagString: GridBlock
@@ -83,6 +84,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1550792246163172}
   m_Mesh: {fileID: 4300000, guid: 66a808e63521b4a48a51b5445163d78a, type: 3}
+--- !u!65 &65456373461953314
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1550792246163172}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: 0, y: 0.05, z: 0}
 --- !u!114 &114071070044867920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -107,6 +120,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 16999a0a84568b14bab5c6124707e1d5, type: 2}
   - {fileID: 2100000, guid: 144512c0020547e449d1f55672fc89b8, type: 2}
   - {fileID: 2100000, guid: cc8c68c20bb88d74cb368a3bc90e2e16, type: 2}
-  x: 0
-  y: 0
-  z: 0
+  _x: 0
+  _y: 0
+  _z: 0

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
 
     [SerializeField]
@@ -88,5 +88,4 @@ public class PlayerMovement : MonoBehaviour
         isMoving = false;
         yield return 0;
     }
-
 }

@@ -84,6 +84,28 @@ public class GridBlock : MonoBehaviour
 
     }
 
+    private void OnCollisionEnter (Collision other)
+    {
+
+        if (other.gameObject.CompareTag ("Player"))
+        {
+
+            print ("entrou collider bloco " + X + ", " + Z);
+
+        }
+
+    }
+    private void OnTriggerEnter (Collider other)
+    {
+
+        if (other.gameObject.CompareTag ("Player"))
+        {
+
+            print ("entrou trigger bloco " + X + ", " + Z);
+
+        }
+    }
+
     // changes directly the color of the gridblock
     public void changeColor (gridBlockColor col)
     {
