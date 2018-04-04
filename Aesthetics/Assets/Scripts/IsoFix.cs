@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IsoFix : MonoBehaviour
-{
+public class IsoFix : MonoBehaviour {
     //not wowrking properly!!! 
 
     public bool fix = true;
@@ -11,19 +10,16 @@ public class IsoFix : MonoBehaviour
     public bool active = false;
     public Vector3 fixPosition = new Vector3 (-45f, 0f, 0f);
 
-    private void OnEnable ()
-    {
+    private void OnEnable () {
         Fix ();
     }
 
-    private void Update ()
-    {
+    private void Update () {
         if (active)
             Fix ();
     }
 
-    private void Fix ()
-    {
+    private void Fix () {
         if (fix)
             this.transform.rotation = Quaternion.LookRotation (Camera.main.transform.forward) * Quaternion.Euler (fixPosition);
     }

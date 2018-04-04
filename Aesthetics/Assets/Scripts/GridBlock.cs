@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridBlock : MonoBehaviour
-{
+public class GridBlock : MonoBehaviour {
 
-    public enum gridBlockColor
-    {
+    public enum gridBlockColor {
         White,
         Pink_W,
         Purple_W,
@@ -22,8 +20,7 @@ public class GridBlock : MonoBehaviour
 
     }
     public static gridBlockColor GridBlockColor;
-    public enum owner
-    {
+    public enum owner {
         Nobody,
         Player1,
         Player2,
@@ -32,8 +29,7 @@ public class GridBlock : MonoBehaviour
     }
     public static owner Owner;
 
-    public enum gridType
-    {
+    public enum gridType {
         Hole,
         Normal,
         Obstacle,
@@ -49,57 +45,47 @@ public class GridBlock : MonoBehaviour
 
     [SerializeField]
     private int _x, _y, _z;
-    public int X
-    {
+    public int X {
         get { return _x; }
         private set { _x = value; }
     }
 
-    public int Y
-    {
+    public int Y {
         get { return _y; }
         private set { _y = value; }
     }
-    public int Z
-    {
+    public int Z {
         get { return _z; }
         private set { _z = value; }
     }
 
-    public void init (int x, int y, int z)
-    {
+    public void init (int x, int y, int z) {
         _x = x;
         _y = y;
         _z = z;
     }
     // Use this for initialization
-    void Start ()
-    {
+    void Start () {
 
     }
 
     // Update is called once per frame
-    void Update ()
-    {
+    void Update () {
 
     }
 
-    private void OnCollisionEnter (Collision other)
-    {
+    private void OnCollisionEnter (Collision other) {
 
-        if (other.gameObject.CompareTag ("Player"))
-        {
+        if (other.gameObject.CompareTag ("Player")) {
 
             print ("entrou collider bloco " + X + ", " + Z);
 
         }
 
     }
-    private void OnTriggerEnter (Collider other)
-    {
+    private void OnTriggerEnter (Collider other) {
 
-        if (other.gameObject.CompareTag ("Player"))
-        {
+        if (other.gameObject.CompareTag ("Player")) {
 
             print ("entrou trigger bloco " + X + ", " + Z);
 
@@ -107,11 +93,9 @@ public class GridBlock : MonoBehaviour
     }
 
     // changes directly the color of the gridblock
-    public void changeColor (gridBlockColor col)
-    {
+    public void changeColor (gridBlockColor col) {
 
-        switch (col)
-        {
+        switch (col) {
             case gridBlockColor.Blue_W:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Blue_W];
                 break;

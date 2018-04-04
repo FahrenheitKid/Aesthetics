@@ -2,16 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovementBackup : MonoBehaviour
-{
+public class PlayerMovementBackup : MonoBehaviour {
 
     [SerializeField]
     public float speed = 4f;
 
     Vector3 foward, right;
     // Use this for initialization
-    void Start ()
-    {
+    void Start () {
 
         foward = Camera.main.transform.forward;
         foward.y = 0;
@@ -20,15 +18,13 @@ public class PlayerMovementBackup : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update ()
-    {
+    void Update () {
 
         if (Input.GetButton ("Horizontal") || Input.GetButton ("Vertical"))
             Move ();
     }
 
-    void Move ()
-    {
+    void Move () {
 
         float horizontalAxis = Input.GetAxis ("Vertical");
         float verticalAxis = Input.GetAxis ("Horizontal");
