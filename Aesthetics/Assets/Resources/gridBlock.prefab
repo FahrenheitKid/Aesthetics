@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 23889657132355128}
   - component: {fileID: 114071070044867920}
   - component: {fileID: 65456373461953314}
+  - component: {fileID: 65998943572526020}
   m_Layer: 0
   m_Name: gridBlock
   m_TagString: GridBlock
@@ -92,9 +93,21 @@ BoxCollider:
   m_GameObject: {fileID: 1550792246163172}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: 0, y: 0.05, z: 0}
+--- !u!65 &65998943572526020
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1550792246163172}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 0.1, z: 0.5}
   m_Center: {x: 0, y: 0.05, z: 0}
 --- !u!114 &114071070044867920
 MonoBehaviour:
@@ -107,6 +120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aca6be2c2cfcbf4689b92517e3c6fdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fullCollider: {fileID: 65456373461953314}
+  innerCollider: {fileID: 65998943572526020}
   materials:
   - {fileID: 2100000, guid: cb546cd3102d75e4b8d87148e94a1aea, type: 2}
   - {fileID: 2100000, guid: e5bf58b72f41c634fbd3f0b1800e2665, type: 2}
@@ -123,3 +138,4 @@ MonoBehaviour:
   _x: 0
   _y: 0
   _z: 0
+  _mainColor: 6

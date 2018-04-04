@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridBlock : MonoBehaviour {
+public class GridBlock : MonoBehaviour
+{
 
-    public enum gridBlockColor {
+    #region enums
+    public enum gridBlockColor
+    {
         White,
         Pink_W,
         Purple_W,
@@ -20,7 +23,8 @@ public class GridBlock : MonoBehaviour {
 
     }
     public static gridBlockColor GridBlockColor;
-    public enum owner {
+    public enum owner
+    {
         Nobody,
         Player1,
         Player2,
@@ -29,73 +33,124 @@ public class GridBlock : MonoBehaviour {
     }
     public static owner Owner;
 
-    public enum gridType {
+    public enum gridType
+    {
         Hole,
         Normal,
         Obstacle,
         Void
     }
+    #endregion
+
     public static gridType GridType;
 
     //[SerializeField]
     //private MeshRenderer meshRenderer;
 
     [SerializeField]
+    private BoxCollider fullCollider, innerCollider;
+
+    [SerializeField]
     private Material[] materials;
 
     [SerializeField]
     private int _x, _y, _z;
-    public int X {
-        get { return _x; }
-        private set { _x = value; }
+    public int X
+    {
+        get
+        {
+            return _x;
+        }
+        private set
+        {
+            _x = value;
+        }
     }
 
-    public int Y {
-        get { return _y; }
-        private set { _y = value; }
+    public int Y
+    {
+        get
+        {
+            return _y;
+        }
+        private set
+        {
+            _y = value;
+        }
     }
-    public int Z {
-        get { return _z; }
-        private set { _z = value; }
+    public int Z
+    {
+        get
+        {
+            return _z;
+        }
+        private set
+        {
+            _z = value;
+        }
     }
 
-    public void init (int x, int y, int z) {
+    [SerializeField, Candlelight.PropertyBackingField]
+    private GridBlock.gridBlockColor _mainColor = GridBlock.gridBlockColor.Black;
+    public GridBlock.gridBlockColor mainColor
+    {
+        get
+        {
+            return _mainColor;
+        }
+        set
+        {
+            _mainColor = value;
+        }
+    }
+    public void init (int x, int y, int z)
+    {
         _x = x;
         _y = y;
         _z = z;
     }
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
 
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update ()
+    {
 
     }
 
-    private void OnCollisionEnter (Collision other) {
+    private void OnCollisionEnter (Collision other)
+    {
 
-        if (other.gameObject.CompareTag ("Player")) {
+        if (other.gameObject.CompareTag ("Player"))
+        {
 
             print ("entrou collider bloco " + X + ", " + Z);
 
         }
 
     }
-    private void OnTriggerEnter (Collider other) {
+    private void OnTriggerEnter (Collider other)
+    {
 
-        if (other.gameObject.CompareTag ("Player")) {
+        if (other.gameObject.CompareTag ("Player"))
+        {
 
-            print ("entrou trigger bloco " + X + ", " + Z);
+            //print ("entrou trigger bloco " + X + ", " + Z);
+            changeColor (other.GetComponent<Player> ().gridColor);
 
         }
     }
 
     // changes directly the color of the gridblock
-    public void changeColor (gridBlockColor col) {
+    public void changeColor (gridBlockColor col)
+    {
+        if (mainColor == col) return;
 
-        switch (col) {
+        switch (col)
+        {
             case gridBlockColor.Blue_W:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Blue_W];
                 break;
@@ -120,7 +175,7 @@ public class GridBlock : MonoBehaviour {
 
             case gridBlockColor.White:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.White];
-
+                print ("painted back");
                 break;
 
             case gridBlockColor.Blue_B:
@@ -147,12 +202,14 @@ public class GridBlock : MonoBehaviour {
 
             case gridBlockColor.Black:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Black];
-
+                print ("painted back");
                 break;
 
             default:
                 break;
 
         }
+
+        mainColor = col;
     }
 }

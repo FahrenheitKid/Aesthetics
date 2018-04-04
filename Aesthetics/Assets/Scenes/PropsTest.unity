@@ -389,7 +389,7 @@ MonoBehaviour:
   _mapHeight: 0
   _xOffset: 1
   _zOffset: 1
-  fileNameToLoad: map1.txt
+  fileNameToLoad: map0.txt
   _GridBlockList: []
 --- !u!1 &632092748
 GameObject:
@@ -1573,6 +1573,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charCollider: {fileID: 2085513562}
   blockCollider: {fileID: 2085513561}
+  _gridSize: 1
+  _moveSpeed: 2
+  _gridColor: 1
 --- !u!54 &2085513564
 Rigidbody:
   m_ObjectHideFlags: 0

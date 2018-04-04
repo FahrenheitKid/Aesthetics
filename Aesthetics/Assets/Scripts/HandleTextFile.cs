@@ -2,9 +2,11 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-public class HandleTextFile : MonoBehaviour {
+public class HandleTextFile : MonoBehaviour
+{
     [MenuItem ("Tools/Write file")]
-    static void WriteString (string text) {
+    static void WriteString (string text)
+    {
         string path = "Assets/Resources/test.txt";
 
         //Write some text to the test.txt file
@@ -21,7 +23,8 @@ public class HandleTextFile : MonoBehaviour {
     }
 
     [MenuItem ("Tools/Read file")]
-    static void ReadString () {
+    static void ReadString ()
+    {
         string path = "Assets/Resources/test.txt";
 
         //Read the text from directly from the test.txt file
@@ -30,7 +33,8 @@ public class HandleTextFile : MonoBehaviour {
         reader.Close ();
     }
 
-    private void Start () {
+    private void Start ()
+    {
 
         WriteString ("ganon");
 
