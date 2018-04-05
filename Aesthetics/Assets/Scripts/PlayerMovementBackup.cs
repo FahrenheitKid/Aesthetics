@@ -30,9 +30,6 @@ public class PlayerMovementBackup : MonoBehaviour
     void Move ()
     {
 
-        float horizontalAxis = Input.GetAxis ("Vertical");
-        float verticalAxis = Input.GetAxis ("Horizontal");
-
         //assuming we only using the single camera:
         var camera = Camera.main;
 

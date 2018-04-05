@@ -36,9 +36,9 @@ public class HandleTextFile : MonoBehaviour
     private void Start ()
     {
 
-        WriteString ("ganon");
+        //WriteString ("ganon");
 
-        ReadString ();
+        //ReadString ();
     }
 
 }

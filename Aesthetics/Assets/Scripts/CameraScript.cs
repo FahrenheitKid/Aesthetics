@@ -179,7 +179,7 @@ public class CameraScript : MonoBehaviour
     {
         if (!gridScript) return;
 
-        List<GridBlock> li = gridScript.GetGridBlockList ();
+       
         //north 
         foreach (GridBlock block in gridScript.GetGridBlockList ())
         {

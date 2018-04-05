@@ -5,9 +5,36 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private static int _globalID = 0;
+     public int globalID
+    {
+        get
+        {
+            return _globalID;
+        }
+        private set
+        {
+            _globalID = value;
+        }
+    }
 
     [SerializeField]
     private BoxCollider charCollider, blockCollider;
+
+
+ [SerializeField, Candlelight.PropertyBackingField]
+    private int _ID = 0;
+    public int ID
+    {
+        get
+        {
+            return _ID;
+        }
+        set
+        {
+            _ID = value;
+        }
+    }
 
     [SerializeField, Candlelight.PropertyBackingField]
     private float _gridSize = 1f;
@@ -70,15 +97,19 @@ public class Player : MonoBehaviour
 
         #endregion
 
+        private void Awake() {
+            ID = ++globalID;
+        }
+
         private void Start ()
         {
 
-    }
+        }
     public void Update ()
     {
         if (!isMoving)
         {
-            input = new Vector2 (Input.GetAxis ("Horizontal"), Input.GetAxis ("Vertical"));
+            input = new Vector2 (Input.GetAxis ("Horizontal" + ID), Input.GetAxis ("Vertical" +ID));
             if (!allowDiagonals)
             {
                 if (Mathf.Abs (input.x) > Mathf.Abs (input.y))
