@@ -149,6 +149,20 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
+    private TheGrid _grid_ref = new TheGrid ();
+    public TheGrid grid_ref
+    {
+        get
+        {
+            return _grid_ref;
+        }
+        set
+        {
+            _grid_ref = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
     private GridBlock.gridBlockColor _gridColor = GridBlock.gridBlockColor.Pink_B;
     public GridBlock.gridBlockColor gridColor
     {
@@ -173,6 +187,7 @@ public class Player : MonoBehaviour
         private bool allowDiagonals = false;
         private bool correctDiagonalSpeed = true;
         private Vector2 input;
+        [SerializeField]
         private bool isMoving = false;
         private Vector3 startPosition;
         private Vector3 endPosition;
@@ -222,17 +237,216 @@ public class Player : MonoBehaviour
 
             if (input != Vector2.zero)
             {
-                StartCoroutine (move (transform));
+                //StartCoroutine (move (transform));
+                Move ();
             }
         }
     }
 
-    public void replaceItem (Item it)
+    public void isNextBlockEmpty (Vector3 start_pos, Vector3 end_pos)
     {
 
     }
+    public void setIsMoving (bool value)
+    {
+        isMoving = value;
+    }
+
+    public void Move ()
+    {
+        CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
+
+        isMoving = true;
+
+        Vector3 startGridPosition = new Vector3 (x, y, z);
+        Vector3 endGridPosition = new Vector3 ();
+
+        switch (cameraScript.orientation)
+        {
+            case CameraScript.windRose.North:
+
+                if (input.x > 0)
+                {
+                   
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x < grid_ref.mapWidth - 1)
+                        endGridPosition.x++;
+
+                }
+                else if (input.x < 0)
+                {
+
+                    
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x > 0)
+                        endGridPosition.x--;
+
+                }
+                else if (input.y > 0)
+                {
+                    
+
+                    endGridPosition = startGridPosition;
+                    if (endGridPosition.z > 0)
+                        endGridPosition.z--;
+
+                }
+                else if (input.y < 0)
+                {
+                   
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z < grid_ref.mapHeight - 1)
+                        endGridPosition.z++;
+                }
+
+                break;
+
+            case CameraScript.windRose.East:
+                if (input.x > 0)
+                {
+                   
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z < grid_ref.mapHeight - 1)
+                        endGridPosition.z++;
+
+                }
+                else if (input.x < 0)
+                {
+
+                
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z > 0)
+                        endGridPosition.z--;
+                }
+                else if (input.y > 0)
+                {
+                   
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x < grid_ref.mapWidth - 1)
+                        endGridPosition.x++;
+
+                }
+                else if (input.y < 0)
+                {
+                
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x > 0)
+                        endGridPosition.x--;
+                }
+
+                break;
+
+            case CameraScript.windRose.South:
+
+                if (input.x > 0)
+                {
+                 
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x > 0)
+                        endGridPosition.x--;
+
+                }
+                else if (input.x < 0)
+                {
+                  
+
+                    endGridPosition = startGridPosition;
+                    if (endGridPosition.x < grid_ref.mapWidth - 1)
+                        endGridPosition.x++;
+                }
+                else if (input.y > 0)
+                {
+                
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z < grid_ref.mapHeight - 1)
+                        endGridPosition.z++;
+
+                }
+                else if (input.y < 0)
+                {
+                    
+
+                    endGridPosition = startGridPosition;
+                    if (endGridPosition.z > 0)
+                        endGridPosition.z--;
+
+                }
+
+                break;
+
+            case CameraScript.windRose.West:
+
+                if (input.x > 0)
+                {
+                    
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z > 0)
+                        endGridPosition.z--;
+
+                }
+                else if (input.x < 0)
+                {
+
+                   
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z < grid_ref.mapHeight - 1)
+                        endGridPosition.z++;
+
+                }
+                else if (input.y > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x > 0)
+                        endGridPosition.x--;
+
+                }
+                else if (input.y < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x < grid_ref.mapWidth - 1)
+                        endGridPosition.x++;
+                }
+
+                break;
+
+            default:
+                break;
+
+        }
+
+        endGridPosition = grid_ref.getGridBlockPosition ((int) endGridPosition.x, (int) endGridPosition.z, endGridPosition.y);
+        endGridPosition.y = 0.1f;
+
+        transform.DOMove (endGridPosition, 0.4f).OnComplete (() => isMoving = false).SetEase (Ease.InQuint);
+        transform.DOLookAt (endGridPosition, 0.2f);
+
+    }
+
     public IEnumerator move (Transform transform)
     {
+
+        CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
+
         isMoving = true;
         startPosition = transform.position;
         t = 0;

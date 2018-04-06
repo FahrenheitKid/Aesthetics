@@ -6,6 +6,30 @@ using UnityEngine.Rendering.PostProcessing;
 public class CameraScript : MonoBehaviour
 {
 
+    public enum windRose
+    {
+        North,
+        East,
+        South,
+        West
+    }
+
+    public static windRose WindRose;
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private windRose _orientation = 0; // the ortographic Size of the camera needed to see the entire stage
+    public windRose orientation
+    {
+        get
+        {
+            return _orientation;
+        }
+        set
+        {
+            _orientation = value;
+        }
+    }
+
     [SerializeField]
     private TheGrid gridScript;
 
@@ -117,6 +141,7 @@ public class CameraScript : MonoBehaviour
     private void Awake ()
     {
         GetComponent<PostProcessLayer> ().enabled = true;
+        orientation = windRose.North;
     }
     // Use this for initialization
     void Start ()
@@ -131,10 +156,14 @@ public class CameraScript : MonoBehaviour
         if (Input.GetKeyDown (KeyCode.Q))
         {
             targetAngle -= 90.0f;
+            turnOrientation (false);
+            print (orientation);
         }
         if (Input.GetKeyDown (KeyCode.E))
         {
             targetAngle += 90.0f;
+            turnOrientation (true);
+            print (orientation);
         }
 
         if (Input.GetKeyDown (KeyCode.Z))
@@ -174,6 +203,51 @@ public class CameraScript : MonoBehaviour
 
     }
 
+    public void turnOrientation (bool clockwise)
+    {
+        switch (orientation)
+        {
+            case CameraScript.windRose.North:
+                if (clockwise)
+                    orientation = windRose.West;
+                else
+                    orientation = windRose.East;
+
+                break;
+
+            case CameraScript.windRose.East:
+                if (clockwise)
+                    orientation = windRose.North;
+                else
+                    orientation = windRose.South;
+
+                break;
+
+            case CameraScript.windRose.South:
+                if (clockwise)
+                    orientation = windRose.East;
+                else
+                    orientation = windRose.West;
+
+                break;
+
+            case CameraScript.windRose.West:
+                if (clockwise)
+                    orientation = windRose.South;
+                else
+                    orientation = windRose.North;
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public void turnOrientationRight ()
+    {
+
+    }
     //sets the 4 boundary points of the stage for Camera Zoom System
     public void setViewBoundaries ()
     {
@@ -190,12 +264,10 @@ public class CameraScript : MonoBehaviour
                 GetViewportBoundaryPoints () [0].x -= xHorizontallOffset;
                 GetViewportBoundaryPoints () [0].z += zHorizontalOffset;
 
-                print ("Bloco west = " + block.transform.position);
-                print ("West before = " + GetViewportBoundaryPoints () [0]);
                 GetViewportBoundaryPoints () [0].x = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [0]).x;
                 GetViewportBoundaryPoints () [0].y = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [0]).y;
                 GetViewportBoundaryPoints () [0].z = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [0]).z;
-                print ("West set to = " + GetViewportBoundaryPoints () [0]);
+
             }
             //north
             else if (block.X == gridScript.mapWidth - 1 && block.Z == 0)
@@ -207,7 +279,7 @@ public class CameraScript : MonoBehaviour
                 GetViewportBoundaryPoints () [1].x = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [1]).x;
                 GetViewportBoundaryPoints () [1].y = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [1]).y;
                 GetViewportBoundaryPoints () [1].z = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [1]).z;
-                print ("North set to = " + GetViewportBoundaryPoints () [1]);
+
             }
             //east
             else if (block.X == gridScript.mapWidth - 1 && block.Z == gridScript.mapHeight - 1)
@@ -219,7 +291,7 @@ public class CameraScript : MonoBehaviour
                 GetViewportBoundaryPoints () [2].x = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [2]).x;
                 GetViewportBoundaryPoints () [2].y = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [2]).y;
                 GetViewportBoundaryPoints () [2].z = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [2]).z;
-                print ("East set to = " + GetViewportBoundaryPoints () [2]);
+
             }
             //south
             else if (block.X == 0 && block.Z == gridScript.mapHeight - 1)
@@ -231,7 +303,7 @@ public class CameraScript : MonoBehaviour
                 GetViewportBoundaryPoints () [3].x = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [3]).x;
                 GetViewportBoundaryPoints () [3].y = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [3]).y;
                 GetViewportBoundaryPoints () [3].z = GetComponent<Camera> ().WorldToViewportPoint (GetViewportBoundaryPoints () [3]).z;
-                print ("South set to = " + GetViewportBoundaryPoints () [3]);
+
             }
         }
     }

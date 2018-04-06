@@ -84,7 +84,7 @@ public class TheGrid : MonoBehaviour
         {
             return _mapWidth;
         }
-        set
+        private set
         {
             _mapWidth = value;
         }
@@ -98,7 +98,7 @@ public class TheGrid : MonoBehaviour
         {
             return _mapHeight;
         }
-        set
+        private set
         {
             _mapHeight = value;
         }
@@ -194,7 +194,7 @@ public class TheGrid : MonoBehaviour
                 initial_pos.y = 0.1f;
             }
             GameObject player_prefab = Instantiate (GetPlayerPrefabList () [i], initial_pos, Quaternion.identity) as GameObject;
-
+            player_prefab.GetComponent<Player> ().grid_ref = this;
         }
     }
 

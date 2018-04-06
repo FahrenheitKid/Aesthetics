@@ -120,6 +120,19 @@ public class GridBlock : MonoBehaviour
         }
     }
 
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isOccupied = false;
+    public bool isOccupied
+    {
+        get
+        {
+            return _isOccupied;
+        }
+        set
+        {
+            _isOccupied = value;
+        }
+    }
     public void init (int x, int y, int z)
     {
         _x = x;
@@ -158,8 +171,17 @@ public class GridBlock : MonoBehaviour
             //print ("entrou trigger bloco " + X + ", " + Z);
             changeColor (other.GetComponent<Player> ().gridColor);
             changeOwner (other.GetComponent<Player> ());
+            isOccupied = true;
 
         }
+    }
+    private void OnTriggerExit (Collider other)
+    {
+        if (other.gameObject.CompareTag ("Player"))
+        {
+            isOccupied = false;
+        }
+
     }
 
     public void changeOwner (Player p)
