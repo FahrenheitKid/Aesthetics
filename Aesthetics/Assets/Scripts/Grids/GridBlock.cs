@@ -23,6 +23,8 @@ public class GridBlock : MonoBehaviour
 
     }
     public static gridBlockColor GridBlockColor;
+
+    /* 
     public enum owner
     {
         Nobody,
@@ -32,7 +34,7 @@ public class GridBlock : MonoBehaviour
         Player4
     }
     public static owner Owner;
-
+*/
     public enum gridType
     {
         Hole,
@@ -103,6 +105,21 @@ public class GridBlock : MonoBehaviour
             _mainColor = value;
         }
     }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    protected Player _owner;
+    public Player owner
+    {
+        get
+        {
+            return _owner;
+        }
+        set
+        {
+            _owner = value;
+        }
+    }
+
     public void init (int x, int y, int z)
     {
         _x = x;
@@ -140,10 +157,23 @@ public class GridBlock : MonoBehaviour
 
             //print ("entrou trigger bloco " + X + ", " + Z);
             changeColor (other.GetComponent<Player> ().gridColor);
+            changeOwner (other.GetComponent<Player> ());
 
         }
     }
 
+    public void changeOwner (Player p)
+    {
+        if (p == null)
+        {
+            owner = null;
+
+            print ("anulei");
+            return;
+        }
+        owner = p;
+
+    }
     // changes directly the color of the gridblock
     public void changeColor (gridBlockColor col)
     {
@@ -153,6 +183,7 @@ public class GridBlock : MonoBehaviour
         {
             case gridBlockColor.Blue_W:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Blue_W];
+                print ("painting blue");
                 break;
             case gridBlockColor.Green_W:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Green_W];

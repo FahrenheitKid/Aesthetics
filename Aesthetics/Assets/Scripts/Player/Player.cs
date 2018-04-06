@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField, Candlelight.PropertyBackingField]
     private static int _globalID = 0;
-     public int globalID
+    public int globalID
     {
         get
         {
@@ -21,8 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private BoxCollider charCollider, blockCollider;
 
-
- [SerializeField, Candlelight.PropertyBackingField]
+    [SerializeField, Candlelight.PropertyBackingField]
     private int _ID = 0;
     public int ID
     {
@@ -47,6 +47,90 @@ public class Player : MonoBehaviour
         set
         {
             _gridSize = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _hasItem = false;
+    public bool hasItem
+    {
+        get
+        {
+            return _hasItem;
+        }
+        set
+        {
+            _hasItem = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private Item _item;
+    public Item item
+    {
+        get
+        {
+            return _item;
+        }
+        set
+        {
+            _item = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _score = 0;
+    public int score
+    {
+        get
+        {
+            return _score;
+        }
+        set
+        {
+            _score = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _x;
+    public int x
+    {
+        get
+        {
+            return _x;
+        }
+        private set
+        {
+            _x = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _y;
+    public int y
+    {
+        get
+        {
+            return _y;
+        }
+        private set
+        {
+            _y = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _z;
+    public int z
+    {
+        get
+        {
+            return _z;
+        }
+        private set
+        {
+            _z = value;
         }
     }
 
@@ -97,19 +181,33 @@ public class Player : MonoBehaviour
 
         #endregion
 
-        private void Awake() {
-            ID = ++globalID;
-        }
-
-        private void Start ()
+        private void Awake ()
         {
+        ID = ++globalID;
+    }
+
+    private void Start ()
+    {
+
+    }
+
+    private void OnTriggerEnter (Collider other)
+    {
+        print ("triggerei com " + other.gameObject.name);
+        if (other.gameObject.CompareTag ("GridBlock"))
+        {
+            GridBlock gb = other.GetComponent<GridBlock> ();
+            x = gb.X;
+            z = gb.Z;
 
         }
+    }
+
     public void Update ()
     {
         if (!isMoving)
         {
-            input = new Vector2 (Input.GetAxis ("Horizontal" + ID), Input.GetAxis ("Vertical" +ID));
+            input = new Vector2 (Input.GetAxis ("Horizontal" + ID), Input.GetAxis ("Vertical" + ID));
             if (!allowDiagonals)
             {
                 if (Mathf.Abs (input.x) > Mathf.Abs (input.y))
@@ -129,6 +227,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void replaceItem (Item it)
+    {
+
+    }
     public IEnumerator move (Transform transform)
     {
         isMoving = true;

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - GridBlock
   - Grid
+  - Item
   layers:
   - Default
   - TransparentFX

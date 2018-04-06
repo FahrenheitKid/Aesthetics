@@ -23,7 +23,24 @@ public class TheGrid : MonoBehaviour
         }
     }
 
-   [SerializeField, Candlelight.PropertyBackingField]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private GameObject _scoreMaker_prefab;
+    public GameObject scoreMaker_prefab
+    {
+        get
+        {
+            return _scoreMaker_prefab;
+        }
+        set
+        {
+            _scoreMaker_prefab = value;
+        }
+    }
+
+    [SerializeField]
+    Countdown timer = new Countdown ();
+
+    [SerializeField, Candlelight.PropertyBackingField]
     private List<GameObject> _PlayerPrefabList = new List<GameObject> (4);
     public List<GameObject> GetPlayerPrefabList ()
     {
@@ -132,26 +149,61 @@ public class TheGrid : MonoBehaviour
 
     #endregion
 
-    // Use this for initialization
-    void Start ()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update ()
-    {
-
-    }
-
     void Awake ()
     {
         tiles = Load (Application.dataPath + "\\Resources\\" + fileNameToLoad);
         BuildMap ();
 
-        //TODO
+        timer = gameObject.AddComponent<Countdown> ();
+
+        SpawnPlayers ();
+
     }
 
+    // Use this for initialization
+    void Start ()
+    {
+        timer.startTimer (10f);
+        SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
+    }
+
+    // Update is called once per frame
+    void Update ()
+    {
+        if (timer.stop)
+        {
+            timer.startTimer (10f);
+            SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
+        }
+    }
+
+    private void SpawnPlayers ()
+    {
+        for (int i = 0; i < GetPlayerList ().Count; i++)
+        {
+            Vector3 initial_pos = new Vector3 ();
+
+            if (i == 0)
+            {
+                initial_pos = GetGridBlock (0, 0).gameObject.transform.position;
+                initial_pos.y = 0.1f;
+            }
+            else if (i == 1)
+            {
+                initial_pos = GetGridBlock (mapWidth - 1, mapHeight - 1).gameObject.transform.position;
+                initial_pos.y = 0.1f;
+            }
+            GameObject player_prefab = Instantiate (GetPlayerPrefabList () [i], initial_pos, Quaternion.identity) as GameObject;
+
+        }
+    }
+
+    private void SpawnScoreMaker (int x, int z)
+    {
+        GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+        ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
+        sm.grid_ref = GetComponent<TheGrid> ();
+    }
     void BuildMap ()
     {
         Debug.Log ("Building Map...");
@@ -164,7 +216,7 @@ public class TheGrid : MonoBehaviour
                 TilePrefab.transform.parent = transform;
                 TilePrefab.GetComponent<GridBlock> ().init (j, 0, i);
                 TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor) tiles[i, j]);
-                GetGridBlockList ().Add (TilePrefab.GetComponent<GridBlock> ());
+                _GridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
 
             }
         }
@@ -245,6 +297,29 @@ public class TheGrid : MonoBehaviour
         return null;
     }
 
+    public void Score (Player p)
+    {
+        if (p == null || _GridBlockList == null) return;
+
+        if (GetGridBlockList ().Count == 0 || GetGridBlockList () == null)
+            print ("gridBlockCount vazio ou null!");
+
+        foreach (GridBlock gb in GetGridBlockList ())
+        {
+
+            if (gb.owner == null) continue;
+            if (gb.owner.ID == p.ID)
+            {
+
+                gb.changeColor (GridBlock.gridBlockColor.White);
+                gb.changeOwner (null);
+                p.score++;
+            }
+        }
+
+        print ("Player " + p.gameObject.name + " has now: " + p.score + " Points!");
+    }
+
     public GridBlock GetGridBlock (int x, int z)
     {
 
@@ -257,5 +332,13 @@ public class TheGrid : MonoBehaviour
 
         return null;
 
+    }
+
+    public Vector3 getGridBlockPosition (int x, int z, float y)
+    {
+        Vector3 pos = GetGridBlock (x, z).gameObject.transform.position;
+
+        pos.y = y;
+        return pos;
     }
 }

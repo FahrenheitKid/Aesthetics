@@ -24,8 +24,7 @@ public class CameraController : MonoBehaviour
     public float mouseAxisCorrection = 10.5f;
 
     // Use this for initialization
-    void Start ()
-    { }
+    void Start () { }
 
     // Update is called once per frame
     void Update ()
