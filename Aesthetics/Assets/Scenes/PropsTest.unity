@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.19239527, g: 0.5928501, b: 0.77373916, a: 1}
+  m_IndirectSpecularColor: {r: 0.19235185, g: 0.5927958, b: 0.77698183, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -231,7 +231,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 165326735}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.38, y: 0, z: 4.51}
+  m_LocalPosition: {x: -11.38, y: 0, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -382,8 +382,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gridBlock_prefab1: {fileID: 1550792246163172, guid: fcb322a2029ac3a46ba9da14c92cf22a,
     type: 2}
-  _gridBlock_prefab2: {fileID: 1550792246163172, guid: fcb322a2029ac3a46ba9da14c92cf22a,
-    type: 2}
+  _PlayerPrefabList:
+  - {fileID: 1232862958451660, guid: 6b24f21b438172f4b978021cdf01e67d, type: 2}
+  - {fileID: 1558422369199744, guid: 9d87bc098a3196d44a5eb272e7373cb9, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  _PlayerList:
+  - {fileID: 0}
+  - {fileID: 0}
   _cameraScript: {fileID: 632092755}
   _mapWidth: 0
   _mapHeight: 0
@@ -719,7 +725,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1059628183}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.38, y: 0, z: 7.86}
+  m_LocalPosition: {x: -11.38, y: 0, z: 5.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

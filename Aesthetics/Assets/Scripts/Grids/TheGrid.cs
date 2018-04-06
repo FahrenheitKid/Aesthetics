@@ -23,18 +23,26 @@ public class TheGrid : MonoBehaviour
         }
     }
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private GameObject _gridBlock_prefab2;
-    public GameObject gridBlock_prefab2
+   [SerializeField, Candlelight.PropertyBackingField]
+    private List<GameObject> _PlayerPrefabList = new List<GameObject> (4);
+    public List<GameObject> GetPlayerPrefabList ()
     {
-        get
-        {
-            return _gridBlock_prefab2;
-        }
-        set
-        {
-            _gridBlock_prefab2 = value;
-        }
+        return _PlayerPrefabList;
+    }
+    public void SetPlayerPrefabList (List<GameObject> value)
+    {
+        _PlayerPrefabList = new List<GameObject> (value);
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private List<Player> _PlayerList = new List<Player> ();
+    public List<Player> GetPlayerList ()
+    {
+        return _PlayerList;
+    }
+    public void SetPlayerList (List<Player> value)
+    {
+        _PlayerList = new List<Player> (value);
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
@@ -140,6 +148,8 @@ public class TheGrid : MonoBehaviour
     {
         tiles = Load (Application.dataPath + "\\Resources\\" + fileNameToLoad);
         BuildMap ();
+
+        //TODO
     }
 
     void BuildMap ()
