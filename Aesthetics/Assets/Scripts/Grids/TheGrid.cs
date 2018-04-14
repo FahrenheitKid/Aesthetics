@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TheGrid : MonoBehaviour
 {
@@ -132,6 +133,29 @@ public class TheGrid : MonoBehaviour
         }
     }
 
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isRandomScoreMakerSpawnTime = true;
+    public bool isRandomScoreMakerSpawnTime
+    {
+        get
+        {
+            return _isRandomScoreMakerSpawnTime;
+        }
+        set
+        {
+            _isRandomScoreMakerSpawnTime = value;
+        }
+    }
+
+    // corresponds to [Range(0f, 1f)]
+     [SerializeField, Candlelight.PropertyBackingField( typeof(RangeAttribute), 3f, 10f)]
+    private float _ScoreMakerSpawnTime;
+    public float ScoreMakerSpawnTime
+    {
+        get { return _ScoreMakerSpawnTime; }
+        set { _ScoreMakerSpawnTime = value; }
+    }
+
     [SerializeField]
     private string fileNameToLoad;
     private int[, ] tiles;
@@ -151,7 +175,7 @@ public class TheGrid : MonoBehaviour
 
     void Awake ()
     {
-        tiles = Load (Application.dataPath + "\\Resources\\" + fileNameToLoad);
+        tiles = Load (Application.streamingAssetsPath + "\\" + fileNameToLoad);
         BuildMap ();
 
         timer = gameObject.AddComponent<Countdown> ();
@@ -163,16 +187,35 @@ public class TheGrid : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        timer.startTimer (10f);
+        if(isRandomScoreMakerSpawnTime)
+        timer.startTimer (Random.Range(3f,ScoreMakerSpawnTime));
+        else
+        timer.startTimer (ScoreMakerSpawnTime);
+
         SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
     }
 
     // Update is called once per frame
     void Update ()
     {
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+                QuitGame();
+        }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+
+            SceneManager.LoadScene (SceneManager.GetActiveScene().buildIndex);
+        }
+
         if (timer.stop)
         {
-            timer.startTimer (10f);
+            if(isRandomScoreMakerSpawnTime)
+        timer.startTimer (Random.Range(3f,ScoreMakerSpawnTime));
+        else
+        timer.startTimer (ScoreMakerSpawnTime);
             SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
         }
     }
@@ -341,4 +384,16 @@ public class TheGrid : MonoBehaviour
         pos.y = y;
         return pos;
     }
+
+         public void QuitGame()
+     {
+         // save any game data here
+         #if UNITY_EDITOR
+             // Application.Quit() does not work in the editor so
+             // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
+             UnityEditor.EditorApplication.isPlaying = false;
+         #else
+             Application.Quit();
+         #endif
+     }
 }

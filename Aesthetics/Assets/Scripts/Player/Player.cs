@@ -198,6 +198,7 @@ public class Player : MonoBehaviour
 
         private void Awake ()
         {
+            if(globalID >=2) globalID = 0;
         ID = ++globalID;
     }
 
