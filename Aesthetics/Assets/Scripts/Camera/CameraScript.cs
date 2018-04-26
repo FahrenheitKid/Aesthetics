@@ -1,7 +1,9 @@
+#define DEBUG
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Assertions;
 
 public class CameraScript : MonoBehaviour
 {
@@ -315,6 +317,11 @@ public class CameraScript : MonoBehaviour
     public void cameraParentToCenterPosition ()
     {
         Camera.main.transform.parent.transform.position = gridScript.GetGridBlock (gridScript.mapWidth / 2, gridScript.mapHeight / 2).gameObject.transform.position;
+        
+        #if DEBUG
+        Assert.IsNotNull(rhythmSystem_ref);
+        #endif
+        
         rhythmSystem_ref.SetupSpawnPositions();
     }
 
