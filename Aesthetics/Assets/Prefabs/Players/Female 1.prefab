@@ -124,6 +124,9 @@ MonoBehaviour:
   charCollider: {fileID: 65428693228734678}
   blockCollider: {fileID: 65353554913535106}
   _ID: 0
+  _horizontalAxisState: 0
+  _verticalAxisState: 0
+  _deadZone: 0.02
   _gridSize: 1
   _hasItem: 0
   _item: {fileID: 0}
@@ -132,7 +135,10 @@ MonoBehaviour:
   _y: 0
   _z: 0
   _moveSpeed: 2
+  _grid_ref: {fileID: 0}
+  _rhythmSystem_ref: {fileID: 0}
   _gridColor: 2
+  isMoving: 0
 --- !u!143 &143725343767100514
 CharacterController:
   m_ObjectHideFlags: 1

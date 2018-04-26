@@ -7,6 +7,11 @@ TagManager:
   - GridBlock
   - Grid
   - Item
+  - Rhythm Target
+  - Rhythm Note
+  - Music Playback
+  - Iso Target
+  - Rhythm System
   layers:
   - Default
   - TransparentFX

@@ -34,6 +34,9 @@ public class CameraScript : MonoBehaviour
     private TheGrid gridScript;
 
     [SerializeField]
+    private RhythmSystem rhythmSystem_ref;
+
+    [SerializeField]
     private float targetAngle = 0;
     [SerializeField]
     private const float rotationAmount = 1.5f;
@@ -312,6 +315,7 @@ public class CameraScript : MonoBehaviour
     public void cameraParentToCenterPosition ()
     {
         Camera.main.transform.parent.transform.position = gridScript.GetGridBlock (gridScript.mapWidth / 2, gridScript.mapHeight / 2).gameObject.transform.position;
+        rhythmSystem_ref.SetupSpawnPositions();
     }
 
     //zoomOut autoZoomAmount if the view boundaries are unseen

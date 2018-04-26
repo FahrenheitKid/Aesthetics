@@ -5,6 +5,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+
+
+    public enum AxisState
+ {
+     Idle,
+     Down,
+     Held,
+     Up
+ }
+ 
+
+ 
+ 
+ 
     [SerializeField, Candlelight.PropertyBackingField]
     private static int _globalID = 0;
     public int globalID
@@ -33,6 +47,49 @@ public class Player : MonoBehaviour
         set
         {
             _ID = value;
+        }
+    }
+
+
+[SerializeField, Candlelight.PropertyBackingField]
+    private AxisState _horizontalAxisState = AxisState.Idle;
+    public AxisState horizontalAxisState
+    {
+        get
+        {
+            return _horizontalAxisState;
+        }
+        set
+        {
+            _horizontalAxisState = value;
+        }
+    }
+    
+    [SerializeField, Candlelight.PropertyBackingField]
+    private AxisState _verticalAxisState = AxisState.Idle;
+    public AxisState verticalAxisState
+    {
+        get
+        {
+            return _verticalAxisState;
+        }
+        set
+        {
+            _verticalAxisState = value;
+        }
+    }
+
+[SerializeField, Candlelight.PropertyBackingField]
+    private float _deadZone = 0.02f;
+    public float deadZone
+    {
+        get
+        {
+            return _deadZone;
+        }
+        set
+        {
+            _deadZone = value;
         }
     }
 
@@ -163,6 +220,20 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
+    private RhythmSystem _rhythmSystem_ref = new RhythmSystem ();
+    public RhythmSystem rhythmSystem_ref
+    {
+        get
+        {
+            return _rhythmSystem_ref;
+        }
+        set
+        {
+            _rhythmSystem_ref = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
     private GridBlock.gridBlockColor _gridColor = GridBlock.gridBlockColor.Pink_B;
     public GridBlock.gridBlockColor gridColor
     {
@@ -221,6 +292,10 @@ public class Player : MonoBehaviour
 
     public void Update ()
     {
+
+        HandleAxisState(ref _horizontalAxisState,"Horizontal" + ID);
+        HandleAxisState(ref _verticalAxisState,"Vertical" + ID);
+
         if (!isMoving)
         {
             input = new Vector2 (Input.GetAxis ("Horizontal" + ID), Input.GetAxis ("Vertical" + ID));
@@ -238,6 +313,8 @@ public class Player : MonoBehaviour
 
             if (input != Vector2.zero)
             {
+                if((input.y != 0 && verticalAxisState == AxisState.Down) !=
+                (input.x != 0 && horizontalAxisState == AxisState.Down))
                 //StartCoroutine (move (transform));
                 Move ();
             }
@@ -438,10 +515,42 @@ public class Player : MonoBehaviour
         endGridPosition = grid_ref.getGridBlockPosition ((int) endGridPosition.x, (int) endGridPosition.z, endGridPosition.y);
         endGridPosition.y = 0.1f;
 
-        transform.DOMove (endGridPosition, 0.4f).OnComplete (() => isMoving = false).SetEase (Ease.InQuint);
+        transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
         transform.DOLookAt (endGridPosition, 0.2f);
 
     }
+
+
+void HandleAxisState(ref AxisState state, string axi) 
+ {
+     switch ( state )
+     {
+         case AxisState.Idle :
+             if ( Input.GetAxis(axi) < -deadZone || Input.GetAxis( axi ) > deadZone )
+             {
+                 state = AxisState.Down;
+             }
+         break;
+         
+         case AxisState.Down :
+             state = AxisState.Held;
+         break;
+         
+         case AxisState.Held :
+             if ( Input.GetAxis( axi ) > -deadZone && Input.GetAxis( axi ) < deadZone )
+             {
+                 state = AxisState.Up;
+             }
+         break;
+         
+         case AxisState.Up :
+             state = AxisState.Idle;
+         break;
+     }
+     
+    Debug.Log( state );
+ }
+
 
     public IEnumerator move (Transform transform)
     {

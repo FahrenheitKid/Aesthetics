@@ -38,6 +38,20 @@ public class TheGrid : MonoBehaviour
         }
     }
 
+    [SerializeField, Candlelight.PropertyBackingField]
+    private RhythmSystem _rhythmSystem_ref = new RhythmSystem ();
+    public RhythmSystem rhythmSystem_ref
+    {
+        get
+        {
+            return _rhythmSystem_ref;
+        }
+        set
+        {
+            _rhythmSystem_ref = value;
+        }
+    }
+
     [SerializeField]
     Countdown timer = new Countdown ();
 
@@ -238,6 +252,7 @@ public class TheGrid : MonoBehaviour
             }
             GameObject player_prefab = Instantiate (GetPlayerPrefabList () [i], initial_pos, Quaternion.identity) as GameObject;
             player_prefab.GetComponent<Player> ().grid_ref = this;
+            player_prefab.GetComponent<Player> ().rhythmSystem_ref = rhythmSystem_ref;
         }
     }
 
