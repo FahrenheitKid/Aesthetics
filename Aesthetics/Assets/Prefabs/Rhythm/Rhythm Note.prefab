@@ -37,7 +37,7 @@ Transform:
   m_GameObject: {fileID: 1769283539915634}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -69,8 +69,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visuals: {fileID: 212921071800209106}
+  trackedEvent:
+    mStartSample: 0
+    mEndSample: 0
   rhythmSystem_ref: {fileID: 0}
+  destination: {x: 0, y: 0, z: 0}
   isMirror: 0
+  mirror_ref: {fileID: 0}
+  scalingFactorX: 1
+  scalingFactorY: 1
 --- !u!212 &212921071800209106
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -105,8 +112,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 075acfdbb40554e4d8546b825237963f, type: 3}
-  m_Color: {r: 0.7254902, g: 0.40392157, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: e434cc194d53e1049ac6e513a178ddd1, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

@@ -2,23 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using SonicBloom.Koreo;
 
 public class Player : MonoBehaviour
 {
 
-
     public enum AxisState
- {
-     Idle,
-     Down,
-     Held,
-     Up
- }
- 
+    {
+        Idle,
+        Down,
+        Held,
+        Up
+    }
 
- 
- 
- 
     [SerializeField, Candlelight.PropertyBackingField]
     private static int _globalID = 0;
     public int globalID
@@ -50,8 +46,7 @@ public class Player : MonoBehaviour
         }
     }
 
-
-[SerializeField, Candlelight.PropertyBackingField]
+    [SerializeField, Candlelight.PropertyBackingField]
     private AxisState _horizontalAxisState = AxisState.Idle;
     public AxisState horizontalAxisState
     {
@@ -64,7 +59,7 @@ public class Player : MonoBehaviour
             _horizontalAxisState = value;
         }
     }
-    
+
     [SerializeField, Candlelight.PropertyBackingField]
     private AxisState _verticalAxisState = AxisState.Idle;
     public AxisState verticalAxisState
@@ -79,7 +74,7 @@ public class Player : MonoBehaviour
         }
     }
 
-[SerializeField, Candlelight.PropertyBackingField]
+    [SerializeField, Candlelight.PropertyBackingField]
     private float _deadZone = 0.02f;
     public float deadZone
     {
@@ -136,6 +131,25 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isStunned = false;
+    public bool isStunned
+    {
+        get
+        {
+            return _isStunned;
+        }
+        set
+        {
+
+            _isStunned = value;
+
+        }
+    }
+
+    [SerializeField]
+    Countdown stunTimer;
+
+    [SerializeField, Candlelight.PropertyBackingField]
     private int _score = 0;
     public int score
     {
@@ -145,10 +159,69 @@ public class Player : MonoBehaviour
         }
         set
         {
+
             _score = value;
+            int i = (ID > 0) ? ID - 1 : 0;
+            grid_ref.GetPlayerUIList () [i].setScore (_score);
         }
     }
 
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _combo = 0;
+    public int combo
+    {
+        get
+        {
+            return _combo;
+        }
+        set
+        {
+
+            _combo = value;
+            if(combo == 0) _multiplierCombo = 0;
+            int i = (ID > 0) ? ID - 1 : 0;
+            grid_ref.GetPlayerUIList () [i].setCombo (_combo);
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _multiplierCombo = 0;
+    public int multiplierCombo
+    {
+        get
+        {
+            return _multiplierCombo;
+        }
+        set
+        {
+            _multiplierCombo = value;
+
+            if (_multiplierCombo / 10 >= 1) multiplier = _multiplierCombo / 10;
+            else if(_multiplierCombo == 0) multiplier = 1;
+
+            //int i = (ID > 0) ? ID - 1 : 0;
+            //grid_ref.GetPlayerUIList () [i].setCombo (_combo);
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private int _multiplier = 1;
+    public int multiplier
+    {
+        get
+        {
+            return _multiplier;
+        }
+        set
+        {
+
+            _multiplier = value;
+            int i = (ID > 0) ? ID - 1 : 0;
+            grid_ref.GetPlayerUIList () [i].setMultiplier (_multiplier);
+        }
+    }
+
+    [Tooltip ("X value in internal grid matrix")]
     [SerializeField, Candlelight.PropertyBackingField]
     private int _x;
     public int x
@@ -163,6 +236,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Y value in internal grid matrix")]
     [SerializeField, Candlelight.PropertyBackingField]
     private int _y;
     public int y
@@ -206,7 +280,7 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
-    private TheGrid _grid_ref = new TheGrid ();
+    private TheGrid _grid_ref;
     public TheGrid grid_ref
     {
         get
@@ -220,7 +294,7 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
-    private RhythmSystem _rhythmSystem_ref = new RhythmSystem ();
+    private RhythmSystem _rhythmSystem_ref;
     public RhythmSystem rhythmSystem_ref
     {
         get
@@ -247,6 +321,33 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Range (0, 2)]
+    [SerializeField]
+    private float beatPunchScale = 0.05f;
+
+    [Range (0, 500)]
+    [SerializeField]
+    private int vibrato = 0;
+
+    [Range (0, 1)]
+    [SerializeField]
+    private float elasticity = 0.0f;
+
+    //[Range(0,1)]s
+    [SerializeField, Candlelight.PropertyBackingField]
+    private float _duration = 0.5f;
+    public float duration
+    {
+        get
+        {
+            return _duration;
+        }
+        set
+        {
+            _duration = value;
+        }
+    }
+
     private enum Orientation
     {
         Horizontal,
@@ -269,18 +370,30 @@ public class Player : MonoBehaviour
 
         private void Awake ()
         {
-            if(globalID >=2) globalID = 0;
+        if (globalID >= 2) globalID = 0;
         ID = ++globalID;
+
+        stunTimer = gameObject.AddComponent<Countdown> ();
     }
 
     private void Start ()
     {
+        _multiplier = 1;
+        _score = 1;
+        _combo = 0;
+        _multiplierCombo = 0;
+        beatPunchScale = 0.05f;
+
+         float musicBPM = (float) rhythmSystem_ref.currentMusicBPM;
+
+        duration = (float) (60 / musicBPM) / 2;
+        Koreographer.Instance.RegisterForEvents ("MaybeBeats", OnMainBeat);
 
     }
 
     private void OnTriggerEnter (Collider other)
     {
-        print ("triggerei com " + other.gameObject.name);
+
         if (other.gameObject.CompareTag ("GridBlock"))
         {
             GridBlock gb = other.GetComponent<GridBlock> ();
@@ -293,8 +406,13 @@ public class Player : MonoBehaviour
     public void Update ()
     {
 
-        HandleAxisState(ref _horizontalAxisState,"Horizontal" + ID);
-        HandleAxisState(ref _verticalAxisState,"Vertical" + ID);
+        HandleAxisState (ref _horizontalAxisState, "Horizontal" + ID);
+        HandleAxisState (ref _verticalAxisState, "Vertical" + ID);
+
+        if (isStunned)
+        {
+
+        }
 
         if (!isMoving)
         {
@@ -311,12 +429,31 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (input != Vector2.zero)
+            if (input != Vector2.zero && !_isStunned)
             {
-                if((input.y != 0 && verticalAxisState == AxisState.Down) !=
-                (input.x != 0 && horizontalAxisState == AxisState.Down))
+                if ((input.y != 0 && verticalAxisState == AxisState.Down) !=
+                    (input.x != 0 && horizontalAxisState == AxisState.Down))
+                {
+
+                    //Move ();
+                    // combo++;
+
+                    if (rhythmSystem_ref.WasNoteHit ())
+                    {
+                        print("Player" + ID.ToString() + " Hit it!");
+                        Move ();
+                        combo++;
+                        multiplierCombo++;
+
+                    }
+                    else
+                    {
+                        combo = 0;
+                    }
+
+                }
                 //StartCoroutine (move (transform));
-                Move ();
+
             }
         }
     }
@@ -330,6 +467,10 @@ public class Player : MonoBehaviour
         isMoving = value;
     }
 
+    public void Stun ()
+    {
+
+    }
     public void Move ()
     {
         CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
@@ -345,7 +486,7 @@ public class Player : MonoBehaviour
 
                 if (input.x > 0)
                 {
-                   
+
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.x < grid_ref.mapWidth - 1)
@@ -355,8 +496,6 @@ public class Player : MonoBehaviour
                 else if (input.x < 0)
                 {
 
-                    
-
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.x > 0)
@@ -365,7 +504,6 @@ public class Player : MonoBehaviour
                 }
                 else if (input.y > 0)
                 {
-                    
 
                     endGridPosition = startGridPosition;
                     if (endGridPosition.z > 0)
@@ -374,7 +512,6 @@ public class Player : MonoBehaviour
                 }
                 else if (input.y < 0)
                 {
-                   
 
                     endGridPosition = startGridPosition;
 
@@ -387,7 +524,7 @@ public class Player : MonoBehaviour
             case CameraScript.windRose.East:
                 if (input.x > 0)
                 {
-                   
+
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.z < grid_ref.mapHeight - 1)
@@ -397,7 +534,6 @@ public class Player : MonoBehaviour
                 else if (input.x < 0)
                 {
 
-                
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.z > 0)
@@ -405,7 +541,6 @@ public class Player : MonoBehaviour
                 }
                 else if (input.y > 0)
                 {
-                   
 
                     endGridPosition = startGridPosition;
 
@@ -415,7 +550,7 @@ public class Player : MonoBehaviour
                 }
                 else if (input.y < 0)
                 {
-                
+
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.x > 0)
@@ -428,7 +563,7 @@ public class Player : MonoBehaviour
 
                 if (input.x > 0)
                 {
-                 
+
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.x > 0)
@@ -437,7 +572,6 @@ public class Player : MonoBehaviour
                 }
                 else if (input.x < 0)
                 {
-                  
 
                     endGridPosition = startGridPosition;
                     if (endGridPosition.x < grid_ref.mapWidth - 1)
@@ -445,7 +579,6 @@ public class Player : MonoBehaviour
                 }
                 else if (input.y > 0)
                 {
-                
 
                     endGridPosition = startGridPosition;
 
@@ -455,7 +588,6 @@ public class Player : MonoBehaviour
                 }
                 else if (input.y < 0)
                 {
-                    
 
                     endGridPosition = startGridPosition;
                     if (endGridPosition.z > 0)
@@ -469,7 +601,6 @@ public class Player : MonoBehaviour
 
                 if (input.x > 0)
                 {
-                    
 
                     endGridPosition = startGridPosition;
 
@@ -480,7 +611,6 @@ public class Player : MonoBehaviour
                 else if (input.x < 0)
                 {
 
-                   
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.z < grid_ref.mapHeight - 1)
@@ -520,37 +650,41 @@ public class Player : MonoBehaviour
 
     }
 
+    void HandleAxisState (ref AxisState state, string axi)
+    {
+        switch (state)
+        {
+            case AxisState.Idle:
+                if (Input.GetAxis (axi) < -deadZone || Input.GetAxis (axi) > deadZone)
+                {
+                    state = AxisState.Down;
+                }
+                break;
 
-void HandleAxisState(ref AxisState state, string axi) 
- {
-     switch ( state )
-     {
-         case AxisState.Idle :
-             if ( Input.GetAxis(axi) < -deadZone || Input.GetAxis( axi ) > deadZone )
-             {
-                 state = AxisState.Down;
-             }
-         break;
-         
-         case AxisState.Down :
-             state = AxisState.Held;
-         break;
-         
-         case AxisState.Held :
-             if ( Input.GetAxis( axi ) > -deadZone && Input.GetAxis( axi ) < deadZone )
-             {
-                 state = AxisState.Up;
-             }
-         break;
-         
-         case AxisState.Up :
-             state = AxisState.Idle;
-         break;
-     }
-     
-    Debug.Log( state );
- }
+            case AxisState.Down:
+                state = AxisState.Held;
+                break;
 
+            case AxisState.Held:
+                if (Input.GetAxis (axi) > -deadZone && Input.GetAxis (axi) < deadZone)
+                {
+                    state = AxisState.Up;
+                }
+                break;
+
+            case AxisState.Up:
+                state = AxisState.Idle;
+                break;
+        }
+
+    }
+
+    void OnMainBeat (KoreographyEvent evt)
+    {
+
+        transform.DOPunchScale (transform.localScale * beatPunchScale, duration, vibrato, elasticity);
+
+    }
 
     public IEnumerator move (Transform transform)
     {

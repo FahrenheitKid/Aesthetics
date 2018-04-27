@@ -108,7 +108,7 @@ public class Item : MonoBehaviour
 
     public virtual void Activate ()
     {
-        print ("Base item activated");
+        // print ("Base item activated");
     }
 
     public virtual void Equip (Player p)

@@ -190,7 +190,6 @@ public class GridBlock : MonoBehaviour
         {
             owner = null;
 
-            print ("anulei");
             return;
         }
         owner = p;
@@ -205,7 +204,7 @@ public class GridBlock : MonoBehaviour
         {
             case gridBlockColor.Blue_W:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Blue_W];
-                print ("painting blue");
+
                 break;
             case gridBlockColor.Green_W:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Green_W];
@@ -228,7 +227,7 @@ public class GridBlock : MonoBehaviour
 
             case gridBlockColor.White:
                 GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.White];
-                print ("painted back");
+
                 break;
 
             case gridBlockColor.Blue_B:

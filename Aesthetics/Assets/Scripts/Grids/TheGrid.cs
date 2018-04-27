@@ -1,3 +1,6 @@
+#define MAP_LOADING_DEBUG
+#undef MAP_LOADING_DEBUG
+
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -39,7 +42,7 @@ public class TheGrid : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
-    private RhythmSystem _rhythmSystem_ref = new RhythmSystem ();
+    private RhythmSystem _rhythmSystem_ref;
     public RhythmSystem rhythmSystem_ref
     {
         get
@@ -53,7 +56,7 @@ public class TheGrid : MonoBehaviour
     }
 
     [SerializeField]
-    Countdown timer = new Countdown ();
+    Countdown timer;
 
     [SerializeField, Candlelight.PropertyBackingField]
     private List<GameObject> _PlayerPrefabList = new List<GameObject> (4);
@@ -64,6 +67,17 @@ public class TheGrid : MonoBehaviour
     public void SetPlayerPrefabList (List<GameObject> value)
     {
         _PlayerPrefabList = new List<GameObject> (value);
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private List<PlayerUI> _PlayerUIList = new List<PlayerUI> (4);
+    public List<PlayerUI> GetPlayerUIList ()
+    {
+        return _PlayerUIList;
+    }
+    public void SetPlayerUIList (List<PlayerUI> value)
+    {
+        _PlayerUIList = new List<PlayerUI> (value);
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
@@ -162,7 +176,7 @@ public class TheGrid : MonoBehaviour
     }
 
     // corresponds to [Range(0f, 1f)]
-     [SerializeField, Candlelight.PropertyBackingField( typeof(RangeAttribute), 3f, 10f)]
+    [SerializeField, Candlelight.PropertyBackingField (typeof (RangeAttribute), 3f, 10f)]
     private float _ScoreMakerSpawnTime;
     public float ScoreMakerSpawnTime
     {
@@ -201,10 +215,10 @@ public class TheGrid : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        if(isRandomScoreMakerSpawnTime)
-        timer.startTimer (Random.Range(3f,ScoreMakerSpawnTime));
+        if (isRandomScoreMakerSpawnTime)
+            timer.startTimer (Random.Range (3f, ScoreMakerSpawnTime));
         else
-        timer.startTimer (ScoreMakerSpawnTime);
+            timer.startTimer (ScoreMakerSpawnTime);
 
         SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
     }
@@ -213,23 +227,23 @@ public class TheGrid : MonoBehaviour
     void Update ()
     {
 
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown (KeyCode.Escape))
         {
-                QuitGame();
+            QuitGame ();
         }
 
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown (KeyCode.R))
         {
 
-            SceneManager.LoadScene (SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
         }
 
         if (timer.stop)
         {
-            if(isRandomScoreMakerSpawnTime)
-        timer.startTimer (Random.Range(3f,ScoreMakerSpawnTime));
-        else
-        timer.startTimer (ScoreMakerSpawnTime);
+            if (isRandomScoreMakerSpawnTime)
+                timer.startTimer (Random.Range (3f, ScoreMakerSpawnTime));
+            else
+                timer.startTimer (ScoreMakerSpawnTime);
             SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
         }
     }
@@ -264,7 +278,9 @@ public class TheGrid : MonoBehaviour
     }
     void BuildMap ()
     {
+        #if MAP_LOADING_DEBUG
         Debug.Log ("Building Map...");
+        #endif
         for (int i = 0; i < tiles.GetLength (0); i++)
         {
             for (int j = 0; j < tiles.GetLength (1); j++)
@@ -278,10 +294,11 @@ public class TheGrid : MonoBehaviour
 
             }
         }
+         #if MAP_LOADING_DEBUG
         Debug.Log ("Building Completed!");
-
+       
         print (mapWidth / 2 + " | " + mapHeight / 2);
-
+        #endif
         cameraScript.cameraParentToCenterPosition ();
         //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
 
@@ -294,7 +311,10 @@ public class TheGrid : MonoBehaviour
     {
         try
         {
+             #if MAP_LOADING_DEBUG
             Debug.Log ("Loading File...");
+            #endif
+
             using (StreamReader sr = new StreamReader (filePath))
             {
 
@@ -310,7 +330,10 @@ public class TheGrid : MonoBehaviour
                 if (int.TryParse (aux[1], out aux_val))
                     mapHeight = aux_val;
 
+                 #if MAP_LOADING_DEBUG
                 print ("Map Width: " + mapWidth + " | Map Height: " + mapHeight);
+                #endif
+
                 // read the rest of the file
                 string input = sr.ReadToEnd ();
                 string[] lines = input.Split (new []
@@ -319,7 +342,11 @@ public class TheGrid : MonoBehaviour
                     '\n'
                 }, System.StringSplitOptions.RemoveEmptyEntries);
                 int[, ] tiles = new int[lines.Length, mapWidth];
+
+                 #if MAP_LOADING_DEBUG
                 Debug.Log ("Parsing...");
+                #endif
+
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string st = lines[i];
@@ -344,12 +371,15 @@ public class TheGrid : MonoBehaviour
                         }
                     }
                 }
+                 #if MAP_LOADING_DEBUG
                 Debug.Log ("Parsing Completed!");
+                #endif
                 return tiles;
             }
         }
         catch (IOException e)
         {
+            
             Debug.Log (e.Message);
         }
         return null;
@@ -362,6 +392,7 @@ public class TheGrid : MonoBehaviour
         if (GetGridBlockList ().Count == 0 || GetGridBlockList () == null)
             print ("gridBlockCount vazio ou null!");
 
+        int result = 0;
         foreach (GridBlock gb in GetGridBlockList ())
         {
 
@@ -371,11 +402,13 @@ public class TheGrid : MonoBehaviour
 
                 gb.changeColor (GridBlock.gridBlockColor.White);
                 gb.changeOwner (null);
-                p.score++;
+                result++;
             }
         }
 
-        print ("Player " + p.gameObject.name + " has now: " + p.score + " Points!");
+        result *= p.multiplier;
+        p.multiplierCombo = 0;
+        p.score += result;
     }
 
     public GridBlock GetGridBlock (int x, int z)
@@ -400,15 +433,15 @@ public class TheGrid : MonoBehaviour
         return pos;
     }
 
-         public void QuitGame()
-     {
-         // save any game data here
-         #if UNITY_EDITOR
-             // Application.Quit() does not work in the editor so
-             // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
-             UnityEditor.EditorApplication.isPlaying = false;
-         #else
-             Application.Quit();
-         #endif
-     }
+    public void QuitGame ()
+    {
+        // save any game data here
+#if UNITY_EDITOR
+        // Application.Quit() does not work in the editor so
+        // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit ();
+#endif
+    }
 }

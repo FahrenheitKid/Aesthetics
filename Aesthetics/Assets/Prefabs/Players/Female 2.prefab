@@ -59,7 +59,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 6a24e8bc71d261b45bcc449b9cdae049, type: 3}
+  - {fileID: 2100000, guid: 8c2ba217b703db041b5bd70ebc93c84e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -130,7 +130,11 @@ MonoBehaviour:
   _gridSize: 1
   _hasItem: 0
   _item: {fileID: 0}
+  _isStunned: 0
+  stunTimer: {fileID: 0}
   _score: 0
+  _combo: 0
+  _multiplier: 0
   _x: 0
   _y: 0
   _z: 0

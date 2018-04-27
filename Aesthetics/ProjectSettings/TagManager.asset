@@ -12,6 +12,8 @@ TagManager:
   - Music Playback
   - Iso Target
   - Rhythm System
+  - Player 1 UI
+  - Player 2 UI
   layers:
   - Default
   - TransparentFX
@@ -22,8 +24,8 @@ TagManager:
   - 
   - 
   - 'Global Post Processing '
-  - 
-  - 
+  - ScoreMakerLighting
+  - Grid
   - 
   - 
   - 
