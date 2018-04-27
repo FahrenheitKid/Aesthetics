@@ -25,6 +25,9 @@ public class RhythmSystem : MonoBehaviour
     [SerializeField]
     private GameObject rhyhtmNotesParent_ref;
 
+	 [SerializeField]
+    private GameObject MusicPlayback_ref;
+
     [Tooltip ("The amount of time in seconds to provide before playback of the audio begins.  Changes to this value are not immediately handled during the lead-in phase while playing in the Editor.")]
     public float leadInTime;
 
@@ -170,6 +173,11 @@ public class RhythmSystem : MonoBehaviour
         InitializeLeadIn ();
 
         targetVisuals = rhythmTarget_Ref.GetComponent<SpriteRenderer> ();
+
+		if(Random.Range(0,2) == 0)
+		{
+			// change koreography
+		}
         // Initialize events.
         playingKoreo = Koreographer.Instance.GetKoreographyAtIndex (0);
 

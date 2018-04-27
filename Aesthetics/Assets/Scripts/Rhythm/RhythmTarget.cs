@@ -46,7 +46,7 @@ public class RhythmTarget : MonoBehaviour
         float musicBPM = (float) rhythmSystem_ref.currentMusicBPM;
 
         duration = (float) (60 / musicBPM) / 2;
-        Koreographer.Instance.RegisterForEvents ("MaybeBeats", OnMainBeat);
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.eventID, OnMainBeat);
 
         float cameraOffsetZ = -Camera.main.transform.position.z;
         Vector3 pos = Camera.main.ViewportToWorldPoint (new Vector3 (0.5f, 0.09f, cameraOffsetZ));

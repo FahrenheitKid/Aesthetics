@@ -3169,7 +3169,12 @@ Prefab:
     - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
         type: 2}
       propertyPath: leadInTime
-      value: 5
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: eventID
+      value: MaybeBeats
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 508dfb674d99c3143847fb9287641d89, type: 2}
