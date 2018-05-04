@@ -123,7 +123,7 @@ namespace TMPro.Examples
                 }
 
                 //int_counter = (int)current_Count;                 
-                m_textMeshPro.SetText("{0}", (int)current_Count);
+                m_textMeshPro.SetText("12");
 
                 m_textMeshPro.color = new Color32(start_color.r, start_color.g, start_color.b, (byte)alpha);
 

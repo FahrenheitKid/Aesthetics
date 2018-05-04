@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using SonicBloom.Koreo;
+using SonicBloom.Koreo.Players;
 using UnityEngine;
 
 public class RhythmSystem : MonoBehaviour
@@ -22,11 +23,18 @@ public class RhythmSystem : MonoBehaviour
     [Tooltip ("The archetype (blueprints) to use for generating notes.  Can be a prefab.")]
     public RhythmNote rhythmNotePrefab;
 
+
     [SerializeField]
     private GameObject rhyhtmNotesParent_ref;
 
 	 [SerializeField]
     private GameObject MusicPlayback_ref;
+
+     [SerializeField]
+    private SimpleMusicPlayer musicPlayer_ref;
+
+     [SerializeField]
+    private List <Koreography> koreographyList;
 
     [Tooltip ("The amount of time in seconds to provide before playback of the audio begins.  Changes to this value are not immediately handled during the lead-in phase while playing in the Editor.")]
     public float leadInTime;
@@ -164,22 +172,104 @@ public class RhythmSystem : MonoBehaviour
     #endregion
     #region Methods
 
+
+    private void Awake() {
+        
+        if(Random.Range(0,3) == 0 )
+		{
+           if(!musicPlayer_ref.IsPlaying)
+
+           {
+                musicPlayer_ref.LoadSong(koreographyList[0],0,true);
+             //gets main beat track
+            eventID = koreographyList[0].GetEventIDs()[0];
+            //musicPlayer_ref.Play();
+
+           }
+			
+		}
+        else if(Random.Range(0,3) == 1)
+        {
+            if(!musicPlayer_ref.IsPlaying)
+
+           {
+                musicPlayer_ref.LoadSong(koreographyList[1],0,true);
+             //gets main beat track
+            eventID = koreographyList[1].GetEventIDs()[0];
+             //musicPlayer_ref.Play();
+
+           }
+        }
+        else if(Random.Range(0,3) == 2)
+        {
+            if(!musicPlayer_ref.IsPlaying)
+
+           {
+                musicPlayer_ref.LoadSong(koreographyList[2],0,true);
+             //gets main beat track
+            eventID = koreographyList[2].GetEventIDs()[0];
+             //musicPlayer_ref.Play();
+
+           }
+        }
+         
+         
+
+    }
     void Start ()
     {
 
+        
         // Ensure the slider and the readout are properly in sync with the AudioSource on Start!
         pitch = audioCom.pitch;
 
         InitializeLeadIn ();
 
+
+       if(Random.Range(0,3) == 0 )
+		{
+           if(!musicPlayer_ref.IsPlaying)
+
+           {
+                musicPlayer_ref.LoadSong(koreographyList[0],0,true);
+             //gets main beat track
+            eventID = koreographyList[0].GetEventIDs()[0];
+            musicPlayer_ref.Play();
+
+           }
+			
+		}
+        else if(Random.Range(0,3) == 1)
+        {
+            if(!musicPlayer_ref.IsPlaying)
+
+           {
+                musicPlayer_ref.LoadSong(koreographyList[1],0,true);
+             //gets main beat track
+            eventID = koreographyList[1].GetEventIDs()[0];
+             musicPlayer_ref.Play();
+
+           }
+        }
+        else if(Random.Range(0,3) == 2)
+        {
+            if(!musicPlayer_ref.IsPlaying)
+
+           {
+                musicPlayer_ref.LoadSong(koreographyList[2],0,true);
+             //gets main beat track
+            eventID = koreographyList[2].GetEventIDs()[0];
+             musicPlayer_ref.Play();
+
+           }
+        }
+
         targetVisuals = rhythmTarget_Ref.GetComponent<SpriteRenderer> ();
 
-		if(Random.Range(0,2) == 0)
-		{
-			// change koreography
-		}
+		
         // Initialize events.
         playingKoreo = Koreographer.Instance.GetKoreographyAtIndex (0);
+        
 
         // Grab all the events out of the Koreography.
         KoreographyTrackBase rhythmTrack = playingKoreo.GetTrackByID (eventID);
@@ -212,7 +302,7 @@ public class RhythmSystem : MonoBehaviour
             // Play immediately and handle offsetting into the song.  Negative zero is the same as
             //  zero so this is not an issue.
             audioCom.time = -leadInTime;
-            audioCom.Play ();
+            musicPlayer_ref.Play ();
         }
     }
 

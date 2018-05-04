@@ -130,7 +130,12 @@ MonoBehaviour:
   _gridSize: 1
   _hasItem: 0
   _item: {fileID: 0}
+  _isStunned: 0
+  stunTimer: {fileID: 0}
   _score: 0
+  _combo: 0
+  _multiplierCombo: 0
+  _multiplier: 1
   _x: 0
   _y: 0
   _z: 0
@@ -138,6 +143,10 @@ MonoBehaviour:
   _grid_ref: {fileID: 0}
   _rhythmSystem_ref: {fileID: 0}
   _gridColor: 2
+  beatPunchScale: 0.05
+  vibrato: 0
+  elasticity: 0
+  _duration: 0.5
   isMoving: 0
 --- !u!143 &143725343767100514
 CharacterController:

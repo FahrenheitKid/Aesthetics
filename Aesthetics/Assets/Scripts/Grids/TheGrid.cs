@@ -42,6 +42,34 @@ public class TheGrid : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
+    private GameObject _scoreFloatingText_prefab;
+    public GameObject scoreFloatingText_prefab
+    {
+        get
+        {
+            return _scoreFloatingText_prefab;
+        }
+        set
+        {
+            _scoreFloatingText_prefab = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private GameObject _missFloatingText_prefab;
+    public GameObject missFloatingText_prefab
+    {
+        get
+        {
+            return _missFloatingText_prefab;
+        }
+        set
+        {
+            _missFloatingText_prefab = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
     private RhythmSystem _rhythmSystem_ref;
     public RhythmSystem rhythmSystem_ref
     {
@@ -90,6 +118,12 @@ public class TheGrid : MonoBehaviour
     {
         _PlayerList = new List<Player> (value);
     }
+
+    [SerializeField]
+    public List<Item> itemList;
+
+    [SerializeField]
+    public List<FloatingText> floatingTextList;
 
     [SerializeField, Candlelight.PropertyBackingField]
     private CameraScript _cameraScript;
@@ -220,7 +254,7 @@ public class TheGrid : MonoBehaviour
         else
             timer.startTimer (ScoreMakerSpawnTime);
 
-        SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
+        //SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
     }
 
     // Update is called once per frame
@@ -244,7 +278,13 @@ public class TheGrid : MonoBehaviour
                 timer.startTimer (Random.Range (3f, ScoreMakerSpawnTime));
             else
                 timer.startTimer (ScoreMakerSpawnTime);
-            SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
+
+            if (itemList.Count < 5)
+            {
+                ScoreMaker sm = SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
+
+            }
+
         }
     }
 
@@ -270,17 +310,25 @@ public class TheGrid : MonoBehaviour
         }
     }
 
-    private void SpawnScoreMaker (int x, int z)
+    private ScoreMaker SpawnScoreMaker (int x, int z)
     {
+        GridBlock gb = GetGridBlock (x, z);
+        if (gb.isOccupied || gb.hasItem) return null;
+
         GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
         ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
         sm.grid_ref = GetComponent<TheGrid> ();
+        sm.gridBlockOwner = gb;
+        gb.hasItem = true;
+        itemList.Add (sm);
+
+        return sm;
     }
     void BuildMap ()
     {
-        #if MAP_LOADING_DEBUG
+#if MAP_LOADING_DEBUG
         Debug.Log ("Building Map...");
-        #endif
+#endif
         for (int i = 0; i < tiles.GetLength (0); i++)
         {
             for (int j = 0; j < tiles.GetLength (1); j++)
@@ -294,11 +342,11 @@ public class TheGrid : MonoBehaviour
 
             }
         }
-         #if MAP_LOADING_DEBUG
+#if MAP_LOADING_DEBUG
         Debug.Log ("Building Completed!");
-       
+
         print (mapWidth / 2 + " | " + mapHeight / 2);
-        #endif
+#endif
         cameraScript.cameraParentToCenterPosition ();
         //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
 
@@ -311,9 +359,9 @@ public class TheGrid : MonoBehaviour
     {
         try
         {
-             #if MAP_LOADING_DEBUG
+#if MAP_LOADING_DEBUG
             Debug.Log ("Loading File...");
-            #endif
+#endif
 
             using (StreamReader sr = new StreamReader (filePath))
             {
@@ -330,9 +378,9 @@ public class TheGrid : MonoBehaviour
                 if (int.TryParse (aux[1], out aux_val))
                     mapHeight = aux_val;
 
-                 #if MAP_LOADING_DEBUG
+#if MAP_LOADING_DEBUG
                 print ("Map Width: " + mapWidth + " | Map Height: " + mapHeight);
-                #endif
+#endif
 
                 // read the rest of the file
                 string input = sr.ReadToEnd ();
@@ -343,9 +391,9 @@ public class TheGrid : MonoBehaviour
                 }, System.StringSplitOptions.RemoveEmptyEntries);
                 int[, ] tiles = new int[lines.Length, mapWidth];
 
-                 #if MAP_LOADING_DEBUG
+#if MAP_LOADING_DEBUG
                 Debug.Log ("Parsing...");
-                #endif
+#endif
 
                 for (int i = 0; i < lines.Length; i++)
                 {
@@ -371,15 +419,15 @@ public class TheGrid : MonoBehaviour
                         }
                     }
                 }
-                 #if MAP_LOADING_DEBUG
+#if MAP_LOADING_DEBUG
                 Debug.Log ("Parsing Completed!");
-                #endif
+#endif
                 return tiles;
             }
         }
         catch (IOException e)
         {
-            
+
             Debug.Log (e.Message);
         }
         return null;
@@ -393,6 +441,7 @@ public class TheGrid : MonoBehaviour
             print ("gridBlockCount vazio ou null!");
 
         int result = 0;
+
         foreach (GridBlock gb in GetGridBlockList ())
         {
 
@@ -407,8 +456,40 @@ public class TheGrid : MonoBehaviour
         }
 
         result *= p.multiplier;
-        p.multiplierCombo = 0;
+
+        Vector3 pos = p.transform.position;
+        pos.y += p.GetComponent<Renderer> ().bounds.size.y + 0.0f;
+        SpawnScoreFloatingText (pos, result.ToString (), GridBlock.getColorOfGridBlockColor (p.gridColor));
         p.score += result;
+
+        p.multiplierCombo = 0;
+
+    }
+
+    public void SpawnScoreFloatingText (Vector3 pos, string tex, Color texCol)
+    {
+
+        GameObject floatingPrefab = Instantiate (scoreFloatingText_prefab, pos, Quaternion.identity) as GameObject;
+        FloatingText ft = floatingPrefab.GetComponent<FloatingText> ();
+        ft.grid_ref = this;
+        ft.SpawnText (tex, texCol, pos);
+        floatingTextList.Add (ft);
+        //m_current_floatingText = m_floatingText;
+
+    }
+
+    public void SpawnMissFloatingText (Vector3 pos)
+    {
+
+        GameObject floatingPrefab = Instantiate (missFloatingText_prefab, pos, Quaternion.identity) as GameObject;
+        FloatingText ft = floatingPrefab.GetComponent<FloatingText> ();
+        ft.grid_ref = this;
+        ft.SpawnText ("Miss!", Color.black, pos);
+        ft.duration = 0.8f;
+        ft.fontSize = 8f;
+        floatingTextList.Add (ft);
+        //m_current_floatingText = m_floatingText;
+
     }
 
     public GridBlock GetGridBlock (int x, int z)

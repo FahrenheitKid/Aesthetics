@@ -134,6 +134,7 @@ MonoBehaviour:
   stunTimer: {fileID: 0}
   _score: 0
   _combo: 0
+  _multiplierCombo: 0
   _multiplier: 0
   _x: 0
   _y: 0
@@ -142,6 +143,10 @@ MonoBehaviour:
   _grid_ref: {fileID: 0}
   _rhythmSystem_ref: {fileID: 0}
   _gridColor: 4
+  beatPunchScale: 0.05
+  vibrato: 0
+  elasticity: 0
+  _duration: 0.5
   isMoving: 0
 --- !u!143 &143160080120274282
 CharacterController:

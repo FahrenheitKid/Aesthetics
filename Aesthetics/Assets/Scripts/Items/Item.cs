@@ -75,6 +75,20 @@ public class Item : MonoBehaviour
         }
     }
 
+    [SerializeField, Candlelight.PropertyBackingField]
+    protected GridBlock _gridBlockOwner;
+    public GridBlock gridBlockOwner
+    {
+        get
+        {
+            return _gridBlockOwner;
+        }
+        set
+        {
+            _gridBlockOwner = value;
+        }
+    }
+
     // Use this for initialization
     void Start ()
     {

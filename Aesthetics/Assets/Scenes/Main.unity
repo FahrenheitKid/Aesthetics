@@ -410,6 +410,24 @@ Prefab:
       propertyPath: _PlayerUIList.Array.data[1]
       value: 
       objectReference: {fileID: 861403463}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: _floatingText_prefab
+      value: 
+      objectReference: {fileID: 1812853273966744, guid: 347d3bedac310914fa5d83e906215518,
+        type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: _missFloatingText_prefab
+      value: 
+      objectReference: {fileID: 1812853273966744, guid: 101a5c9b85faeb34a911ef11b840e754,
+        type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: _scoreFloatingText_prefab
+      value: 
+      objectReference: {fileID: 1812853273966744, guid: 347d3bedac310914fa5d83e906215518,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
   m_IsPrefabParent: 0
@@ -2191,7 +2209,7 @@ MonoBehaviour:
   m_Script: {fileID: -1060073270, guid: aa81bbec85a3f423193272a7c6154986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoPlayOnAwake: 1
+  autoPlayOnAwake: 0
   koreography: {fileID: 11400000, guid: f60d89c8177067f40be8e81e7264b537, type: 2}
   targetKoreographer: {fileID: 0}
 --- !u!82 &1342982874
@@ -2204,7 +2222,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -3109,6 +3127,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: koreographyList.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4874827008885588, guid: 508dfb674d99c3143847fb9287641d89, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3176,6 +3199,34 @@ Prefab:
       propertyPath: eventID
       value: MaybeBeats
       objectReference: {fileID: 0}
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: MusicPlayback_ref
+      value: 
+      objectReference: {fileID: 1342982871}
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: musicPlayer_ref
+      value: 
+      objectReference: {fileID: 1342982873}
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: koreographyList.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: f60d89c8177067f40be8e81e7264b537,
+        type: 2}
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: koreographyList.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: a2209a4bce53bf449b173008290ea139,
+        type: 2}
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: koreographyList.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 9e7bfd2cfb0fc7640b6b0ebf34461448,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 508dfb674d99c3143847fb9287641d89, type: 2}
   m_IsPrefabParent: 0

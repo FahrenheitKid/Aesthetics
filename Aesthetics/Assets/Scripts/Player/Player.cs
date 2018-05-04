@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using UnityEngine;
 using SonicBloom.Koreo;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
@@ -163,6 +163,7 @@ public class Player : MonoBehaviour
             _score = value;
             int i = (ID > 0) ? ID - 1 : 0;
             grid_ref.GetPlayerUIList () [i].setScore (_score);
+
         }
     }
 
@@ -178,7 +179,7 @@ public class Player : MonoBehaviour
         {
 
             _combo = value;
-            if(combo == 0) _multiplierCombo = 0;
+            if (combo == 0) _multiplierCombo = 0;
             int i = (ID > 0) ? ID - 1 : 0;
             grid_ref.GetPlayerUIList () [i].setCombo (_combo);
         }
@@ -197,7 +198,7 @@ public class Player : MonoBehaviour
             _multiplierCombo = value;
 
             if (_multiplierCombo / 10 >= 1) multiplier = _multiplierCombo / 10;
-            else if(_multiplierCombo == 0) multiplier = 1;
+            else if (_multiplierCombo == 0) multiplier = 1;
 
             //int i = (ID > 0) ? ID - 1 : 0;
             //grid_ref.GetPlayerUIList () [i].setCombo (_combo);
@@ -384,7 +385,7 @@ public class Player : MonoBehaviour
         _multiplierCombo = 0;
         beatPunchScale = 0.05f;
 
-         float musicBPM = (float) rhythmSystem_ref.currentMusicBPM;
+        float musicBPM = (float) rhythmSystem_ref.currentMusicBPM;
 
         duration = (float) (60 / musicBPM) / 2;
         Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.eventID, OnMainBeat);
@@ -440,7 +441,7 @@ public class Player : MonoBehaviour
 
                     if (rhythmSystem_ref.WasNoteHit ())
                     {
-                        print("Player" + ID.ToString() + " Hit it!");
+                        print ("Player" + ID.ToString () + " Hit it!");
                         Move ();
                         combo++;
                         multiplierCombo++;
@@ -448,6 +449,10 @@ public class Player : MonoBehaviour
                     }
                     else
                     {
+                       Vector3 pos = transform.position;
+                        pos.y += GetComponent<Renderer> ().bounds.size.y + 0.0f;
+                        grid_ref.SpawnMissFloatingText(pos);
+
                         combo = 0;
                     }
 

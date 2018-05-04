@@ -119,6 +119,9 @@
 	],
 	"file_history":
 	[
+		"/F/Dat Programs Files/SteamLibrary/steamapps/common/Fallout 4/reshade-shaders/Shaders/Vibrance.fx",
+		"/E/Documentos/My Games/Fallout4/Fallout4Custom.ini",
+		"/E/Documentos/My Games/Fallout4/Fallout4Prefs.ini",
 		"/E/Programming Projects/GlitterMake2/Glitter/CMakeLists.txt",
 		"/E/Documentos/GitHub/Aesthetics/Game_Build/ReadMe.txt",
 		"/E/Documentos/GitHub/gloomy/VertexBufferObject2/VertexBufferObject2/Debug/.gitignore",
@@ -202,27 +205,12 @@
 							{
 								"close":
 								{
-									"1":
-									[
-										43,
-										44
-									]
 								},
 								"icon":
 								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"region.purplish"
-									]
 								},
 								"open":
 								{
-									"1":
-									[
-										0,
-										1
-									]
 								},
 								"unmatched":
 								{
@@ -290,27 +278,12 @@
 							{
 								"close":
 								{
-									"1":
-									[
-										294,
-										295
-									]
 								},
 								"icon":
 								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"region.purplish"
-									]
 								},
 								"open":
 								{
-									"1":
-									[
-										19,
-										20
-									]
 								},
 								"unmatched":
 								{
@@ -760,8 +733,26 @@
 						],
 						"settings":
 						{
+							"SL.17.region_keys":
+							[
+							],
 							"bracket_highlighter.busy": false,
 							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
 							"bracket_highlighter.locations":
 							{
 								"close":
@@ -838,7 +829,7 @@
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 342.0,
+						"translation.y": 418.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -866,11 +857,29 @@
 							"SL.17.region_keys":
 							[
 							],
+							"SL.18.region_keys":
+							[
+							],
 							"SL.19.region_keys":
 							[
 							],
 							"bracket_highlighter.busy": false,
 							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
 							"bracket_highlighter.locations":
 							{
 								"close":
@@ -884,11 +893,6 @@
 								},
 								"unmatched":
 								{
-									"1":
-									[
-										4982,
-										4983
-									]
 								}
 							},
 							"bracket_highlighter.regions":
@@ -999,11 +1003,6 @@
 								},
 								"unmatched":
 								{
-									"1":
-									[
-										0,
-										1
-									]
 								}
 							},
 							"bracket_highlighter.clone_regions":
@@ -1077,11 +1076,6 @@
 								},
 								"unmatched":
 								{
-									"1":
-									[
-										0,
-										1
-									]
 								}
 							},
 							"bracket_highlighter.regions":
@@ -1193,7 +1187,7 @@
 	},
 	"output.SublimeLinter Messages":
 	{
-		"height": 160.0
+		"height": 48.0
 	},
 	"output.exec":
 	{

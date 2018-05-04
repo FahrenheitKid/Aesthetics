@@ -159,7 +159,7 @@ public class PlayerUI : MonoBehaviour
 
     public void setMultiplier (int mult)
     {
-        if (mult > 1)
+        if (mult > 0)
             _multiplier.text = "x" + mult.ToString ();
         else
             _multiplier.text = "";

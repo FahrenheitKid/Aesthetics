@@ -24,6 +24,98 @@ public class GridBlock : MonoBehaviour
     }
     public static gridBlockColor GridBlockColor;
 
+    public static Color getColorOfGridBlockColor (gridBlockColor gbc)
+    {
+        Color c = new Color ();
+
+        switch (gbc)
+        {
+            case gridBlockColor.Blue_W:
+                c.r = 1;
+                c.g = 205;
+                c.b = 254;
+
+                break;
+            case gridBlockColor.Green_W:
+                c.r = 5;
+                c.g = 255;
+                c.b = 161;
+                break;
+
+            case gridBlockColor.Pink_W:
+                c.r = 255;
+                c.g = 113;
+                c.b = 206;
+
+                break;
+
+            case gridBlockColor.Purple_W:
+                c.r = 185;
+                c.g = 103;
+                c.b = 255;
+
+                break;
+
+            case gridBlockColor.Yellow_W:
+                c.r = 255;
+                c.g = 251;
+                c.b = 150;
+
+                break;
+
+            case gridBlockColor.White:
+                c.r = 255;
+                c.g = 255;
+                c.b = 255;
+                break;
+
+            case gridBlockColor.Blue_B:
+                c.r = 1;
+                c.g = 205;
+                c.b = 254;
+
+                break;
+            case gridBlockColor.Green_B:
+                c.r = 5;
+                c.g = 255;
+                c.b = 161;
+                break;
+
+            case gridBlockColor.Pink_B:
+                c.r = 255;
+                c.g = 113;
+                c.b = 206;
+
+                break;
+
+            case gridBlockColor.Purple_B:
+                c.r = 185;
+                c.g = 103;
+                c.b = 255;
+
+                break;
+
+            case gridBlockColor.Yellow_B:
+                c.r = 255;
+                c.g = 251;
+                c.b = 150;
+
+                break;
+
+            case gridBlockColor.Black:
+                c.r = 52;
+                c.g = 52;
+                c.b = 52;
+                break;
+
+            default:
+                break;
+
+        }
+
+        Color cc = new Color32 ((byte) c.r, (byte) c.g, (byte) c.b, 255);
+        return cc;
+    }
     /* 
     public enum owner
     {
@@ -121,6 +213,20 @@ public class GridBlock : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
+    private bool _hasItem = false;
+    public bool hasItem
+    {
+        get
+        {
+            return _hasItem;
+        }
+        set
+        {
+            _hasItem = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
     private bool _isOccupied = false;
     public bool isOccupied
     {
@@ -133,6 +239,7 @@ public class GridBlock : MonoBehaviour
             _isOccupied = value;
         }
     }
+
     public void init (int x, int y, int z)
     {
         _x = x;
@@ -162,6 +269,10 @@ public class GridBlock : MonoBehaviour
         }
 
     }
+    private void OnCollisionExit (Collision other)
+    {
+
+    }
     private void OnTriggerEnter (Collider other)
     {
 
@@ -174,6 +285,7 @@ public class GridBlock : MonoBehaviour
             isOccupied = true;
 
         }
+
     }
     private void OnTriggerExit (Collider other)
     {

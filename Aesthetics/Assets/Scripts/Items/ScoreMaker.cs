@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ScoreMaker : Item
@@ -23,6 +24,18 @@ public class ScoreMaker : Item
         //GameObject.FindGameObjectWithTag ("Grid").GetComponent<TheGrid> ().Score (owner);
         grid_ref.Score (owner);
         owner.hasItem = false;
+        gridBlockOwner.hasItem = false;
+
+        foreach (var item in grid_ref.itemList.OfType<ScoreMaker> ())
+        {
+            if (item == this)
+            {
+                grid_ref.itemList.Remove (item);
+                break;
+            }
+
+        }
         Destroy (gameObject);
     }
+
 }
