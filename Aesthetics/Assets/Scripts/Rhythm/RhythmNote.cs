@@ -227,7 +227,7 @@ public class RhythmNote : MonoBehaviour
     // Performs actions when the Note Object is hit.
     public void OnHit ()
     {
-        print ("Hit it!");
+        //print ("Hit it!");
        // ReturnToPool ();
     }
 

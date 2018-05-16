@@ -29,9 +29,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private BoxCollider charCollider, blockCollider;
-
     [SerializeField, Candlelight.PropertyBackingField]
     private int _ID = 0;
     public int ID
@@ -46,62 +43,21 @@ public class Player : MonoBehaviour
         }
     }
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private AxisState _horizontalAxisState = AxisState.Idle;
-    public AxisState horizontalAxisState
-    {
-        get
-        {
-            return _horizontalAxisState;
-        }
-        set
-        {
-            _horizontalAxisState = value;
-        }
-    }
+    [SerializeField]
+    private AxisState horizontalAxisState = AxisState.Idle;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private AxisState _verticalAxisState = AxisState.Idle;
-    public AxisState verticalAxisState
-    {
-        get
-        {
-            return _verticalAxisState;
-        }
-        set
-        {
-            _verticalAxisState = value;
-        }
-    }
+    [SerializeField]
+    private AxisState verticalAxisState = AxisState.Idle;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private float _deadZone = 0.02f;
-    public float deadZone
-    {
-        get
-        {
-            return _deadZone;
-        }
-        set
-        {
-            _deadZone = value;
-        }
-    }
+    [Tooltip ("Deadzone for the axis press/down")]
+    [SerializeField]
+    private float deadZone = 0.02f;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private float _gridSize = 1f;
-    public float gridSize
-    {
-        get
-        {
-            return _gridSize;
-        }
-        set
-        {
-            _gridSize = value;
-        }
-    }
+    [Tooltip ("The size of one girdblock, it used in movement calculations")]
+    [SerializeField]
+    private float gridSize = 1f;
 
+    [Tooltip ("If player has an Itemw ith him or not")]
     [SerializeField, Candlelight.PropertyBackingField]
     private bool _hasItem = false;
     public bool hasItem
@@ -116,6 +72,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip (" The Item the player is holding. Null if it is not holding anyhting ")]
     [SerializeField, Candlelight.PropertyBackingField]
     private Item _item;
     public Item item
@@ -130,6 +87,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Is the player stunned?")]
     [SerializeField, Candlelight.PropertyBackingField]
     private bool _isStunned = false;
     public bool isStunned
@@ -149,6 +107,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     Countdown stunTimer;
 
+    [Tooltip ("ThPlayer's current score")]
     [SerializeField, Candlelight.PropertyBackingField]
     private int _score = 0;
     public int score
@@ -167,6 +126,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Player's current Combo")]
     [SerializeField, Candlelight.PropertyBackingField]
     private int _combo = 0;
     public int combo
@@ -185,6 +145,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Player's current multiplayer Combo")]
     [SerializeField, Candlelight.PropertyBackingField]
     private int _multiplierCombo = 0;
     public int multiplierCombo
@@ -252,6 +213,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Z Value in internal grid matrix")]
     [SerializeField, Candlelight.PropertyBackingField]
     private int _z;
     public int z
@@ -266,6 +228,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Player's move speed")]
     [SerializeField, Candlelight.PropertyBackingField]
     private float _moveSpeed = 10f;
     public float moveSpeed
@@ -280,34 +243,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private TheGrid _grid_ref;
-    public TheGrid grid_ref
-    {
-        get
-        {
-            return _grid_ref;
-        }
-        set
-        {
-            _grid_ref = value;
-        }
-    }
+    [SerializeField]
+    private TheGrid grid_ref;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private RhythmSystem _rhythmSystem_ref;
-    public RhythmSystem rhythmSystem_ref
-    {
-        get
-        {
-            return _rhythmSystem_ref;
-        }
-        set
-        {
-            _rhythmSystem_ref = value;
-        }
-    }
+    [SerializeField]
+    private RhythmSystem rhythmSystem_ref;
 
+    [Tooltip ("Player's GridBlockColor")]
     [SerializeField, Candlelight.PropertyBackingField]
     private GridBlock.gridBlockColor _gridColor = GridBlock.gridBlockColor.Pink_B;
     public GridBlock.gridBlockColor gridColor
@@ -322,14 +264,17 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip (" How much scaling of the Punch Scale done in the main beat")]
     [Range (0, 2)]
     [SerializeField]
     private float beatPunchScale = 0.05f;
 
+    [Tooltip ("How much the players vibrates with the scaling")]
     [Range (0, 500)]
     [SerializeField]
     private int vibrato = 0;
 
+    [Tooltip ("PunchScale elasticity")]
     [Range (0, 1)]
     [SerializeField]
     private float elasticity = 0.0f;
@@ -362,6 +307,7 @@ public class Player : MonoBehaviour
         private Vector2 input;
         [SerializeField]
         private bool isMoving = false;
+
         private Vector3 startPosition;
         private Vector3 endPosition;
         private float t;
@@ -369,6 +315,7 @@ public class Player : MonoBehaviour
 
         #endregion
 
+        //Sets the player's ID
         private void Awake ()
         {
         if (globalID >= 2) globalID = 0;
@@ -394,7 +341,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter (Collider other)
     {
-
+        // update player's current grid
         if (other.gameObject.CompareTag ("GridBlock"))
         {
             GridBlock gb = other.GetComponent<GridBlock> ();
@@ -407,8 +354,8 @@ public class Player : MonoBehaviour
     public void Update ()
     {
 
-        HandleAxisState (ref _horizontalAxisState, "Horizontal" + ID);
-        HandleAxisState (ref _verticalAxisState, "Vertical" + ID);
+        HandleAxisState (ref horizontalAxisState, "Horizontal" + ID);
+        HandleAxisState (ref verticalAxisState, "Vertical" + ID);
 
         if (isStunned)
         {
@@ -432,6 +379,7 @@ public class Player : MonoBehaviour
 
             if (input != Vector2.zero && !_isStunned)
             {
+                //only compute durinf pressed Down, not on hold
                 if ((input.y != 0 && verticalAxisState == AxisState.Down) !=
                     (input.x != 0 && horizontalAxisState == AxisState.Down))
                 {
@@ -439,19 +387,26 @@ public class Player : MonoBehaviour
                     //Move ();
                     // combo++;
 
+                    //if Pressed on the beat
                     if (rhythmSystem_ref.WasNoteHit ())
                     {
-                        print ("Player" + ID.ToString () + " Hit it!");
-                        Move ();
-                        combo++;
-                        multiplierCombo++;
+                        //print ("Player" + ID.ToString () + " Hit it!");
+
+                        //move player and increase combo
+                        if (Move ())
+                        {
+                            combo++;
+                            multiplierCombo++;
+                        }
 
                     }
                     else
                     {
-                       Vector3 pos = transform.position;
+                        //lose combo
+
+                        Vector3 pos = transform.position;
                         pos.y += GetComponent<Renderer> ().bounds.size.y + 0.0f;
-                        grid_ref.SpawnMissFloatingText(pos);
+                        grid_ref.SpawnMissFloatingText (pos);
 
                         combo = 0;
                     }
@@ -463,10 +418,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void isNextBlockEmpty (Vector3 start_pos, Vector3 end_pos)
-    {
-
-    }
     public void setIsMoving (bool value)
     {
         isMoving = value;
@@ -476,14 +427,16 @@ public class Player : MonoBehaviour
     {
 
     }
-    public void Move ()
+    public bool Move ()
     {
         CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
 
-        isMoving = true;
-
         Vector3 startGridPosition = new Vector3 (x, y, z);
         Vector3 endGridPosition = new Vector3 ();
+
+        GridBlock endGridBlock;
+        GridBlock startGridBlock;
+        startGridBlock = grid_ref.GetGridBlock (x, z);
 
         switch (cameraScript.orientation)
         {
@@ -647,11 +600,208 @@ public class Player : MonoBehaviour
 
         }
 
-        endGridPosition = grid_ref.getGridBlockPosition ((int) endGridPosition.x, (int) endGridPosition.z, endGridPosition.y);
-        endGridPosition.y = 0.1f;
+        endGridBlock = grid_ref.GetGridBlock ((int) endGridPosition.x, (int) endGridPosition.z);
 
-        transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
-        transform.DOLookAt (endGridPosition, 0.2f);
+        //if destination gridBlock is already occupied
+        if (endGridBlock.isOccupied)
+        {
+
+            print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
+            return false;
+
+        }
+        else
+        {
+            endGridBlock.isOccupied = true;
+
+            endGridPosition = endGridBlock.transform.position;
+            endGridPosition.y = 0.1f;
+
+            isMoving = true;
+            transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
+            transform.DOLookAt (endGridPosition, 0.2f);
+            return true;
+
+        }
+
+    }
+
+    //Returns Destination GridBlock
+    GridBlock PeekDestinationGridBlock ()
+    {
+        CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
+
+        Vector3 startGridPosition = new Vector3 (x, y, z);
+        Vector3 endGridPosition = new Vector3 ();
+
+        GridBlock endGridBlock = null;
+        GridBlock startGridBlock;
+        startGridBlock = grid_ref.GetGridBlock (x, z);
+
+        switch (cameraScript.orientation)
+        {
+            case CameraScript.windRose.North:
+
+                if (input.x > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x < grid_ref.mapWidth - 1)
+                        endGridPosition.x++;
+
+                }
+                else if (input.x < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x > 0)
+                        endGridPosition.x--;
+
+                }
+                else if (input.y > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+                    if (endGridPosition.z > 0)
+                        endGridPosition.z--;
+
+                }
+                else if (input.y < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z < grid_ref.mapHeight - 1)
+                        endGridPosition.z++;
+                }
+
+                break;
+
+            case CameraScript.windRose.East:
+                if (input.x > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z < grid_ref.mapHeight - 1)
+                        endGridPosition.z++;
+
+                }
+                else if (input.x < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z > 0)
+                        endGridPosition.z--;
+                }
+                else if (input.y > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x < grid_ref.mapWidth - 1)
+                        endGridPosition.x++;
+
+                }
+                else if (input.y < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x > 0)
+                        endGridPosition.x--;
+                }
+
+                break;
+
+            case CameraScript.windRose.South:
+
+                if (input.x > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x > 0)
+                        endGridPosition.x--;
+
+                }
+                else if (input.x < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+                    if (endGridPosition.x < grid_ref.mapWidth - 1)
+                        endGridPosition.x++;
+                }
+                else if (input.y > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z < grid_ref.mapHeight - 1)
+                        endGridPosition.z++;
+
+                }
+                else if (input.y < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+                    if (endGridPosition.z > 0)
+                        endGridPosition.z--;
+
+                }
+
+                break;
+
+            case CameraScript.windRose.West:
+
+                if (input.x > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z > 0)
+                        endGridPosition.z--;
+
+                }
+                else if (input.x < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.z < grid_ref.mapHeight - 1)
+                        endGridPosition.z++;
+
+                }
+                else if (input.y > 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x > 0)
+                        endGridPosition.x--;
+
+                }
+                else if (input.y < 0)
+                {
+
+                    endGridPosition = startGridPosition;
+
+                    if (endGridPosition.x < grid_ref.mapWidth - 1)
+                        endGridPosition.x++;
+                }
+
+                break;
+
+            default:
+                break;
+
+        }
+
+        endGridBlock = grid_ref.GetGridBlock ((int) endGridPosition.x, (int) endGridPosition.z);
+        return endGridBlock;
 
     }
 
@@ -684,13 +834,15 @@ public class Player : MonoBehaviour
 
     }
 
+    //Main beta callback
     void OnMainBeat (KoreographyEvent evt)
     {
-
+        //Ounch sacle player to the beat
         transform.DOPunchScale (transform.localScale * beatPunchScale, duration, vibrato, elasticity);
 
     }
 
+    //movement coroutine stuff
     public IEnumerator move (Transform transform)
     {
 
@@ -732,4 +884,15 @@ public class Player : MonoBehaviour
         isMoving = false;
         yield return 0;
     }
+
+    public void setGridRef (TheGrid reference)
+    {
+        grid_ref = reference;
+    }
+
+    public void setRhythmSystemRef (RhythmSystem reference)
+    {
+        rhythmSystem_ref = reference;
+    }
+
 }

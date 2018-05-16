@@ -1,123 +1,52 @@
 #define MAP_LOADING_DEBUG
 #undef MAP_LOADING_DEBUG
 
+#define DEBUG
+
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Assertions;
 
 public class TheGrid : MonoBehaviour
 {
 
     #region Property-Variables
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private GameObject _gridBlock_prefab1;
-    public GameObject gridBlock_prefab1
-    {
-        get
-        {
-            return _gridBlock_prefab1;
-        }
-        set
-        {
-            _gridBlock_prefab1 = value;
-        }
-    }
+    [SerializeField]
+    private GameObject gridBlock_prefab1;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private GameObject _scoreMaker_prefab;
-    public GameObject scoreMaker_prefab
-    {
-        get
-        {
-            return _scoreMaker_prefab;
-        }
-        set
-        {
-            _scoreMaker_prefab = value;
-        }
-    }
+    [SerializeField]
+    private GameObject scoreMaker_prefab;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private GameObject _scoreFloatingText_prefab;
-    public GameObject scoreFloatingText_prefab
-    {
-        get
-        {
-            return _scoreFloatingText_prefab;
-        }
-        set
-        {
-            _scoreFloatingText_prefab = value;
-        }
-    }
+    [SerializeField]
+    private GameObject scoreFloatingText_prefab;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private GameObject _missFloatingText_prefab;
-    public GameObject missFloatingText_prefab
-    {
-        get
-        {
-            return _missFloatingText_prefab;
-        }
-        set
-        {
-            _missFloatingText_prefab = value;
-        }
-    }
+    [SerializeField]
+    private GameObject missFloatingText_prefab;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private RhythmSystem _rhythmSystem_ref;
-    public RhythmSystem rhythmSystem_ref
-    {
-        get
-        {
-            return _rhythmSystem_ref;
-        }
-        set
-        {
-            _rhythmSystem_ref = value;
-        }
-    }
+    [SerializeField]
+    private RhythmSystem rhythmSystem_ref;
 
     [SerializeField]
     Countdown timer;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private List<GameObject> _PlayerPrefabList = new List<GameObject> (4);
-    public List<GameObject> GetPlayerPrefabList ()
+    [SerializeField]
+    private List<GameObject> playerPrefabList = new List<GameObject> (2);
+
+    [SerializeField]
+    private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
+
+    public List<PlayerUI> GetPlayerUIList()
     {
-        return _PlayerPrefabList;
-    }
-    public void SetPlayerPrefabList (List<GameObject> value)
-    {
-        _PlayerPrefabList = new List<GameObject> (value);
+        return playerUIList;
     }
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private List<PlayerUI> _PlayerUIList = new List<PlayerUI> (4);
-    public List<PlayerUI> GetPlayerUIList ()
-    {
-        return _PlayerUIList;
-    }
-    public void SetPlayerUIList (List<PlayerUI> value)
-    {
-        _PlayerUIList = new List<PlayerUI> (value);
-    }
-
-    [SerializeField, Candlelight.PropertyBackingField]
-    private List<Player> _PlayerList = new List<Player> ();
-    public List<Player> GetPlayerList ()
-    {
-        return _PlayerList;
-    }
-    public void SetPlayerList (List<Player> value)
-    {
-        _PlayerList = new List<Player> (value);
-    }
+    [SerializeField]
+    private List<Player> playerList = new List<Player> (2);
 
     [SerializeField]
     public List<Item> itemList;
@@ -125,19 +54,8 @@ public class TheGrid : MonoBehaviour
     [SerializeField]
     public List<FloatingText> floatingTextList;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private CameraScript _cameraScript;
-    public CameraScript cameraScript
-    {
-        get
-        {
-            return _cameraScript;
-        }
-        set
-        {
-            _cameraScript = value;
-        }
-    }
+    [SerializeField]
+    private CameraScript cameraScript;
 
     [SerializeField, Candlelight.PropertyBackingField]
     private int _mapWidth = 0;
@@ -167,56 +85,20 @@ public class TheGrid : MonoBehaviour
         }
     }
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private int _xOffset = 1;
-    public int xOffset
-    {
-        get
-        {
-            return _xOffset;
-        }
-        set
-        {
-            _xOffset = value;
-        }
-    }
+    [SerializeField]
+    private int xOffset = 1;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private int _zOffset = 1;
-    public int zOffset
-    {
-        get
-        {
-            return _zOffset;
-        }
-        set
-        {
-            _zOffset = value;
-        }
-    }
+    [SerializeField]
+    private int zOffset = 1;
 
-    [SerializeField, Candlelight.PropertyBackingField]
-    private bool _isRandomScoreMakerSpawnTime = true;
-    public bool isRandomScoreMakerSpawnTime
-    {
-        get
-        {
-            return _isRandomScoreMakerSpawnTime;
-        }
-        set
-        {
-            _isRandomScoreMakerSpawnTime = value;
-        }
-    }
+    [SerializeField]
+    private bool isRandomScoreMakerSpawnTime = true;
 
     // corresponds to [Range(0f, 1f)]
-    [SerializeField, Candlelight.PropertyBackingField (typeof (RangeAttribute), 3f, 10f)]
-    private float _ScoreMakerSpawnTime;
-    public float ScoreMakerSpawnTime
-    {
-        get { return _ScoreMakerSpawnTime; }
-        set { _ScoreMakerSpawnTime = value; }
-    }
+    [Range(3.0f,10.0f)]
+    [SerializeField]
+    private float ScoreMakerSpawnTime;
+
 
     [SerializeField]
     private string fileNameToLoad;
@@ -249,12 +131,18 @@ public class TheGrid : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
+
+       #if DEBUG
+		prefabsAssertions();
+		#endif
+
         if (isRandomScoreMakerSpawnTime)
             timer.startTimer (Random.Range (3f, ScoreMakerSpawnTime));
         else
             timer.startTimer (ScoreMakerSpawnTime);
 
-        //SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
+        
+        
     }
 
     // Update is called once per frame
@@ -288,9 +176,10 @@ public class TheGrid : MonoBehaviour
         }
     }
 
+    //Spawn Players (currrently 2)
     private void SpawnPlayers ()
     {
-        for (int i = 0; i < GetPlayerList ().Count; i++)
+        for (int i = 0; i < playerList.Count; i++)
         {
             Vector3 initial_pos = new Vector3 ();
 
@@ -298,18 +187,22 @@ public class TheGrid : MonoBehaviour
             {
                 initial_pos = GetGridBlock (0, 0).gameObject.transform.position;
                 initial_pos.y = 0.1f;
+               
             }
             else if (i == 1)
             {
                 initial_pos = GetGridBlock (mapWidth - 1, mapHeight - 1).gameObject.transform.position;
                 initial_pos.y = 0.1f;
             }
-            GameObject player_prefab = Instantiate (GetPlayerPrefabList () [i], initial_pos, Quaternion.identity) as GameObject;
-            player_prefab.GetComponent<Player> ().grid_ref = this;
-            player_prefab.GetComponent<Player> ().rhythmSystem_ref = rhythmSystem_ref;
+            GameObject player_prefab = Instantiate (playerPrefabList [i], initial_pos, Quaternion.identity) as GameObject;
+            player_prefab.GetComponent<Player> ().setGridRef(this);
+            player_prefab.GetComponent<Player> ().setRhythmSystemRef(rhythmSystem_ref);
+            playerList[i] = player_prefab.GetComponent<Player>();
+
         }
     }
 
+    //spawn ScoreMaker Item
     private ScoreMaker SpawnScoreMaker (int x, int z)
     {
         GridBlock gb = GetGridBlock (x, z);
@@ -324,6 +217,8 @@ public class TheGrid : MonoBehaviour
 
         return sm;
     }
+
+    //Build the Map
     void BuildMap ()
     {
 #if MAP_LOADING_DEBUG
@@ -355,6 +250,7 @@ public class TheGrid : MonoBehaviour
 
     }
 
+    //load txt file with the map
     private int[, ] Load (string filePath)
     {
         try
@@ -433,6 +329,7 @@ public class TheGrid : MonoBehaviour
         return null;
     }
 
+    // Score points for the player
     public void Score (Player p)
     {
         if (p == null || _GridBlockList == null) return;
@@ -442,6 +339,7 @@ public class TheGrid : MonoBehaviour
 
         int result = 0;
 
+        //clear all blocks painted with the player's color
         foreach (GridBlock gb in GetGridBlockList ())
         {
 
@@ -465,6 +363,7 @@ public class TheGrid : MonoBehaviour
         p.multiplierCombo = 0;
 
     }
+
 
     public void SpawnScoreFloatingText (Vector3 pos, string tex, Color texCol)
     {
@@ -514,6 +413,53 @@ public class TheGrid : MonoBehaviour
         return pos;
     }
 
+
+    private void prefabsAssertions()
+    {
+
+
+        Assert.IsNotNull(gridBlock_prefab1);
+        Assert.IsNotNull(scoreMaker_prefab);
+        Assert.IsNotNull(scoreFloatingText_prefab);
+        Assert.IsNotNull(missFloatingText_prefab);
+        Assert.IsNotNull(rhythmSystem_ref);
+
+        for(int i = 0; i < playerList.Count; i++)
+        {
+            if(i < 2)
+            Assert.IsNotNull(playerList[i]);
+        }
+
+        for(int i = 0; i < playerPrefabList.Count; i++)
+        {
+            if(i < 2)
+            Assert.IsNotNull(playerPrefabList[i]);
+        }
+
+        for(int i = 0; i < playerUIList.Count; i++)
+        {
+            if(i < 2)
+            Assert.IsNotNull(playerUIList[i]);
+        }
+
+        /*
+        
+    private GameObject gridBlock_prefab1;
+
+    [SerializeField]
+    private GameObject scoreMaker_prefab;
+
+    [SerializeField]
+    private GameObject scoreFloatingText_prefab;
+
+    [SerializeField]
+    private GameObject missFloatingText_prefab;
+
+    [SerializeField]
+    private RhythmSystem rhythmSystem_ref;
+         */
+        
+    }
     public void QuitGame ()
     {
         // save any game data here
