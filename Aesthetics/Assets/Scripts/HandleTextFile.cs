@@ -1,3 +1,5 @@
+
+#if UNITY_EDITOR
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -36,9 +38,10 @@ public class HandleTextFile : MonoBehaviour
     private void Start ()
     {
 
-        WriteString ("ganon");
+        //WriteString ("ganon");
 
-        ReadString ();
+        //ReadString ();
     }
 
 }
+#endif
