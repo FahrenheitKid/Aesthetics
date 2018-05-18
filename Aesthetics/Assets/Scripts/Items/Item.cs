@@ -126,7 +126,7 @@ public class Item : MonoBehaviour
             //activate in case it is not an equippable item
             Activate ();
 
-            //Equip(owner);
+            Equip(owner);
         }
 
     }
@@ -146,11 +146,19 @@ public class Item : MonoBehaviour
     public virtual void Equip (Player p)
     {
         if (p.hasItem)
-            Destroy (p.item);
+        {
+            p.item.Kill();
+        }
+            
 
         p.hasItem = true;
         p.item = this;
         owner = p;
         print ("Base item equiped");
+    }
+
+    public virtual void Kill()
+    {
+        
     }
 }

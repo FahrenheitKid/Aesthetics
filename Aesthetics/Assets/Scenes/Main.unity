@@ -537,6 +537,22 @@ Prefab:
       propertyPath: ArrowSpawnTimeMin
       value: 8.92
       objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: lockSpawnTimeMax
+      value: 2.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: lockSpawnTimeMin
+      value: 4.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: lock_prefab
+      value: 
+      objectReference: {fileID: 1713445076453964, guid: 5e3a7775b35b7644abd4c3bfa7cc50d1,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
   m_IsPrefabParent: 0
@@ -3617,6 +3633,7 @@ MonoBehaviour:
   grid_ref: {fileID: 0}
   rhythmSystem_ref: {fileID: 0}
   _gridColor: 1
+  _blackGridColor: 7
   beatPunchScale: 1.3
   vibrato: 0
   elasticity: 0

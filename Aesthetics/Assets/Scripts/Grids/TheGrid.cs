@@ -6,11 +6,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 
 public class TheGrid : MonoBehaviour
 {
@@ -24,6 +24,9 @@ public class TheGrid : MonoBehaviour
     private GameObject scoreMaker_prefab;
 
     [SerializeField]
+    private GameObject lock_prefab;
+
+    [SerializeField]
     private GameObject scoreFloatingText_prefab;
 
     [SerializeField]
@@ -35,15 +38,13 @@ public class TheGrid : MonoBehaviour
     [SerializeField]
     private RhythmSystem rhythmSystem_ref;
 
-  
-
     [SerializeField]
     private List<GameObject> playerPrefabList = new List<GameObject> (2);
 
     [SerializeField]
     private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
 
-    public List<PlayerUI> GetPlayerUIList()
+    public List<PlayerUI> GetPlayerUIList ()
     {
         return playerUIList;
     }
@@ -94,39 +95,54 @@ public class TheGrid : MonoBehaviour
     [SerializeField]
     private int zOffset = 1;
 
-
-  [SerializeField]
+    [SerializeField]
     Countdown scoreMakerTimer;
 
     [SerializeField]
     private bool isRandomScoreMakerSpawnTime = true;
 
-
     // corresponds to [Range(0f, 1f)]
-    [Range(0.1f,15.0f)]
+    [Range (0.1f, 15.0f)]
     [SerializeField]
     private float ScoreMakerSpawnTimeMax;
 
-    [Range(0.1f,15.0f)]
+    [Range (0.1f, 15.0f)]
     [SerializeField]
     private float ScoreMakerSpawnTimeMin;
 
     [SerializeField]
     private int scoreMakerCountLimit = 5;
 
-     [SerializeField]
+    [SerializeField]
+    Countdown lockTimer;
+
+    [SerializeField]
+    private bool isRandomLockSpawnTime = true;
+
+    // corresponds to [Range(0f, 1f)]
+    [Range (0.1f, 15.0f)]
+    [SerializeField]
+    private float lockSpawnTimeMax;
+
+    [Range (0.1f, 15.0f)]
+    [SerializeField]
+    private float lockSpawnTimeMin;
+
+    [SerializeField]
+    private int lockCountLimit = 2;
+
+    [SerializeField]
     Countdown arrowTimer;
 
     [SerializeField]
     private bool isRandomArrowSpawnTime = true;
 
-
     // corresponds to [Range(0f, 1f)]
-    [Range(0.1f,15.0f)]
+    [Range (0.1f, 15.0f)]
     [SerializeField]
     private float ArrowSpawnTimeMax;
 
-    [Range(0.1f,15.0f)]
+    [Range (0.1f, 15.0f)]
     [SerializeField]
     private float ArrowSpawnTimeMin;
 
@@ -141,8 +157,6 @@ public class TheGrid : MonoBehaviour
 
     [SerializeField]
     private float quadrupleArrowRatio = 0.15f;
-
-
 
     [SerializeField]
     private string fileNameToLoad;
@@ -166,59 +180,61 @@ public class TheGrid : MonoBehaviour
         tiles = Load (Application.streamingAssetsPath + "\\" + fileNameToLoad);
         BuildMap ();
 
-      
-        itemTimersAwake();
+        itemTimersAwake ();
         SpawnPlayers ();
 
-          Application.targetFrameRate = 60;
+        Application.targetFrameRate = 60;
     }
 
     // Use this for initialization
     void Start ()
     {
 
-       #if DEBUG
-		prefabsAssertions();
-		#endif
+#if DEBUG
+        prefabsAssertions ();
+#endif
 
-        
-        itemTimersStart();
-        
-        
-    }
-
-    void itemTimersAwake()
-    {
-          scoreMakerTimer = gameObject.AddComponent<Countdown> ();
-          arrowTimer = gameObject.AddComponent<Countdown> ();
+        itemTimersStart ();
 
     }
-    void itemTimersStart()
+
+    void itemTimersAwake ()
     {
-            if (isRandomScoreMakerSpawnTime)
+        scoreMakerTimer = gameObject.AddComponent<Countdown> ();
+        arrowTimer = gameObject.AddComponent<Countdown> ();
+        lockTimer = gameObject.AddComponent<Countdown> ();
+
+    }
+    void itemTimersStart ()
+    {
+        if (isRandomScoreMakerSpawnTime)
             scoreMakerTimer.startTimer (Random.Range (ScoreMakerSpawnTimeMin, ScoreMakerSpawnTimeMax));
         else
-            scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax  + ScoreMakerSpawnTimeMin) / 2);
+            scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax + ScoreMakerSpawnTimeMin) / 2);
 
-            if (isRandomArrowSpawnTime)
+        if (isRandomArrowSpawnTime)
             arrowTimer.startTimer (Random.Range (ArrowSpawnTimeMin, ArrowSpawnTimeMax));
         else
-            arrowTimer.startTimer ((ArrowSpawnTimeMin  + ArrowSpawnTimeMax) / 2);
+            arrowTimer.startTimer ((ArrowSpawnTimeMin + ArrowSpawnTimeMax) / 2);
 
+        if (isRandomLockSpawnTime)
+            lockTimer.startTimer (Random.Range (lockSpawnTimeMin, lockSpawnTimeMax));
+        else
+            lockTimer.startTimer ((lockSpawnTimeMin + lockSpawnTimeMax) / 2);
 
     }
 
-    void itemTimersUpdate()
+    void itemTimersUpdate ()
     {
         if (scoreMakerTimer.stop)
         {
             if (isRandomScoreMakerSpawnTime)
-            scoreMakerTimer.startTimer (Random.Range (ScoreMakerSpawnTimeMin, ScoreMakerSpawnTimeMax));
-        else
-            scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax  + ScoreMakerSpawnTimeMin) / 2);
+                scoreMakerTimer.startTimer (Random.Range (ScoreMakerSpawnTimeMin, ScoreMakerSpawnTimeMax));
+            else
+                scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax + ScoreMakerSpawnTimeMin) / 2);
 
             // if more than 5 scoremakers in the stage
-            if (itemList.OfType<ScoreMaker>().Count() < scoreMakerCountLimit)
+            if (itemList.OfType<ScoreMaker> ().Count () < scoreMakerCountLimit)
             {
                 ScoreMaker sm = SpawnScoreMaker (2.0f);
 
@@ -226,38 +242,52 @@ public class TheGrid : MonoBehaviour
 
         }
 
-         if (arrowTimer.stop)
+        if (arrowTimer.stop)
         {
-            if (isRandomArrowSpawnTime)
-            arrowTimer.startTimer (Random.Range (ArrowSpawnTimeMin, ArrowSpawnTimeMax));
-        else
-            arrowTimer.startTimer ((ArrowSpawnTimeMin  + ArrowSpawnTimeMax) / 2);
+            if (isRandomLockSpawnTime)
+                lockTimer.startTimer (Random.Range (lockSpawnTimeMin, lockSpawnTimeMax));
+            else
+                lockTimer.startTimer ((lockSpawnTimeMin + lockSpawnTimeMax) / 2);
 
-            if (itemList.OfType<Arrow>().Count() < arrowCountLimit)
+            // if more than 5 scoremakers in the stage
+            if (itemList.OfType<Lock> ().Count () < lockCountLimit)
             {
-                float ratioTotal = singleArrowRatio + doubleArrowRatio + quadrupleArrowRatio;
-                float ar = Random.Range(0f,ratioTotal);
-                Arrow.arrowType t = Arrow.arrowType.Single;
-                if((ar - quadrupleArrowRatio) < 0)
-                {
-                    t = Arrow.arrowType.Quadruple;
-                }
-                else if((ar - doubleArrowRatio) < 0)
-                {
-                    t = Arrow.arrowType.Double;
-                }
-                else if((ar - singleArrowRatio) < 0)
-                {
-                    t = Arrow.arrowType.Single;
-                }
-
-                Arrow sm = SpawnArrow (1.0f,t);
+                Lock sm = SpawnLock (2.0f);
 
             }
 
         }
-        
-        
+
+        if (arrowTimer.stop)
+        {
+            if (isRandomArrowSpawnTime)
+                arrowTimer.startTimer (Random.Range (ArrowSpawnTimeMin, ArrowSpawnTimeMax));
+            else
+                arrowTimer.startTimer ((ArrowSpawnTimeMin + ArrowSpawnTimeMax) / 2);
+
+            if (itemList.OfType<Arrow> ().Count () < arrowCountLimit)
+            {
+                float ratioTotal = singleArrowRatio + doubleArrowRatio + quadrupleArrowRatio;
+                float ar = Random.Range (0f, ratioTotal);
+                Arrow.arrowType t = Arrow.arrowType.Single;
+                if ((ar - quadrupleArrowRatio) < 0)
+                {
+                    t = Arrow.arrowType.Quadruple;
+                }
+                else if ((ar - doubleArrowRatio) < 0)
+                {
+                    t = Arrow.arrowType.Double;
+                }
+                else if ((ar - singleArrowRatio) < 0)
+                {
+                    t = Arrow.arrowType.Single;
+                }
+
+                Arrow sm = SpawnArrow (1.0f, t);
+
+            }
+
+        }
 
     }
     // Update is called once per frame
@@ -275,8 +305,8 @@ public class TheGrid : MonoBehaviour
             SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
         }
 
-        itemTimersUpdate();
-        
+        itemTimersUpdate ();
+
     }
 
     //Spawn Players (currrently 2)
@@ -290,17 +320,17 @@ public class TheGrid : MonoBehaviour
             {
                 initial_pos = GetGridBlock (0, 0).gameObject.transform.position;
                 initial_pos.y = 0.1f;
-               
+
             }
             else if (i == 1)
             {
                 initial_pos = GetGridBlock (mapWidth - 1, mapHeight - 1).gameObject.transform.position;
                 initial_pos.y = 0.1f;
             }
-            GameObject player_prefab = Instantiate (playerPrefabList [i], initial_pos, Quaternion.identity) as GameObject;
-            player_prefab.GetComponent<Player> ().setGridRef(this);
-            player_prefab.GetComponent<Player> ().setRhythmSystemRef(rhythmSystem_ref);
-            playerList[i] = player_prefab.GetComponent<Player>();
+            GameObject player_prefab = Instantiate (playerPrefabList[i], initial_pos, Quaternion.identity) as GameObject;
+            player_prefab.GetComponent<Player> ().setGridRef (this);
+            player_prefab.GetComponent<Player> ().setRhythmSystemRef (rhythmSystem_ref);
+            playerList[i] = player_prefab.GetComponent<Player> ();
 
         }
     }
@@ -330,8 +360,8 @@ public class TheGrid : MonoBehaviour
     private ScoreMaker SpawnScoreMaker (float range)
     {
         GridBlock gb = null;
-            while(gb == null)
-                gb = GetEmptyIsolatedGridBlock (range);
+        while (gb == null)
+            gb = GetEmptyIsolatedGridBlock (range);
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -351,26 +381,26 @@ public class TheGrid : MonoBehaviour
         return sm;
     }
 
-     private Arrow SpawnArrow (int x, int z, Arrow.arrowType typeOfArrow)
+    private Arrow SpawnArrow (int x, int z, Arrow.arrowType typeOfArrow)
     {
         GridBlock gb = GetGridBlock (x, z);
         if (gb.isOccupied || gb.hasItem) return null;
 
         GameObject prefab;
-        switch(typeOfArrow)
+        switch (typeOfArrow)
         {
             case Arrow.arrowType.Quadruple:
-            prefab = arrows_prefabs[2];
-            break;
+                prefab = arrows_prefabs[2];
+                break;
 
             case Arrow.arrowType.Double:
-            prefab = arrows_prefabs[1];
-            break;
+                prefab = arrows_prefabs[1];
+                break;
 
             case Arrow.arrowType.Single:
             default:
-            prefab = arrows_prefabs[0];
-            break;
+                prefab = arrows_prefabs[0];
+                break;
 
         }
         GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
@@ -379,40 +409,40 @@ public class TheGrid : MonoBehaviour
         a.rhythmSystem_ref = rhythmSystem_ref;
         a.gridBlockOwner = gb;
         a.arrow_type = typeOfArrow;
-        rhythmSystem_ref.getRhythmNoteToPoolEvent().AddListener(a.IncreaseCount);
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
         a.x = gb.X;
         a.y = gb.Y;
         a.z = gb.Z;
-        
+
         gb.hasItem = true;
         itemList.Add (a);
 
         return a;
     }
 
-     private Arrow SpawnArrow (float range, Arrow.arrowType typeOfArrow)
+    private Arrow SpawnArrow (float range, Arrow.arrowType typeOfArrow)
     {
         GridBlock gb = null;
-            while(gb == null)
-                gb = GetEmptyIsolatedGridBlock (range);
+        while (gb == null)
+            gb = GetEmptyIsolatedGridBlock (range);
 
         if (gb.isOccupied || gb.hasItem) return null;
 
         GameObject prefab;
-        switch(typeOfArrow)
+        switch (typeOfArrow)
         {
             case Arrow.arrowType.Quadruple:
-            prefab = arrows_prefabs[2];
-            break;
+                prefab = arrows_prefabs[2];
+                break;
 
             case Arrow.arrowType.Double:
-            prefab = arrows_prefabs[1];
-            break;
+                prefab = arrows_prefabs[1];
+                break;
 
             case Arrow.arrowType.Single:
             default:
-            prefab = arrows_prefabs[0];
-            break;
+                prefab = arrows_prefabs[0];
+                break;
 
         }
         GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
@@ -422,12 +452,56 @@ public class TheGrid : MonoBehaviour
         a.arrow_type = typeOfArrow;
         a.gridBlockOwner = gb;
 
-        rhythmSystem_ref.getRhythmNoteToPoolEvent().AddListener(a.IncreaseCount);
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
         a.x = gb.X;
         a.y = gb.Y;
         a.z = gb.Z;
 
-        
+        gb.hasItem = true;
+        itemList.Add (a);
+
+        return a;
+    }
+
+    private Lock SpawnLock (int x, int z)
+    {
+        GridBlock gb = GetGridBlock (x, z);
+        if (gb.isOccupied || gb.hasItem) return null;
+
+        GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+        Lock a = lockPrefab.GetComponent<Lock> ();
+        a.grid_ref = GetComponent<TheGrid> ();
+        a.rhythmSystem_ref = rhythmSystem_ref;
+        a.gridBlockOwner = gb;
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
+        a.x = gb.X;
+        a.y = gb.Y;
+        a.z = gb.Z;
+
+        gb.hasItem = true;
+        itemList.Add (a);
+
+        return a;
+    }
+
+    private Lock SpawnLock (float range)
+    {
+        GridBlock gb = null;
+        while (gb == null)
+            gb = GetEmptyIsolatedGridBlock (range);
+
+        if (gb.isOccupied || gb.hasItem) return null;
+
+        GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+        Lock a = lockPrefab.GetComponent<Lock> ();
+        a.grid_ref = GetComponent<TheGrid> ();
+        a.rhythmSystem_ref = rhythmSystem_ref;
+        a.gridBlockOwner = gb;
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
+        a.x = gb.X;
+        a.y = gb.Y;
+        a.z = gb.Z;
+
         gb.hasItem = true;
         itemList.Add (a);
 
@@ -580,7 +654,6 @@ public class TheGrid : MonoBehaviour
 
     }
 
-
     public void SpawnScoreFloatingText (Vector3 pos, string tex, Color texCol)
     {
 
@@ -622,37 +695,35 @@ public class TheGrid : MonoBehaviour
     }
 
     //returns random empty gridblock with no players in that range
-    public GridBlock GetEmptyIsolatedGridBlock(float range)
+    public GridBlock GetEmptyIsolatedGridBlock (float range)
     {
 
         bool selected = false;
         int it = -1;
-            while(!selected && GetGridBlockList().Count > 0 && playerList.Count > 0)
+        while (!selected && GetGridBlockList ().Count > 0 && playerList.Count > 0)
+        {
+            it = Random.Range (0, GetGridBlockList ().Count);
+
+            foreach (Player p in playerList)
             {
-                it = Random.Range(0,GetGridBlockList().Count);
+                if (!p) continue;
 
-                foreach(Player p in playerList)
+                Vector3 gb_pos = new Vector3 (GetGridBlockList () [it].X, 0, GetGridBlockList () [it].Z);
+                Vector3 p_pos = new Vector3 (p.x, 0, p.z);
+
+                if (Vector3.Distance (gb_pos, p_pos) >= range && GetGridBlockList () [it].hasItem == false)
                 {
-                    if(!p) continue;
-
-                    Vector3 gb_pos = new Vector3(GetGridBlockList()[it].X, 0, GetGridBlockList()[it].Z);
-                    Vector3 p_pos = new Vector3(p.x, 0, p.z);
-                    
-                    if(Vector3.Distance(gb_pos,p_pos) >= range && GetGridBlockList()[it].hasItem == false)
-                    {
-                        selected = true;
-                        break;
-                    }
-
+                    selected = true;
+                    break;
                 }
 
-
-                
             }
 
-            if(it > 0)
-            return GetGridBlockList()[it];
-            else
+        }
+
+        if (it > 0)
+            return GetGridBlockList () [it];
+        else
             return null;
     }
 
@@ -664,33 +735,31 @@ public class TheGrid : MonoBehaviour
         return pos;
     }
 
-
-    private void prefabsAssertions()
+    private void prefabsAssertions ()
     {
 
+        Assert.IsNotNull (gridBlock_prefab1);
+        Assert.IsNotNull (scoreMaker_prefab);
+        Assert.IsNotNull (scoreFloatingText_prefab);
+        Assert.IsNotNull (missFloatingText_prefab);
+        Assert.IsNotNull (rhythmSystem_ref);
 
-        Assert.IsNotNull(gridBlock_prefab1);
-        Assert.IsNotNull(scoreMaker_prefab);
-        Assert.IsNotNull(scoreFloatingText_prefab);
-        Assert.IsNotNull(missFloatingText_prefab);
-        Assert.IsNotNull(rhythmSystem_ref);
-
-        for(int i = 0; i < playerList.Count; i++)
+        for (int i = 0; i < playerList.Count; i++)
         {
-            if(i < 2)
-            Assert.IsNotNull(playerList[i]);
+            if (i < 2)
+                Assert.IsNotNull (playerList[i]);
         }
 
-        for(int i = 0; i < playerPrefabList.Count; i++)
+        for (int i = 0; i < playerPrefabList.Count; i++)
         {
-            if(i < 2)
-            Assert.IsNotNull(playerPrefabList[i]);
+            if (i < 2)
+                Assert.IsNotNull (playerPrefabList[i]);
         }
 
-        for(int i = 0; i < playerUIList.Count; i++)
+        for (int i = 0; i < playerUIList.Count; i++)
         {
-            if(i < 2)
-            Assert.IsNotNull(playerUIList[i]);
+            if (i < 2)
+                Assert.IsNotNull (playerUIList[i]);
         }
 
         /*
@@ -709,7 +778,7 @@ public class TheGrid : MonoBehaviour
     [SerializeField]
     private RhythmSystem rhythmSystem_ref;
          */
-        
+
     }
     public void QuitGame ()
     {

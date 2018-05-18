@@ -112,6 +112,10 @@ public class Arrow : Item
 		}
     }
 
+	public override void Equip(Player p)
+	{
+
+	}
     public override void Activate ()
     {
         base.Activate ();
@@ -190,13 +194,29 @@ public class Arrow : Item
 		{
 			if(doNorth) // -- Z
 			{
-				print("North" + doNorth);
-				print("South " + doSouth);
+
 
 				if(gb.Z <= gridBlockOwner.Z && gb.X == gridBlockOwner.X)
 				{
-					gb.changeColor(owner.gridColor);
-					gb.changeOwner(owner);
+					if(owner.hasItem && owner.item  && owner.item.GetType() == typeof(Lock))
+					{
+						if(gb.isLocked == false)
+						{
+							gb.changeColor(owner.blackGridColor);
+							gb.changeOwner(owner);
+						}
+						
+					}
+					else
+					{
+						if(gb.isLocked == false)
+						{
+							gb.changeColor(owner.gridColor);
+							gb.changeOwner(owner);
+						}
+					}
+					
+					
 				}
 			}
 
@@ -204,18 +224,48 @@ public class Arrow : Item
 			{
 				if(gb.X >= gridBlockOwner.X && gb.Z == gridBlockOwner.Z)
 				{
-					gb.changeColor(owner.gridColor);
-					gb.changeOwner(owner);
+					if(owner.hasItem && owner.item  && owner.item.GetType() == typeof(Lock))
+					{
+						if(gb.isLocked == false)
+						{
+							gb.changeColor(owner.blackGridColor);
+							gb.changeOwner(owner);
+						}
+						
+					}
+					else
+					{
+						if(gb.isLocked == false)
+						{
+							gb.changeColor(owner.gridColor);
+							gb.changeOwner(owner);
+						}
+					}
 				}
 			}
 
 			if(doSouth) // >> Z
 			{
-				print("south");
+				
 				if(gb.Z >= gridBlockOwner.Z && gb.X == gridBlockOwner.X)
 				{
-					gb.changeColor(owner.gridColor);
-					gb.changeOwner(owner);
+					if(owner.hasItem && owner.item  && owner.item.GetType() == typeof(Lock))
+					{
+						if(gb.isLocked == false)
+						{
+							gb.changeColor(owner.blackGridColor);
+							gb.changeOwner(owner);
+						}
+						
+					}
+					else
+					{
+						if(gb.isLocked == false)
+						{
+							gb.changeColor(owner.gridColor);
+							gb.changeOwner(owner);
+						}
+					}
 				}
 
 			}
@@ -224,8 +274,23 @@ public class Arrow : Item
 			{
 				if(gb.X <= gridBlockOwner.X && gb.Z == gridBlockOwner.Z)
 				{
-					gb.changeColor(owner.gridColor);
-					gb.changeOwner(owner);
+					if(owner.hasItem && owner.item  && owner.item.GetType() == typeof(Lock))
+					{
+						if(gb.isLocked == false)
+						{
+							gb.changeColor(owner.blackGridColor);
+							gb.changeOwner(owner);
+						}
+						
+					}
+					else
+					{
+						if(gb.isLocked == false)
+						{
+							gb.changeColor(owner.gridColor);
+							gb.changeOwner(owner);
+						}
+					}
 				}
 			}
 		}

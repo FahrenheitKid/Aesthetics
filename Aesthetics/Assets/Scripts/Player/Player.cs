@@ -264,6 +264,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Player's GridBlockColor")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private GridBlock.gridBlockColor _blackGridColor = GridBlock.gridBlockColor.Pink_B;
+    public GridBlock.gridBlockColor blackGridColor
+    {
+        get
+        {
+            return _blackGridColor;
+        }
+        set
+        {
+            _blackGridColor = value;
+        }
+    }
+
     [Tooltip (" How much scaling of the Punch Scale done in the main beat")]
     [Range (0, 2)]
     [SerializeField]
