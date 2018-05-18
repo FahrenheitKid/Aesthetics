@@ -223,6 +223,22 @@ public class GridBlock : MonoBehaviour
         set
         {
             _hasItem = value;
+            if(_hasItem == false)
+            Item = null;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private Item _Item;
+    public Item Item
+    {
+        get
+        {
+            return _Item;
+        }
+        set
+        {
+            _Item = value;
         }
     }
 

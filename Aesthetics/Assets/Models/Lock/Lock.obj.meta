@@ -1,18 +1,18 @@
 fileFormatVersion: 2
-guid: 917c33f6b7501764c98a6c518a96e19a
-timeCreated: 1526595092
+guid: 80c74d9ddc5a2ee48baee577a3a9f9d9
+timeCreated: 1526616003
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: DoubleArrow
+    100000: Lock
     100002: //RootNode
-    400000: DoubleArrow
+    400000: Lock
     400002: //RootNode
     2100000: palette
-    2300000: DoubleArrow
-    3300000: DoubleArrow
-    4300000: DoubleArrow
+    2300000: Lock
+    3300000: Lock
+    4300000: Lock
   externalObjects: {}
   materials:
     importMaterials: 1

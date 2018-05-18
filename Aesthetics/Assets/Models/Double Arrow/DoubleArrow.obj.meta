@@ -1,18 +1,18 @@
 fileFormatVersion: 2
-guid: 1d4b69d61de0e7e4db5e63c0a5679e7f
+guid: f546c68bb32063d47bce6aca369e9da0
 timeCreated: 1526617489
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: QuadrupleArrow
+    100000: DoubleArrow
     100002: //RootNode
-    400000: QuadrupleArrow
+    400000: DoubleArrow
     400002: //RootNode
     2100000: palette
-    2300000: QuadrupleArrow
-    3300000: QuadrupleArrow
-    4300000: QuadrupleArrow
+    2300000: DoubleArrow
+    3300000: DoubleArrow
+    4300000: DoubleArrow
   externalObjects: {}
   materials:
     importMaterials: 1

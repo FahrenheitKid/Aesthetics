@@ -23,7 +23,7 @@ public class ScoreMaker : Item
         base.Activate ();
         //GameObject.FindGameObjectWithTag ("Grid").GetComponent<TheGrid> ().Score (owner);
         grid_ref.Score (owner);
-        owner.hasItem = false;
+        //owner.hasItem = false;
         gridBlockOwner.hasItem = false;
 
         foreach (var item in grid_ref.itemList.OfType<ScoreMaker> ())

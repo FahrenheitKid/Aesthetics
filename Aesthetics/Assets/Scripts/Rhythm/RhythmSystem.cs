@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SonicBloom.Koreo;
 using SonicBloom.Koreo.Players;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RhythmSystem : MonoBehaviour
 {
@@ -170,6 +171,13 @@ public class RhythmSystem : MonoBehaviour
     }
 
     #endregion
+
+    #region Events
+
+    private UnityEvent onNoteReturnedToPool;
+
+    #endregion
+
     #region Methods
 
 
@@ -218,13 +226,15 @@ public class RhythmSystem : MonoBehaviour
     }
     void Start ()
     {
-
+         if (onNoteReturnedToPool == null)
+            onNoteReturnedToPool = new UnityEvent();
         
         // Ensure the slider and the readout are properly in sync with the AudioSource on Start!
         pitch = audioCom.pitch;
 
         InitializeLeadIn ();
 
+        
 
        if(Random.Range(0,3) == 0 )
 		{
@@ -314,6 +324,7 @@ public class RhythmSystem : MonoBehaviour
         while (trackedNotes.Count > 0 && trackedNotes[0].IsNoteMissed ())
         {
             trackedNotes.RemoveAt(0);
+
         }
 
         // This should be done in Start().  We do it here to allow for testing with Inspector modifications.
@@ -436,6 +447,8 @@ public class RhythmSystem : MonoBehaviour
 
             noteObjectPool.Push (obj);
         }
+
+        onNoteReturnedToPool.Invoke();
     }
 
     // Adjusts the scale with a multiplier against the default scale.
@@ -585,6 +598,11 @@ public class RhythmSystem : MonoBehaviour
         mirrorDespawnPosition.x += 0.1f;
     }
 
+
+    public UnityEvent getRhythmNoteToPoolEvent()
+    {
+        return onNoteReturnedToPool;
+        }
     #endregion
 
 }
