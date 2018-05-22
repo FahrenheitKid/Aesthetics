@@ -157,4 +157,6 @@ MonoBehaviour:
   _mainColor: 6
   _owner: {fileID: 0}
   _hasItem: 0
+  _Item: {fileID: 0}
   _isOccupied: 0
+  _isLocked: 0

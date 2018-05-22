@@ -639,6 +639,7 @@ public class TheGrid : MonoBehaviour
 
                 gb.changeColor (GridBlock.gridBlockColor.White);
                 gb.changeOwner (null);
+                gb.isLocked = false;
                 result++;
             }
         }

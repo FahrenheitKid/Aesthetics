@@ -147,7 +147,8 @@ public class Item : MonoBehaviour
     {
         if (p.hasItem)
         {
-            p.item.Kill();
+            if(p.item)
+            p.item.Kill(this);
         }
             
 
@@ -157,7 +158,7 @@ public class Item : MonoBehaviour
         print ("Base item equiped");
     }
 
-    public virtual void Kill()
+    public virtual void Kill(Item current_Item)
     {
         
     }

@@ -32,20 +32,22 @@ public class Lock : Item {
 			if (count < beatsDuration)
         {
             count++;
-			print("count " + count);
+			//print("count " + count);
         }
         else
         {
-            print("Kill");
+            print("timeout ");
             count = 0;
-			Kill ();
+			startCount = false;
+			Item i = new Item();
+			Kill (i);
         }
 		}
         
 
     }
 
-	public override void Kill()
+	public override void Kill(Item current_Item)
 	{
 		   foreach (var item in grid_ref.itemList.OfType<Lock> ())
         {
@@ -57,9 +59,10 @@ public class Lock : Item {
 
         }
 
-		
-
-		foreach(GridBlock gb in grid_ref.GetGridBlockList())
+		if(current_Item.GetType() != typeof(Lock))
+		{
+			print("KILL DIFERENTE");
+			foreach(GridBlock gb in grid_ref.GetGridBlockList())
 		{
 			if(gb.owner == owner || gb.mainColor == owner.blackGridColor)
 			{
@@ -69,12 +72,21 @@ public class Lock : Item {
 				
 			}
 		}
+
+		}
+		else
+		{
+			print("KILL IGUAL");
+		}
+
+		
 		
 		owner.hasItem = false;
 		owner.item = null;
 
 		rhythmSystem_ref.getRhythmNoteToPoolEvent().RemoveListener(IncreaseCount);
-        base.Kill();
+
+		if(gameObject)
 		Destroy(gameObject);
 	}
 	public override void Activate ()
@@ -98,6 +110,7 @@ public class Lock : Item {
 			}
 		}
 		startCount = true;
+		count = 0;
 
 	}
 	public override void Equip(Player p)
