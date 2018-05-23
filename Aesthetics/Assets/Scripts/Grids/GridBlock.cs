@@ -255,6 +255,7 @@ public class GridBlock : MonoBehaviour
             _isOccupied = value;
         }
     }
+
     [SerializeField, Candlelight.PropertyBackingField]
     private bool _isLocked = false;
     public bool isLocked
@@ -284,7 +285,7 @@ public class GridBlock : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        
+
     }
 
     private void OnCollisionEnter (Collision other)
@@ -310,18 +311,28 @@ public class GridBlock : MonoBehaviour
             Player p = other.GetComponent<Player> ();
             //print ("entrou trigger bloco " + X + ", " + Z);
 
-
-            if(!isLocked)
+            if (!isLocked)
             {
-                if(p.item && p.item.GetType() == typeof(Lock))
+                if (p.item != null)
                 {
-                     changeColor (p.blackGridColor);
+                    if (p.item.GetType () == typeof (Lock))
+                    {
+                        changeColor (p.blackGridColor);
                         changeOwner (p);
+                        isLocked = true;
+                    }
+                    else
+                    {
+                        changeColor (p.gridColor);
+                        changeOwner (p);
+                    }
+
                 }
                 else
                 {
-                     changeColor (p.gridColor);
-                        changeOwner (p);
+                    changeColor (p.gridColor);
+                    changeOwner (p);
+
                 }
             }
 
@@ -350,6 +361,7 @@ public class GridBlock : MonoBehaviour
         owner = p;
 
     }
+    
     // changes directly the color of the gridblock
     public void changeColor (gridBlockColor col)
     {
@@ -419,6 +431,6 @@ public class GridBlock : MonoBehaviour
 
         mainColor = col;
 
-
     }
+
 }
