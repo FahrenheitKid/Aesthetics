@@ -223,6 +223,22 @@ public class GridBlock : MonoBehaviour
         set
         {
             _hasItem = value;
+            if (_hasItem == false)
+                Item = null;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private Item _Item;
+    public Item Item
+    {
+        get
+        {
+            return _Item;
+        }
+        set
+        {
+            _Item = value;
         }
     }
 
@@ -237,6 +253,20 @@ public class GridBlock : MonoBehaviour
         set
         {
             _isOccupied = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isLocked = false;
+    public bool isLocked
+    {
+        get
+        {
+            return _isLocked;
+        }
+        set
+        {
+            _isLocked = value;
         }
     }
 
@@ -278,10 +308,34 @@ public class GridBlock : MonoBehaviour
 
         if (other.gameObject.CompareTag ("Player"))
         {
-
+            Player p = other.GetComponent<Player> ();
             //print ("entrou trigger bloco " + X + ", " + Z);
-            changeColor (other.GetComponent<Player> ().gridColor);
-            changeOwner (other.GetComponent<Player> ());
+
+            if (!isLocked)
+            {
+                if (p.item != null)
+                {
+                    if (p.item.GetType () == typeof (Lock))
+                    {
+                        changeColor (p.blackGridColor);
+                        changeOwner (p);
+                        isLocked = true;
+                    }
+                    else
+                    {
+                        changeColor (p.gridColor);
+                        changeOwner (p);
+                    }
+
+                }
+                else
+                {
+                    changeColor (p.gridColor);
+                    changeOwner (p);
+
+                }
+            }
+
             isOccupied = true;
 
         }
@@ -307,6 +361,7 @@ public class GridBlock : MonoBehaviour
         owner = p;
 
     }
+    
     // changes directly the color of the gridblock
     public void changeColor (gridBlockColor col)
     {
@@ -375,5 +430,7 @@ public class GridBlock : MonoBehaviour
         }
 
         mainColor = col;
+
     }
+
 }

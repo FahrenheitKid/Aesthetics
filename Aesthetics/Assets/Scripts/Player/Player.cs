@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using SonicBloom.Koreo;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class Player : MonoBehaviour
 {
@@ -261,6 +262,22 @@ public class Player : MonoBehaviour
         set
         {
             _gridColor = value;
+        }
+    }
+
+
+    [Tooltip ("Player's GridBlockColor")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private GridBlock.gridBlockColor _blackGridColor = GridBlock.gridBlockColor.Pink_B;
+    public GridBlock.gridBlockColor blackGridColor
+    {
+        get
+        {
+            return _blackGridColor;
+        }
+        set
+        {
+            _blackGridColor = value;
         }
     }
 

@@ -19,6 +19,20 @@ public class Item : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    protected RhythmSystem _rhythmSystem_ref;
+    public RhythmSystem rhythmSystem_ref
+    {
+        get
+        {
+            return _rhythmSystem_ref;
+        }
+        set
+        {
+            _rhythmSystem_ref = value;
+        }
+    }
+
     [SerializeField, Candlelight.PropertyBackingField]
     protected int _x;
     public int x
@@ -29,6 +43,7 @@ public class Item : MonoBehaviour
         }
         set
         {
+
             _x = value;
         }
     }
@@ -110,16 +125,31 @@ public class Item : MonoBehaviour
 
             //activate in case it is not an equippable item
             Activate ();
-            //Equip(owner);
+
+            Equip (owner);
         }
 
     }
 
+    public virtual void Setup (TheGrid grid, RhythmSystem rhythm, GridBlock gb)
+    {
+        grid_ref = grid;
+        rhythmSystem_ref = rhythm;
+        gridBlockOwner = gb;
+        x = gb.X;
+        y = gb.Y;
+        z = gb.Z;
+        print ("base setup");
+
+    }
+
+    //multiple time use items use Use
     public virtual void Use ()
     {
         print ("Base item used");
     }
 
+    //one time use only itens use activate. All itens use Activate upon getting  picked up
     public virtual void Activate ()
     {
         // print ("Base item activated");
@@ -128,11 +158,19 @@ public class Item : MonoBehaviour
     public virtual void Equip (Player p)
     {
         if (p.hasItem)
-            Destroy (p.item);
+        {
+            if (p.item)
+                p.item.Kill (this);
+        }
 
         p.hasItem = true;
         p.item = this;
         owner = p;
         print ("Base item equiped");
+    }
+
+    public virtual void Kill (Item current_Item)
+    {
+
     }
 }

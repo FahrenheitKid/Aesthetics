@@ -121,13 +121,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f6b86631672c4844af8dd78303bd5a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  charCollider: {fileID: 65651512061912598}
-  blockCollider: {fileID: 65600968751575144}
   _ID: 0
-  _horizontalAxisState: 0
-  _verticalAxisState: 0
-  _deadZone: 0.02
-  _gridSize: 1
+  horizontalAxisState: 0
+  verticalAxisState: 0
+  deadZone: 0.02
+  gridSize: 1
   _hasItem: 0
   _item: {fileID: 0}
   _isStunned: 0
@@ -140,9 +138,10 @@ MonoBehaviour:
   _y: 0
   _z: 0
   _moveSpeed: 2
-  _grid_ref: {fileID: 0}
-  _rhythmSystem_ref: {fileID: 0}
+  grid_ref: {fileID: 0}
+  rhythmSystem_ref: {fileID: 0}
   _gridColor: 4
+  _blackGridColor: 10
   beatPunchScale: 0.05
   vibrato: 0
   elasticity: 0

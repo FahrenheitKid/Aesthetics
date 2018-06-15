@@ -6,10 +6,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 
 public class TheGrid : MonoBehaviour
 {
@@ -23,16 +24,19 @@ public class TheGrid : MonoBehaviour
     private GameObject scoreMaker_prefab;
 
     [SerializeField]
+    private GameObject lock_prefab;
+
+    [SerializeField]
     private GameObject scoreFloatingText_prefab;
 
     [SerializeField]
     private GameObject missFloatingText_prefab;
 
     [SerializeField]
-    private RhythmSystem rhythmSystem_ref;
+    private GameObject[] arrows_prefabs = new GameObject[3];
 
     [SerializeField]
-    Countdown timer;
+    private RhythmSystem rhythmSystem_ref;
 
     [SerializeField]
     private List<GameObject> playerPrefabList = new List<GameObject> (2);
@@ -40,7 +44,7 @@ public class TheGrid : MonoBehaviour
     [SerializeField]
     private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
 
-    public List<PlayerUI> GetPlayerUIList()
+    public List<PlayerUI> GetPlayerUIList ()
     {
         return playerUIList;
     }
@@ -92,13 +96,67 @@ public class TheGrid : MonoBehaviour
     private int zOffset = 1;
 
     [SerializeField]
+    Countdown scoreMakerTimer;
+
+    [SerializeField]
     private bool isRandomScoreMakerSpawnTime = true;
 
     // corresponds to [Range(0f, 1f)]
-    [Range(3.0f,10.0f)]
+    [Range (0.1f, 15.0f)]
     [SerializeField]
-    private float ScoreMakerSpawnTime;
+    private float ScoreMakerSpawnTimeMax;
 
+    [Range (0.1f, 15.0f)]
+    [SerializeField]
+    private float ScoreMakerSpawnTimeMin;
+
+    [SerializeField]
+    private int scoreMakerCountLimit = 5;
+
+    [SerializeField]
+    Countdown lockTimer;
+
+    [SerializeField]
+    private bool isRandomLockSpawnTime = true;
+
+    // corresponds to [Range(0f, 1f)]
+    [Range (0.1f, 15.0f)]
+    [SerializeField]
+    private float lockSpawnTimeMax;
+
+    [Range (0.1f, 15.0f)]
+    [SerializeField]
+    private float lockSpawnTimeMin;
+
+    [SerializeField]
+    private int lockCountLimit = 2;
+
+    [SerializeField]
+    Countdown arrowTimer;
+
+    [SerializeField]
+    private bool isRandomArrowSpawnTime = true;
+
+    // corresponds to [Range(0f, 1f)]
+    [Range (0.1f, 15.0f)]
+    [SerializeField]
+    private float ArrowSpawnTimeMax;
+
+    [Range (0.1f, 15.0f)]
+    [SerializeField]
+    private float ArrowSpawnTimeMin;
+
+    [SerializeField]
+    private int arrowCountLimit = 4;
+
+    [SerializeField]
+    private float singleArrowRatio = 0.5f;
+
+    [SerializeField]
+    private float doubleArrowRatio = 0.35f;
+
+    [SerializeField]
+    private float quadrupleArrowRatio = 0.15f;
 
     [SerializeField]
     private string fileNameToLoad;
@@ -122,29 +180,116 @@ public class TheGrid : MonoBehaviour
         tiles = Load (Application.streamingAssetsPath + "\\" + fileNameToLoad);
         BuildMap ();
 
-        timer = gameObject.AddComponent<Countdown> ();
-
+        itemTimersAwake ();
         SpawnPlayers ();
 
+        Application.targetFrameRate = 60;
     }
 
     // Use this for initialization
     void Start ()
     {
 
-       #if DEBUG
-		prefabsAssertions();
-		#endif
+#if DEBUG
+        prefabsAssertions ();
+#endif
 
-        if (isRandomScoreMakerSpawnTime)
-            timer.startTimer (Random.Range (3f, ScoreMakerSpawnTime));
-        else
-            timer.startTimer (ScoreMakerSpawnTime);
+        itemTimersStart ();
 
-        
-        
     }
 
+    void itemTimersAwake ()
+    {
+        scoreMakerTimer = gameObject.AddComponent<Countdown> ();
+        arrowTimer = gameObject.AddComponent<Countdown> ();
+        lockTimer = gameObject.AddComponent<Countdown> ();
+
+    }
+    void itemTimersStart ()
+    {
+        if (isRandomScoreMakerSpawnTime)
+            scoreMakerTimer.startTimer (Random.Range (ScoreMakerSpawnTimeMin, ScoreMakerSpawnTimeMax));
+        else
+            scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax + ScoreMakerSpawnTimeMin) / 2);
+
+        if (isRandomArrowSpawnTime)
+            arrowTimer.startTimer (Random.Range (ArrowSpawnTimeMin, ArrowSpawnTimeMax));
+        else
+            arrowTimer.startTimer ((ArrowSpawnTimeMin + ArrowSpawnTimeMax) / 2);
+
+        if (isRandomLockSpawnTime)
+            lockTimer.startTimer (Random.Range (lockSpawnTimeMin, lockSpawnTimeMax));
+        else
+            lockTimer.startTimer ((lockSpawnTimeMin + lockSpawnTimeMax) / 2);
+
+    }
+
+    void itemTimersUpdate ()
+    {
+        if (scoreMakerTimer.stop)
+        {
+            if (isRandomScoreMakerSpawnTime)
+                scoreMakerTimer.startTimer (Random.Range (ScoreMakerSpawnTimeMin, ScoreMakerSpawnTimeMax));
+            else
+                scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax + ScoreMakerSpawnTimeMin) / 2);
+
+            // if more than 5 scoremakers in the stage
+            if (itemList.OfType<ScoreMaker> ().Count () < scoreMakerCountLimit)
+            {
+                ScoreMaker sm = SpawnScoreMaker (2.0f);
+
+            }
+
+        }
+
+        if (arrowTimer.stop)
+        {
+            if (isRandomLockSpawnTime)
+                lockTimer.startTimer (Random.Range (lockSpawnTimeMin, lockSpawnTimeMax));
+            else
+                lockTimer.startTimer ((lockSpawnTimeMin + lockSpawnTimeMax) / 2);
+
+            // if more than 5 scoremakers in the stage
+            if (itemList.OfType<Lock> ().Count () < lockCountLimit)
+            {
+                Lock sm = SpawnLock (2.0f);
+
+            }
+
+        }
+
+        if (arrowTimer.stop)
+        {
+            if (isRandomArrowSpawnTime)
+                arrowTimer.startTimer (Random.Range (ArrowSpawnTimeMin, ArrowSpawnTimeMax));
+            else
+                arrowTimer.startTimer ((ArrowSpawnTimeMin + ArrowSpawnTimeMax) / 2);
+
+            if (itemList.OfType<Arrow> ().Count () < arrowCountLimit)
+            {
+                float ratioTotal = singleArrowRatio + doubleArrowRatio + quadrupleArrowRatio;
+                float ar = Random.Range (0f, ratioTotal);
+                Arrow.arrowType t = Arrow.arrowType.Single;
+                if ((ar - quadrupleArrowRatio) < 0)
+                {
+                    t = Arrow.arrowType.Quadruple;
+                }
+                else if ((ar - doubleArrowRatio) < 0)
+                {
+                    t = Arrow.arrowType.Double;
+                }
+                else if ((ar - singleArrowRatio) < 0)
+                {
+                    t = Arrow.arrowType.Single;
+                }
+
+                Arrow sm = SpawnArrow (1.0f, t);
+
+            }
+
+        }
+
+    }
     // Update is called once per frame
     void Update ()
     {
@@ -160,20 +305,8 @@ public class TheGrid : MonoBehaviour
             SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
         }
 
-        if (timer.stop)
-        {
-            if (isRandomScoreMakerSpawnTime)
-                timer.startTimer (Random.Range (3f, ScoreMakerSpawnTime));
-            else
-                timer.startTimer (ScoreMakerSpawnTime);
+        itemTimersUpdate ();
 
-            if (itemList.Count < 5)
-            {
-                ScoreMaker sm = SpawnScoreMaker (Random.Range (0, mapWidth), Random.Range (0, mapHeight));
-
-            }
-
-        }
     }
 
     //Spawn Players (currrently 2)
@@ -187,17 +320,17 @@ public class TheGrid : MonoBehaviour
             {
                 initial_pos = GetGridBlock (0, 0).gameObject.transform.position;
                 initial_pos.y = 0.1f;
-               
+
             }
             else if (i == 1)
             {
                 initial_pos = GetGridBlock (mapWidth - 1, mapHeight - 1).gameObject.transform.position;
                 initial_pos.y = 0.1f;
             }
-            GameObject player_prefab = Instantiate (playerPrefabList [i], initial_pos, Quaternion.identity) as GameObject;
-            player_prefab.GetComponent<Player> ().setGridRef(this);
-            player_prefab.GetComponent<Player> ().setRhythmSystemRef(rhythmSystem_ref);
-            playerList[i] = player_prefab.GetComponent<Player>();
+            GameObject player_prefab = Instantiate (playerPrefabList[i], initial_pos, Quaternion.identity) as GameObject;
+            player_prefab.GetComponent<Player> ().setGridRef (this);
+            player_prefab.GetComponent<Player> ().setRhythmSystemRef (rhythmSystem_ref);
+            playerList[i] = player_prefab.GetComponent<Player> ();
 
         }
     }
@@ -211,11 +344,155 @@ public class TheGrid : MonoBehaviour
         GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
         ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
         sm.grid_ref = GetComponent<TheGrid> ();
+        sm.rhythmSystem_ref = rhythmSystem_ref;
         sm.gridBlockOwner = gb;
+        sm.x = gb.X;
+        sm.y = gb.Y;
+        sm.z = gb.Z;
+
         gb.hasItem = true;
+        gb.Item = sm;
         itemList.Add (sm);
 
         return sm;
+    }
+
+    private ScoreMaker SpawnScoreMaker (float range)
+    {
+        GridBlock gb = null;
+        while (gb == null)
+            gb = GetEmptyIsolatedGridBlock (range);
+
+        if (gb.isOccupied || gb.hasItem) return null;
+
+        GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+        ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
+        sm.grid_ref = GetComponent<TheGrid> ();
+        sm.rhythmSystem_ref = rhythmSystem_ref;
+        sm.gridBlockOwner = gb;
+        sm.x = gb.X;
+        sm.y = gb.Y;
+        sm.z = gb.Z;
+
+        gb.hasItem = true;
+        gb.Item = sm;
+        itemList.Add (sm);
+
+        return sm;
+    }
+
+    private Arrow SpawnArrow (int x, int z, Arrow.arrowType typeOfArrow)
+    {
+        GridBlock gb = GetGridBlock (x, z);
+        if (gb.isOccupied || gb.hasItem) return null;
+
+        GameObject prefab;
+        switch (typeOfArrow)
+        {
+            case Arrow.arrowType.Quadruple:
+                prefab = arrows_prefabs[2];
+                break;
+
+            case Arrow.arrowType.Double:
+                prefab = arrows_prefabs[1];
+                break;
+
+            case Arrow.arrowType.Single:
+            default:
+                prefab = arrows_prefabs[0];
+                break;
+
+        }
+        GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+        Arrow a = arrowPrefab.GetComponent<Arrow> ();
+        a.grid_ref = GetComponent<TheGrid> ();
+        a.rhythmSystem_ref = rhythmSystem_ref;
+        a.gridBlockOwner = gb;
+        a.arrow_type = typeOfArrow;
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
+        a.x = gb.X;
+        a.y = gb.Y;
+        a.z = gb.Z;
+
+        gb.hasItem = true;
+        itemList.Add (a);
+
+        return a;
+    }
+
+    private Arrow SpawnArrow (float range, Arrow.arrowType typeOfArrow)
+    {
+        GridBlock gb = null;
+        while (gb == null)
+            gb = GetEmptyIsolatedGridBlock (range);
+
+        if (gb.isOccupied || gb.hasItem) return null;
+
+        GameObject prefab;
+        switch (typeOfArrow)
+        {
+            case Arrow.arrowType.Quadruple:
+                prefab = arrows_prefabs[2];
+                break;
+
+            case Arrow.arrowType.Double:
+                prefab = arrows_prefabs[1];
+                break;
+
+            case Arrow.arrowType.Single:
+            default:
+                prefab = arrows_prefabs[0];
+                break;
+
+        }
+        GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+        Arrow a = arrowPrefab.GetComponent<Arrow> ();
+        a.grid_ref = GetComponent<TheGrid> ();
+        a.rhythmSystem_ref = rhythmSystem_ref;
+        a.arrow_type = typeOfArrow;
+        a.gridBlockOwner = gb;
+
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
+        a.x = gb.X;
+        a.y = gb.Y;
+        a.z = gb.Z;
+
+        gb.hasItem = true;
+        itemList.Add (a);
+
+        return a;
+    }
+
+    private Lock SpawnLock (int x, int z)
+    {
+        GridBlock gb = GetGridBlock (x, z);
+        if (gb.isOccupied || gb.hasItem) return null;
+
+        GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+        
+        lockPrefab.GetComponent<Lock> ().Setup(GetComponent<TheGrid> (),rhythmSystem_ref, gb);
+
+        gb.hasItem = true;
+        itemList.Add (lockPrefab.GetComponent<Lock> ());
+
+        return lockPrefab.GetComponent<Lock> ();
+    }
+
+    private Lock SpawnLock (float range)
+    {
+        GridBlock gb = null;
+        while (gb == null)
+            gb = GetEmptyIsolatedGridBlock (range);
+
+        if (gb.isOccupied || gb.hasItem) return null;
+
+        GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+        lockPrefab.GetComponent<Lock> ().Setup(GetComponent<TheGrid> (),rhythmSystem_ref, gb);
+
+        gb.hasItem = true;
+        itemList.Add (lockPrefab.GetComponent<Lock> ());
+
+        return lockPrefab.GetComponent<Lock> ();
     }
 
     //Build the Map
@@ -349,6 +626,7 @@ public class TheGrid : MonoBehaviour
 
                 gb.changeColor (GridBlock.gridBlockColor.White);
                 gb.changeOwner (null);
+                gb.isLocked = false;
                 result++;
             }
         }
@@ -363,7 +641,6 @@ public class TheGrid : MonoBehaviour
         p.multiplierCombo = 0;
 
     }
-
 
     public void SpawnScoreFloatingText (Vector3 pos, string tex, Color texCol)
     {
@@ -405,6 +682,39 @@ public class TheGrid : MonoBehaviour
 
     }
 
+    //returns random empty gridblock with no players in that range
+    public GridBlock GetEmptyIsolatedGridBlock (float range)
+    {
+
+        bool selected = false;
+        int it = -1;
+        while (!selected && GetGridBlockList ().Count > 0 && playerList.Count > 0)
+        {
+            it = Random.Range (0, GetGridBlockList ().Count);
+
+            foreach (Player p in playerList)
+            {
+                if (!p) continue;
+
+                Vector3 gb_pos = new Vector3 (GetGridBlockList () [it].X, 0, GetGridBlockList () [it].Z);
+                Vector3 p_pos = new Vector3 (p.x, 0, p.z);
+
+                if (Vector3.Distance (gb_pos, p_pos) >= range && GetGridBlockList () [it].hasItem == false)
+                {
+                    selected = true;
+                    break;
+                }
+
+            }
+
+        }
+
+        if (it > 0)
+            return GetGridBlockList () [it];
+        else
+            return null;
+    }
+
     public Vector3 getGridBlockPosition (int x, int z, float y)
     {
         Vector3 pos = GetGridBlock (x, z).gameObject.transform.position;
@@ -413,33 +723,31 @@ public class TheGrid : MonoBehaviour
         return pos;
     }
 
-
-    private void prefabsAssertions()
+    private void prefabsAssertions ()
     {
 
+        Assert.IsNotNull (gridBlock_prefab1);
+        Assert.IsNotNull (scoreMaker_prefab);
+        Assert.IsNotNull (scoreFloatingText_prefab);
+        Assert.IsNotNull (missFloatingText_prefab);
+        Assert.IsNotNull (rhythmSystem_ref);
 
-        Assert.IsNotNull(gridBlock_prefab1);
-        Assert.IsNotNull(scoreMaker_prefab);
-        Assert.IsNotNull(scoreFloatingText_prefab);
-        Assert.IsNotNull(missFloatingText_prefab);
-        Assert.IsNotNull(rhythmSystem_ref);
-
-        for(int i = 0; i < playerList.Count; i++)
+        for (int i = 0; i < playerList.Count; i++)
         {
-            if(i < 2)
-            Assert.IsNotNull(playerList[i]);
+            if (i < 2)
+                Assert.IsNotNull (playerList[i]);
         }
 
-        for(int i = 0; i < playerPrefabList.Count; i++)
+        for (int i = 0; i < playerPrefabList.Count; i++)
         {
-            if(i < 2)
-            Assert.IsNotNull(playerPrefabList[i]);
+            if (i < 2)
+                Assert.IsNotNull (playerPrefabList[i]);
         }
 
-        for(int i = 0; i < playerUIList.Count; i++)
+        for (int i = 0; i < playerUIList.Count; i++)
         {
-            if(i < 2)
-            Assert.IsNotNull(playerUIList[i]);
+            if (i < 2)
+                Assert.IsNotNull (playerUIList[i]);
         }
 
         /*
@@ -458,7 +766,7 @@ public class TheGrid : MonoBehaviour
     [SerializeField]
     private RhythmSystem rhythmSystem_ref;
          */
-        
+
     }
     public void QuitGame ()
     {
