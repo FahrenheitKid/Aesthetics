@@ -183,7 +183,7 @@ public class RhythmSystem : MonoBehaviour
 
     private void Awake() {
         
-        if(Random.Range(0,3) == 0 )
+        if(Random.Range(0,3) == 5 )
 		{
            if(!musicPlayer_ref.IsPlaying)
 
@@ -208,7 +208,7 @@ public class RhythmSystem : MonoBehaviour
 
            }
         }
-        else if(Random.Range(0,3) == 2)
+        else //if(Random.Range(0,3) == 2)
         {
             if(!musicPlayer_ref.IsPlaying)
 
@@ -236,7 +236,7 @@ public class RhythmSystem : MonoBehaviour
 
         
 
-       if(Random.Range(0,3) == 0 )
+       if(Random.Range(0,3) == 5 )
 		{
            if(!musicPlayer_ref.IsPlaying)
 
@@ -261,7 +261,7 @@ public class RhythmSystem : MonoBehaviour
 
            }
         }
-        else if(Random.Range(0,3) == 2)
+        else //if(Random.Range(0,3) == 2)
         {
             if(!musicPlayer_ref.IsPlaying)
 

@@ -469,19 +469,13 @@ public class TheGrid : MonoBehaviour
         if (gb.isOccupied || gb.hasItem) return null;
 
         GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
-        Lock a = lockPrefab.GetComponent<Lock> ();
-        a.grid_ref = GetComponent<TheGrid> ();
-        a.rhythmSystem_ref = rhythmSystem_ref;
-        a.gridBlockOwner = gb;
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
-        a.x = gb.X;
-        a.y = gb.Y;
-        a.z = gb.Z;
+        
+        lockPrefab.GetComponent<Lock> ().Setup(GetComponent<TheGrid> (),rhythmSystem_ref, gb);
 
         gb.hasItem = true;
-        itemList.Add (a);
+        itemList.Add (lockPrefab.GetComponent<Lock> ());
 
-        return a;
+        return lockPrefab.GetComponent<Lock> ();
     }
 
     private Lock SpawnLock (float range)
@@ -493,19 +487,12 @@ public class TheGrid : MonoBehaviour
         if (gb.isOccupied || gb.hasItem) return null;
 
         GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
-        Lock a = lockPrefab.GetComponent<Lock> ();
-        a.grid_ref = GetComponent<TheGrid> ();
-        a.rhythmSystem_ref = rhythmSystem_ref;
-        a.gridBlockOwner = gb;
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
-        a.x = gb.X;
-        a.y = gb.Y;
-        a.z = gb.Z;
+        lockPrefab.GetComponent<Lock> ().Setup(GetComponent<TheGrid> (),rhythmSystem_ref, gb);
 
         gb.hasItem = true;
-        itemList.Add (a);
+        itemList.Add (lockPrefab.GetComponent<Lock> ());
 
-        return a;
+        return lockPrefab.GetComponent<Lock> ();
     }
 
     //Build the Map

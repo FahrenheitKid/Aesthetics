@@ -18,10 +18,10 @@ public class ScoreMaker : Item
 
     }
 
-    public override void Equip(Player p)
-	{
-		
-	}
+    public override void Equip (Player p)
+    {
+
+    }
 
     public override void Activate ()
     {

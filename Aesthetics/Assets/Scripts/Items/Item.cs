@@ -126,8 +126,20 @@ public class Item : MonoBehaviour
             //activate in case it is not an equippable item
             Activate ();
 
-            Equip(owner);
+            Equip (owner);
         }
+
+    }
+
+    public virtual void Setup (TheGrid grid, RhythmSystem rhythm, GridBlock gb)
+    {
+        grid_ref = grid;
+        rhythmSystem_ref = rhythm;
+        gridBlockOwner = gb;
+        x = gb.X;
+        y = gb.Y;
+        z = gb.Z;
+        print ("base setup");
 
     }
 
@@ -147,10 +159,9 @@ public class Item : MonoBehaviour
     {
         if (p.hasItem)
         {
-            if(p.item)
-            p.item.Kill(this);
+            if (p.item)
+                p.item.Kill (this);
         }
-            
 
         p.hasItem = true;
         p.item = this;
@@ -158,8 +169,8 @@ public class Item : MonoBehaviour
         print ("Base item equiped");
     }
 
-    public virtual void Kill(Item current_Item)
+    public virtual void Kill (Item current_Item)
     {
-        
+
     }
 }

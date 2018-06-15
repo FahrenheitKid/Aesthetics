@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
-using DG.Tweening;
 
 public class Arrow : Item
 {
@@ -98,202 +98,197 @@ public class Arrow : Item
                 break;
         }
 
-		if(clockwise)
-		{
-			Vector3 rot = transform.rotation.eulerAngles;
-			rot.y-=90;
-			gameObject.transform.DORotate(rot,rhythmSystem_ref.rhythmTarget_Ref.duration);
-		}
-		else
-		{
-			Vector3 rot = transform.rotation.eulerAngles;
-			rot.y+=90;
-			gameObject.transform.DORotate(rot,rhythmSystem_ref.rhythmTarget_Ref.duration);
-		}
+        if (clockwise)
+        {
+            Vector3 rot = transform.rotation.eulerAngles;
+            rot.y -= 90;
+            gameObject.transform.DORotate (rot, rhythmSystem_ref.rhythmTarget_Ref.duration);
+        }
+        else
+        {
+            Vector3 rot = transform.rotation.eulerAngles;
+            rot.y += 90;
+            gameObject.transform.DORotate (rot, rhythmSystem_ref.rhythmTarget_Ref.duration);
+        }
     }
 
-	public override void Equip(Player p)
-	{
+    public override void Equip (Player p)
+    {
 
-	}
+    }
     public override void Activate ()
     {
         base.Activate ();
 
-      
+        bool doNorth = false;
+        bool doEast = false;
+        bool doSouth = false;
+        bool doWest = false;
 
-		bool doNorth = false;
-		bool doEast = false;
-		bool doSouth = false;
-		bool doWest = false;
+        switch (arrow_type)
+        {
+            case arrowType.Single:
+                switch (orientation)
+                {
+                    case CameraScript.windRose.North:
+                        doNorth = true;
+                        break;
+                    case CameraScript.windRose.East:
+                        doEast = true;
+                        break;
+                    case CameraScript.windRose.South:
+                        doSouth = true;
+                        break;
+                    case CameraScript.windRose.West:
+                        doWest = true;
+                        break;
+                    default:
+                        break;
+                }
+                break;
 
-        switch(arrow_type)
-		{
-			case arrowType.Single:
-				switch(orientation)
-				{
-					case CameraScript.windRose.North:
-					doNorth = true;
-					break;
-					case CameraScript.windRose.East:
-					doEast = true;
-					break;
-					case CameraScript.windRose.South:
-					doSouth = true;
-					break;
-					case CameraScript.windRose.West:
-					doWest = true;
-					break;
-					default:
-					break;
-				}
-			break;
+            case arrowType.Double:
+                switch (orientation)
+                {
+                    case CameraScript.windRose.North:
+                    case CameraScript.windRose.South:
+                        doNorth = true;
+                        doSouth = true;
+                        break;
+                    case CameraScript.windRose.East:
+                    case CameraScript.windRose.West:
+                        doEast = true;
+                        doWest = true;
+                        break;
 
-			case arrowType.Double:
-				switch(orientation)
-				{
-					case CameraScript.windRose.North:
-					case CameraScript.windRose.South:
-					doNorth = true;
-					doSouth = true;
-					break;
-					case CameraScript.windRose.East:
-					case CameraScript.windRose.West:
-					doEast = true;
-					doWest = true;
-					break;
+                    default:
+                        break;
+                }
+                break;
 
-					default:
-					break;
-				}
-			break;
+            case arrowType.Triple:
+                switch (orientation)
+                {
 
-			case arrowType.Triple:
-				switch(orientation)
-				{
-					
-					default:
-					break;
-				}
-			break;
+                    default : break;
+                }
+                break;
 
-			case arrowType.Quadruple:
+            case arrowType.Quadruple:
 
-					doNorth = true;
-					doSouth = true;
-					doEast = true;
-					doWest = true;
+                doNorth = true;
+                doSouth = true;
+                doEast = true;
+                doWest = true;
 
-			break;
+                break;
 
-			default:
-			break;
-		}
+            default:
+                break;
+        }
 
-		foreach(GridBlock gb in grid_ref.GetGridBlockList())
-		{
-			if(doNorth) // -- Z
-			{
+        foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+        {
+            if (doNorth) // -- Z
+            {
 
+                if (gb.Z <= gridBlockOwner.Z && gb.X == gridBlockOwner.X)
+                {
+                    if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
+                    {
+                        if (gb.isLocked == false)
+                        {
+                            gb.changeColor (owner.blackGridColor);
+                            gb.changeOwner (owner);
+                        }
 
-				if(gb.Z <= gridBlockOwner.Z && gb.X == gridBlockOwner.X)
-				{
-					if(owner.hasItem && owner.item  && owner.item.GetType() == typeof(Lock))
-					{
-						if(gb.isLocked == false)
-						{
-							gb.changeColor(owner.blackGridColor);
-							gb.changeOwner(owner);
-						}
-						
-					}
-					else
-					{
-						if(gb.isLocked == false)
-						{
-							gb.changeColor(owner.gridColor);
-							gb.changeOwner(owner);
-						}
-					}
-					
-					
-				}
-			}
+                    }
+                    else
+                    {
+                        if (gb.isLocked == false)
+                        {
+                            gb.changeColor (owner.gridColor);
+                            gb.changeOwner (owner);
+                        }
+                    }
 
-			if(doEast) // >> X
-			{
-				if(gb.X >= gridBlockOwner.X && gb.Z == gridBlockOwner.Z)
-				{
-					if(owner.hasItem && owner.item  && owner.item.GetType() == typeof(Lock))
-					{
-						if(gb.isLocked == false)
-						{
-							gb.changeColor(owner.blackGridColor);
-							gb.changeOwner(owner);
-						}
-						
-					}
-					else
-					{
-						if(gb.isLocked == false)
-						{
-							gb.changeColor(owner.gridColor);
-							gb.changeOwner(owner);
-						}
-					}
-				}
-			}
+                }
+            }
 
-			if(doSouth) // >> Z
-			{
-				
-				if(gb.Z >= gridBlockOwner.Z && gb.X == gridBlockOwner.X)
-				{
-					if(owner.hasItem && owner.item  && owner.item.GetType() == typeof(Lock))
-					{
-						if(gb.isLocked == false)
-						{
-							gb.changeColor(owner.blackGridColor);
-							gb.changeOwner(owner);
-						}
-						
-					}
-					else
-					{
-						if(gb.isLocked == false)
-						{
-							gb.changeColor(owner.gridColor);
-							gb.changeOwner(owner);
-						}
-					}
-				}
+            if (doEast) // >> X
+            {
+                if (gb.X >= gridBlockOwner.X && gb.Z == gridBlockOwner.Z)
+                {
+                    if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
+                    {
+                        if (gb.isLocked == false)
+                        {
+                            gb.changeColor (owner.blackGridColor);
+                            gb.changeOwner (owner);
+                        }
 
-			}
+                    }
+                    else
+                    {
+                        if (gb.isLocked == false)
+                        {
+                            gb.changeColor (owner.gridColor);
+                            gb.changeOwner (owner);
+                        }
+                    }
+                }
+            }
 
-			if(doWest) // << X
-			{
-				if(gb.X <= gridBlockOwner.X && gb.Z == gridBlockOwner.Z)
-				{
-					if(owner.hasItem && owner.item  && owner.item.GetType() == typeof(Lock))
-					{
-						if(gb.isLocked == false)
-						{
-							gb.changeColor(owner.blackGridColor);
-							gb.changeOwner(owner);
-						}
-						
-					}
-					else
-					{
-						if(gb.isLocked == false)
-						{
-							gb.changeColor(owner.gridColor);
-							gb.changeOwner(owner);
-						}
-					}
-				}
-			}
-		}
+            if (doSouth) // >> Z
+            {
+
+                if (gb.Z >= gridBlockOwner.Z && gb.X == gridBlockOwner.X)
+                {
+                    if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
+                    {
+                        if (gb.isLocked == false)
+                        {
+                            gb.changeColor (owner.blackGridColor);
+                            gb.changeOwner (owner);
+                        }
+
+                    }
+                    else
+                    {
+                        if (gb.isLocked == false)
+                        {
+                            gb.changeColor (owner.gridColor);
+                            gb.changeOwner (owner);
+                        }
+                    }
+                }
+
+            }
+
+            if (doWest) // << X
+            {
+                if (gb.X <= gridBlockOwner.X && gb.Z == gridBlockOwner.Z)
+                {
+                    if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
+                    {
+                        if (gb.isLocked == false)
+                        {
+                            gb.changeColor (owner.blackGridColor);
+                            gb.changeOwner (owner);
+                        }
+
+                    }
+                    else
+                    {
+                        if (gb.isLocked == false)
+                        {
+                            gb.changeColor (owner.gridColor);
+                            gb.changeOwner (owner);
+                        }
+                    }
+                }
+            }
+        }
 
         foreach (var item in grid_ref.itemList.OfType<Arrow> ())
         {
@@ -305,9 +300,9 @@ public class Arrow : Item
 
         }
 
-		  gridBlockOwner.hasItem = false;
+        gridBlockOwner.hasItem = false;
 
-		rhythmSystem_ref.getRhythmNoteToPoolEvent().RemoveListener(IncreaseCount);
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (IncreaseCount);
         Destroy (gameObject);
     }
 
