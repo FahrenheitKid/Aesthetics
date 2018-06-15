@@ -24,10 +24,10 @@ public class RhythmNote : MonoBehaviour
     public bool isMirror;
     public RhythmNote mirror_ref;
 
-	[SerializeField]
+    [SerializeField]
     private float scalingFactorX = 1f;
 
-	[SerializeField]
+    [SerializeField]
     private float scalingFactorY = 1f;
 
     #endregion
@@ -41,9 +41,10 @@ public class RhythmNote : MonoBehaviour
 
     #endregion
     #region Methods
-	private void Start() {
-		
-	}
+    private void Start ()
+    {
+
+    }
     // Prepares the Note Object for use.
     public void Initialize (KoreographyEvent evt, Color color, RhythmSystem rhythmSys, bool isMirrorNote)
     {
@@ -57,11 +58,10 @@ public class RhythmNote : MonoBehaviour
 
         transform.position = rhythmSystem_ref.spawnPosition;
 
-
-		#if DEBUG
-		Assert.IsNotNull(rhythmSystem_ref);
-		Assert.IsNotNull(trackedEvent);
-		#endif
+#if DEBUG
+        Assert.IsNotNull (rhythmSystem_ref);
+        Assert.IsNotNull (trackedEvent);
+#endif
     }
 
     // Resets the Note Object to its default state.
@@ -86,26 +86,26 @@ public class RhythmNote : MonoBehaviour
     {
 
         float overdrive = visuals.sprite.rect.width / visuals.sprite.pixelsPerUnit;
-		overdrive/= 6;
-		//overdrive*= 0;
+        overdrive /= 6;
+        //overdrive*= 0;
 
         if (!isMirror)
         {
             if (transform.localPosition.x >= rhythmSystem_ref.LocalTargetPosition.x)
             {
-				visuals.enabled = false;
-				 if (transform.localPosition.x >= rhythmSystem_ref.LocalTargetPosition.x + overdrive)
-					ReturnToPool ();
+                visuals.enabled = false;
+                if (transform.localPosition.x >= rhythmSystem_ref.LocalTargetPosition.x + overdrive)
+                    ReturnToPool ();
             }
         }
         else
         {
             if (transform.localPosition.x <= rhythmSystem_ref.LocalTargetPosition.x)
-            {	
-				visuals.enabled = false;
+            {
+                visuals.enabled = false;
 
-				if (transform.localPosition.x <= rhythmSystem_ref.LocalTargetPosition.x - overdrive)
-                ReturnToPool ();
+                if (transform.localPosition.x <= rhythmSystem_ref.LocalTargetPosition.x - overdrive)
+                    ReturnToPool ();
             }
 
         }
@@ -150,13 +150,12 @@ public class RhythmNote : MonoBehaviour
     void UpdatePosition (bool mirror)
     {
 
-			#if DEBUG
+#if DEBUG
         Assert.IsNotNull (rhythmSystem_ref);
-			#endif
+#endif
 
         // Get the number of samples we traverse given the current speed in Units-Per-Second.
         float samplesPerUnit = rhythmSystem_ref.SampleRate / rhythmSystem_ref.noteSpeed;
-
 
         // Our position is offset by the distance from the target in world coordinates.  This depends on
         //  the distance from "perfect time" in samples (the time of the Koreography Event!).
@@ -173,7 +172,6 @@ public class RhythmNote : MonoBehaviour
             pos.x += (rhythmSystem_ref.DelayedSampleTime - trackedEvent.StartSample) / samplesPerUnit;
         }
 
-
         transform.localPosition = pos;
     }
 
@@ -182,10 +180,10 @@ public class RhythmNote : MonoBehaviour
     //  before/after the specific sample time of the Note Object).
     public bool IsNoteHittable ()
     {
-		#if DEBUG
-		Assert.IsNotNull(rhythmSystem_ref);
-		Assert.IsNotNull(trackedEvent);
-		#endif
+#if DEBUG
+        Assert.IsNotNull (rhythmSystem_ref);
+        Assert.IsNotNull (trackedEvent);
+#endif
 
         int noteTime = trackedEvent.StartSample;
         int curTime = rhythmSystem_ref.DelayedSampleTime;
@@ -219,7 +217,7 @@ public class RhythmNote : MonoBehaviour
         if (!isMirror && mirror_ref)
             mirror_ref.ReturnToPool ();
 
-		visuals.enabled = true;
+        visuals.enabled = true;
         rhythmSystem_ref.ReturnNoteObjectToPool (this);
         //Reset ();
     }
@@ -228,7 +226,7 @@ public class RhythmNote : MonoBehaviour
     public void OnHit ()
     {
         //print ("Hit it!");
-       // ReturnToPool ();
+        // ReturnToPool ();
     }
 
     // Performs actions when the Note Object is cleared.

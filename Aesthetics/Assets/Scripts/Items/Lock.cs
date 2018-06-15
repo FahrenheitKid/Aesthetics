@@ -28,7 +28,6 @@ public class Lock : Item
         base.Setup (grid, rhythm, gb);
         rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (IncreaseCount);
         didSetup = true;
-        print ("full setup");
 
     }
     // Update is called once per frame
@@ -93,17 +92,17 @@ public class Lock : Item
         else
         {
 
-                foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+            foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+            {
+                if (gb.owner == owner || gb.mainColor == owner.blackGridColor)
                 {
-                    if (gb.owner == owner || gb.mainColor == owner.blackGridColor)
-                    {
-                        gb.changeColor (owner.gridColor);
-                        if (gb.isLocked)
-                            gb.isLocked = false;
+                    gb.changeColor (owner.gridColor);
+                    if (gb.isLocked)
+                        gb.isLocked = false;
 
-                    }
                 }
-				
+            }
+
             print ("KILL null");
         }
 

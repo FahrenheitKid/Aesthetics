@@ -469,8 +469,8 @@ public class TheGrid : MonoBehaviour
         if (gb.isOccupied || gb.hasItem) return null;
 
         GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
-        
-        lockPrefab.GetComponent<Lock> ().Setup(GetComponent<TheGrid> (),rhythmSystem_ref, gb);
+
+        lockPrefab.GetComponent<Lock> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
         gb.hasItem = true;
         itemList.Add (lockPrefab.GetComponent<Lock> ());
@@ -487,7 +487,7 @@ public class TheGrid : MonoBehaviour
         if (gb.isOccupied || gb.hasItem) return null;
 
         GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
-        lockPrefab.GetComponent<Lock> ().Setup(GetComponent<TheGrid> (),rhythmSystem_ref, gb);
+        lockPrefab.GetComponent<Lock> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
         gb.hasItem = true;
         itemList.Add (lockPrefab.GetComponent<Lock> ());
@@ -508,7 +508,7 @@ public class TheGrid : MonoBehaviour
                 GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xOffset * j - mapWidth * xOffset, 0, zOffset * mapHeight - i * zOffset), Quaternion.identity) as GameObject;
 
                 TilePrefab.transform.parent = transform;
-                TilePrefab.GetComponent<GridBlock> ().init (j, 0, i);
+                TilePrefab.GetComponent<GridBlock> ().init (j, 0, i, GetComponent<TheGrid>(),rhythmSystem_ref);
                 TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor) tiles[i, j]);
                 _GridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
 
@@ -699,7 +699,7 @@ public class TheGrid : MonoBehaviour
                 Vector3 gb_pos = new Vector3 (GetGridBlockList () [it].X, 0, GetGridBlockList () [it].Z);
                 Vector3 p_pos = new Vector3 (p.x, 0, p.z);
 
-                if (Vector3.Distance (gb_pos, p_pos) >= range && GetGridBlockList () [it].hasItem == false)
+                if (Vector3.Distance (gb_pos, p_pos) >= range && GetGridBlockList () [it].hasItem == false && GetGridBlockList () [it].isOccupied == false)
                 {
                     selected = true;
                     break;
@@ -713,6 +713,55 @@ public class TheGrid : MonoBehaviour
             return GetGridBlockList () [it];
         else
             return null;
+    }
+
+    //returns random empty gridblock with no players in that range
+    public GridBlock GetRandomGridBlock (float range, bool? hasItem, bool? isOccupied, bool? isFallen)
+    {
+        int while_max_count = 0;
+        bool selected = false;
+        int it = -1;
+        while (!selected && GetGridBlockList ().Count > 0 && playerList.Count > 0 && while_max_count <= 200)
+        {
+            it = Random.Range (0, GetGridBlockList ().Count);
+
+            foreach (Player p in playerList)
+            {
+                if (!p) continue;
+
+                Vector3 gb_pos = new Vector3 (GetGridBlockList () [it].X, 0, GetGridBlockList () [it].Z);
+                Vector3 p_pos = new Vector3 (p.x, 0, p.z);
+
+                if (Vector3.Distance (gb_pos, p_pos) >= range)
+                {
+                    if ((hasItem != null && GetGridBlockList () [it].hasItem == hasItem) || hasItem == null)
+                    {
+                        if ((isOccupied != null && GetGridBlockList () [it].isOccupied == isOccupied) || isOccupied == null)
+                        {
+                            if ((isFallen != null && GetGridBlockList () [it].isFallen == isOccupied) || isFallen == null)
+                            {
+                                selected = true;
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+            while_max_count++;
+
+        }
+
+        if (it > 0)
+            return GetGridBlockList () [it];
+        else
+        {
+            print("Não achou ou explodiu");
+             return null;
+        }
+           
     }
 
     public Vector3 getGridBlockPosition (int x, int z, float y)
@@ -749,23 +798,6 @@ public class TheGrid : MonoBehaviour
             if (i < 2)
                 Assert.IsNotNull (playerUIList[i]);
         }
-
-        /*
-        
-    private GameObject gridBlock_prefab1;
-
-    [SerializeField]
-    private GameObject scoreMaker_prefab;
-
-    [SerializeField]
-    private GameObject scoreFloatingText_prefab;
-
-    [SerializeField]
-    private GameObject missFloatingText_prefab;
-
-    [SerializeField]
-    private RhythmSystem rhythmSystem_ref;
-         */
 
     }
     public void QuitGame ()

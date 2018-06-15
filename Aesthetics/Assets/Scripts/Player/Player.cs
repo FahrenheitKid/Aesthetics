@@ -352,7 +352,7 @@ public class Player : MonoBehaviour
         float musicBPM = (float) rhythmSystem_ref.currentMusicBPM;
 
         duration = (float) (60 / musicBPM) / 2;
-        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.eventID, OnMainBeat);
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, OnMainBeat);
 
     }
 

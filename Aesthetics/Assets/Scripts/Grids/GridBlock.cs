@@ -138,6 +138,12 @@ public class GridBlock : MonoBehaviour
 
     public static gridType GridType;
 
+    [SerializeField]
+    private TheGrid grid_ref;
+
+    [SerializeField]
+    private RhythmSystem rhythmSystem_ref;
+
     //[SerializeField]
     //private MeshRenderer meshRenderer;
 
@@ -147,6 +153,19 @@ public class GridBlock : MonoBehaviour
     [SerializeField]
     private Material[] materials;
 
+    public struct FallStats
+    {
+            public int pattern;
+            public int countdown;
+            public int duration;
+
+            public int countdown_count;
+
+            public int duration_count;
+
+    }
+
+    private FallStats fall_data;
     [SerializeField]
     private int _x, _y, _z;
     public int X
@@ -270,11 +289,29 @@ public class GridBlock : MonoBehaviour
         }
     }
 
-    public void init (int x, int y, int z)
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isFallen = false;
+    public bool isFallen
+    {
+        get
+        {
+            return _isFallen;
+        }
+        set
+        {
+            _isFallen = value;
+        }
+    }
+
+    public void init (int x, int y, int z, TheGrid gr, RhythmSystem rs)
     {
         _x = x;
         _y = y;
         _z = z;
+
+        grid_ref = gr;
+        rhythmSystem_ref = rs;
+        
     }
     // Use this for initialization
     void Start ()
@@ -350,6 +387,47 @@ public class GridBlock : MonoBehaviour
 
     }
 
+
+    public void Fall(int pattern, int countdown, int duration)
+    {
+        fall_data.pattern = pattern;
+        fall_data.countdown = countdown;
+        fall_data.duration = duration;
+
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (IncreaseCount);
+
+    }
+
+    public void IncreaseCount ()
+    {
+         //print (fall_data.pattern + " " + fall_data.countdown + " " + fall_data.duration);
+        /*
+
+        if (!didSetup) return;
+
+        if (startCount)
+        {
+            if (count < beatsDuration)
+            {
+                count++;
+                //print("count " + count);
+            }
+            else
+            {
+                print ("timeout ");
+                count = 0;
+                startCount = false;
+
+                Kill (null);
+            }
+        }
+        
+         */
+        
+
+    }
+
+
     public void changeOwner (Player p)
     {
         if (p == null)
@@ -361,7 +439,7 @@ public class GridBlock : MonoBehaviour
         owner = p;
 
     }
-    
+
     // changes directly the color of the gridblock
     public void changeColor (gridBlockColor col)
     {

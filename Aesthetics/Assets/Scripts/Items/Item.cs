@@ -139,7 +139,6 @@ public class Item : MonoBehaviour
         x = gb.X;
         y = gb.Y;
         z = gb.Z;
-        print ("base setup");
 
     }
 
