@@ -190,6 +190,9 @@ public class TheGrid : MonoBehaviour
     void Start ()
     {
 
+        QualitySettings.vSyncCount = 0; // VSync must be disabled
+        Application.targetFrameRate = 45;
+
 #if DEBUG
         prefabsAssertions ();
 #endif
@@ -508,8 +511,9 @@ public class TheGrid : MonoBehaviour
                 GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xOffset * j - mapWidth * xOffset, 0, zOffset * mapHeight - i * zOffset), Quaternion.identity) as GameObject;
 
                 TilePrefab.transform.parent = transform;
-                TilePrefab.GetComponent<GridBlock> ().init (j, 0, i, GetComponent<TheGrid>(),rhythmSystem_ref);
+                TilePrefab.GetComponent<GridBlock> ().init (j, 0, i, GetComponent<TheGrid> (), rhythmSystem_ref);
                 TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor) tiles[i, j]);
+                TilePrefab.GetComponent<GridBlock> ().startPosition = TilePrefab.transform.position;
                 _GridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
 
             }
@@ -720,10 +724,15 @@ public class TheGrid : MonoBehaviour
     {
         int while_max_count = 0;
         bool selected = false;
+        int selected_count = 0; // count how many blocks are valid trhoughout the players
         int it = -1;
-        while (!selected && GetGridBlockList ().Count > 0 && playerList.Count > 0 && while_max_count <= 200)
+
+        List<int> index = new List<int> ();
+
+        for (int i = 0; i < GetGridBlockList ().Count; i++)
         {
-            it = Random.Range (0, GetGridBlockList ().Count);
+            it = i;
+            if (!GetGridBlockList () [it]) continue;
 
             foreach (Player p in playerList)
             {
@@ -734,14 +743,18 @@ public class TheGrid : MonoBehaviour
 
                 if (Vector3.Distance (gb_pos, p_pos) >= range)
                 {
+
                     if ((hasItem != null && GetGridBlockList () [it].hasItem == hasItem) || hasItem == null)
                     {
+
                         if ((isOccupied != null && GetGridBlockList () [it].isOccupied == isOccupied) || isOccupied == null)
                         {
-                            if ((isFallen != null && GetGridBlockList () [it].isFallen == isOccupied) || isFallen == null)
+
+                            if ((isFallen != null && GetGridBlockList () [it].isFallen == isFallen) || isFallen == null)
                             {
-                                selected = true;
-                                break;
+
+                                selected_count++;
+                                //break;
                             }
                         }
                     }
@@ -750,18 +763,24 @@ public class TheGrid : MonoBehaviour
 
             }
 
-            while_max_count++;
+            print (selected_count);
+            if (selected_count >= playerList.Count)
+            {
+                index.Add (it);
+            }
+
+            selected_count = 0;
 
         }
 
-        if (it > 0)
-            return GetGridBlockList () [it];
+        if (index.Count > 0)
+            return GetGridBlockList () [index[Random.Range (0, index.Count)]];
         else
         {
-            print("Não achou ou explodiu");
-             return null;
+            print ("Não achou ou explodiu");
+            return null;
         }
-           
+
     }
 
     public Vector3 getGridBlockPosition (int x, int z, float y)

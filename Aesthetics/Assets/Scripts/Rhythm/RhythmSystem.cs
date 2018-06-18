@@ -193,6 +193,8 @@ public class RhythmSystem : MonoBehaviour
     private void Awake ()
     {
 
+         UnityEngine.Random.InitState(System.Environment.TickCount);
+
         if(!grid_ref)
        grid_ref = GameObject.FindGameObjectWithTag("Grid").GetComponent<TheGrid>();
 
@@ -243,6 +245,8 @@ public class RhythmSystem : MonoBehaviour
     }
     void Start ()
     {
+
+         UnityEngine.Random.InitState(System.Environment.TickCount);
         if (onNoteReturnedToPool == null)
             onNoteReturnedToPool = new UnityEvent ();
 
@@ -468,6 +472,7 @@ public class RhythmSystem : MonoBehaviour
             noteObjectPool.Push (obj);
         }
 
+        if(!obj.isMirror)
         onNoteReturnedToPool.Invoke ();
     }
 
@@ -645,7 +650,9 @@ public class RhythmSystem : MonoBehaviour
 
            
 
-            grid_ref.GetRandomGridBlock(0,false,null,false).Fall(pattern,countdown, duration);
+            GridBlock gb = grid_ref.GetRandomGridBlock(0,false,null,false);
+            if(gb)
+            gb.Fall(pattern,countdown, duration);
             
         }
 

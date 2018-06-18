@@ -136,6 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aca6be2c2cfcbf4689b92517e3c6fdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grid_ref: {fileID: 0}
+  rhythmSystem_ref: {fileID: 0}
   fullCollider: {fileID: 65456373461953314}
   innerCollider: {fileID: 65998943572526020}
   materials:
@@ -154,9 +156,14 @@ MonoBehaviour:
   _x: 0
   _y: 0
   _z: 0
+  startPosition: {x: 0, y: 0, z: 0}
+  textCountdown_prefab: {fileID: 1812853273966744, guid: 5600c4872a999e34d972a9df4b30aba4,
+    type: 2}
+  textCountdown_ref: {fileID: 0}
   _mainColor: 6
   _owner: {fileID: 0}
   _hasItem: 0
   _Item: {fileID: 0}
   _isOccupied: 0
   _isLocked: 0
+  _isFallen: 0

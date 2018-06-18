@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public class GridBlock : MonoBehaviour
@@ -155,13 +157,17 @@ public class GridBlock : MonoBehaviour
 
     public struct FallStats
     {
-            public int pattern;
-            public int countdown;
-            public int duration;
+        public int pattern;
+        public int countdown;
+        public int duration;
 
-            public int countdown_count;
+        public int countdown_count;
 
-            public int duration_count;
+        public int duration_count;
+
+        public bool startCountdown;
+
+        public bool startDuration;
 
     }
 
@@ -202,6 +208,13 @@ public class GridBlock : MonoBehaviour
             _z = value;
         }
     }
+
+    public Vector3 startPosition;
+
+    [SerializeField]
+    private GameObject textCountdown_prefab;
+    [SerializeField]
+    private GameObject textCountdown_ref;
 
     [SerializeField, Candlelight.PropertyBackingField]
     private GridBlock.gridBlockColor _mainColor = GridBlock.gridBlockColor.Black;
@@ -311,7 +324,7 @@ public class GridBlock : MonoBehaviour
 
         grid_ref = gr;
         rhythmSystem_ref = rs;
-        
+
     }
     // Use this for initialization
     void Start ()
@@ -322,7 +335,8 @@ public class GridBlock : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-
+        if (isFallen)
+            FallUpdate ();
     }
 
     private void OnCollisionEnter (Collision other)
@@ -348,7 +362,7 @@ public class GridBlock : MonoBehaviour
             Player p = other.GetComponent<Player> ();
             //print ("entrou trigger bloco " + X + ", " + Z);
 
-            if (!isLocked)
+            if (!isLocked && !isFallen)
             {
                 if (p.item != null)
                 {
@@ -387,46 +401,136 @@ public class GridBlock : MonoBehaviour
 
     }
 
-
-    public void Fall(int pattern, int countdown, int duration)
+    //triggers the fall event
+    public void Fall (int pattern, int countdown, int duration)
     {
         fall_data.pattern = pattern;
         fall_data.countdown = countdown;
         fall_data.duration = duration;
+        fall_data.countdown_count = 0;
+        fall_data.duration_count = 0;
+        fall_data.startCountdown = true;
+        fall_data.startDuration = false;
 
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (IncreaseCount);
+        Vector3 pos = startPosition;
+        //pos.y += this.GetComponent<Renderer> ().bounds.size.y + 0.2f;
+        pos.y += 0.2f;
+
+        //Color c(0,0,0);
+        SpawnCountdownText (pos, fall_data.countdown.ToString(), Color.green);
+        // textMesh.text =    fall_data.countdown.ToString();
+
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (FallIncrement);
 
     }
 
-    public void IncreaseCount ()
+    //handles fall movement
+    private void FallUpdate ()
     {
-         //print (fall_data.pattern + " " + fall_data.countdown + " " + fall_data.duration);
-        /*
 
-        if (!didSetup) return;
+    }
 
-        if (startCount)
+    public void SpawnCountdownText (Vector3 pos, string tex, Color texCol)
+    {
+        GameObject countdownPrefab = Instantiate (textCountdown_prefab, pos, Quaternion.identity) as GameObject;
+        GridBlockText gt = countdownPrefab.GetComponent<GridBlockText> ();
+
+        gt.transform.position = pos;
+        gt.transform.localEulerAngles = new Vector3 (90, 0, 0);
+        gt.gridBlock_ref = this;
+        if (gt.textMeshPro_ref)
+            gt.textMeshPro_ref.text = tex;
+
+        if (texCol != null)
+            gt.textMeshPro_ref.color = texCol;
+
+        textCountdown_ref = countdownPrefab;
+    }
+
+    //increase fall variables
+    public void FallIncrement ()
+    {
+        //print (fall_data.pattern + " " + fall_data.countdown + " " + fall_data.duration);
+
+        if (fall_data.startCountdown)
         {
-            if (count < beatsDuration)
+            if (fall_data.countdown_count < fall_data.countdown)
             {
-                count++;
+                
+
+                int result = fall_data.countdown - fall_data.countdown_count; // never show 0
+                int crossResult = (100 * result) / fall_data.countdown;
+
+                textCountdown_ref.GetComponent<TextMeshPro> ().text = (result).ToString ();
+
+                Color col = new Color (1, 2, 3);
+                if (crossResult >= 66)
+                {
+                    //print("first mudei");
+                    col = new Color (0.2f, 0.7f, 0.4f, 1.0f);
+                    col = Color.yellow;
+                }
+                else
+                if (crossResult < 66 && crossResult >= 33)
+                {
+                    //print("second mudei");
+                    col = new Color (0.8f, 0.7f, 0.4f, 1.0f);
+                    col = Color.red;
+                }
+                else if (crossResult < 33)
+                {
+                    //print("third mudei");
+                    col = new Color (0.2f, 0.5f, 0.3f, 1.0f);
+                    col = Color.red;
+                }
+
+                textCountdown_ref.GetComponent<TextMeshPro> ().color = col;
+                fall_data.countdown_count++;
+            }
+            else
+            {
+                print ("fall timeout ");
+                fall_data.countdown_count = 0;
+                fall_data.startCountdown = false;
+                fall_data.startDuration = true;
+                textCountdown_ref.GetComponent<TextMeshPro> ().text = "";
+                textCountdown_ref.GetComponent<GridBlockText>().isDone = true;
+                textCountdown_ref = null;
+                //textMeshObject.SetActive(false);
+
+                Vector3 endPosition = startPosition;
+                endPosition.y = endPosition.y - 10;
+
+                transform.DOMove (endPosition, rhythmSystem_ref.rhythmTarget_Ref.duration);
+
+                //startCount = false;
+
+                //Kill (null);
+            }
+        }
+
+        if (fall_data.startDuration)
+        {
+            if (fall_data.duration_count < fall_data.duration)
+            {
+                fall_data.duration_count++;
                 //print("count " + count);
             }
             else
             {
-                print ("timeout ");
-                count = 0;
-                startCount = false;
+                print ("fall timeout ");
+                fall_data.duration_count = 0;
+                fall_data.startDuration = false;
 
-                Kill (null);
+                //startCount = false;
+
+                rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (FallIncrement);
+                //Kill (null);
             }
+
         }
-        
-         */
-        
 
     }
-
 
     public void changeOwner (Player p)
     {
