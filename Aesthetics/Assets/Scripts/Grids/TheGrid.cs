@@ -763,7 +763,7 @@ public class TheGrid : MonoBehaviour
 
             }
 
-            print (selected_count);
+           
             if (selected_count >= playerList.Count)
             {
                 index.Add (it);
@@ -777,7 +777,6 @@ public class TheGrid : MonoBehaviour
             return GetGridBlockList () [index[Random.Range (0, index.Count)]];
         else
         {
-            print ("Não achou ou explodiu");
             return null;
         }
 
