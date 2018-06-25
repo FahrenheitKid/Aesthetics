@@ -15,13 +15,13 @@ public class RhythmTarget : MonoBehaviour
 
     [Range (0, 500)]
     [SerializeField]
-    private int vibrato = 20;
+    private int vibrato = 10;
 
     [Range (0, 1)]
     [SerializeField]
     private float elasticity = 0.5f;
 
-    //[Range(0,1)]s
+    //duration of the time between beats
     [SerializeField, Candlelight.PropertyBackingField]
     private float _duration = 10f;
     public float duration
@@ -46,7 +46,7 @@ public class RhythmTarget : MonoBehaviour
         float musicBPM = (float) rhythmSystem_ref.currentMusicBPM;
 
         duration = (float) (60 / musicBPM) / 2;
-        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.eventID, OnMainBeat);
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, OnMainBeat);
 
         float cameraOffsetZ = -Camera.main.transform.position.z;
         Vector3 pos = Camera.main.ViewportToWorldPoint (new Vector3 (0.5f, 0.09f, cameraOffsetZ));

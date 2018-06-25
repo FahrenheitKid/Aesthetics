@@ -105,8 +105,116 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Is the player fallen?")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isFallen = false;
+    public bool isFallen
+    {
+        get
+        {
+            return _isFallen;
+        }
+        set
+        {
+
+            _isFallen = value;
+
+        }
+    }
+
+    [Tooltip ("fallen/death duration")]
+    [SerializeField, ]
+    public float fall_duration = 3;
+
+    [Tooltip ("respawn duration")]
+    [SerializeField, ]
+    public float respawn_duration = 1.5f;
+
+    [Tooltip ("respawn Immunity duration?")]
+    [SerializeField, ]
+    public float respawnImmunity_duration = 2f;
+
+    [Tooltip ("the block where the player fell?")]
+    [SerializeField, ]
+    public GridBlock fall_gridBlock_Ref = null;
+
+    [Tooltip ("Is the player respawning?")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isRespawning = false;
+    public bool isRespawning
+    {
+        get
+        {
+            return _isRespawning;
+        }
+        set
+        {
+
+            _isRespawning = value;
+
+        }
+    }
+
+    [Tooltip ("Is the player immune?")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isImmune = false;
+    public bool isImmune
+    {
+        get
+        {
+            return _isImmune;
+        }
+        set
+        {
+            if(value)
+            {
+                 Shader glass = Shader.Find ("FX/Glass/Stained BumpDistort");
+                        gameObject.GetComponent<Renderer> ().materials[0].shader = glass;
+
+            }
+            else
+            {
+                 Shader normal = Shader.Find ("Standard");
+                        gameObject.GetComponent<Renderer> ().materials[0].shader = normal;
+            }
+           
+            _isImmune = value;
+
+        }
+    }
+
+    [Tooltip ("Is the player shielded(nullifies one stun/effect)?")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isShielded = false;
+    public bool isShielded
+    {
+        get
+        {
+            return _isShielded;
+        }
+        set
+        {
+
+            _isShielded = value;
+
+        }
+    }
+
+    [Tooltip ("disable all player inputs")]
+    [SerializeField]
+    private bool disableInput = false;
+
     [SerializeField]
     Countdown stunTimer;
+
+    [SerializeField]
+    Countdown fallenTimer;
+
+    [SerializeField]
+    Countdown respawnTimer;
+
+    [SerializeField]
+    Countdown immunityTimer;
 
     [Tooltip ("ThPlayer's current score")]
     [SerializeField, Candlelight.PropertyBackingField]
@@ -229,6 +337,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("start y value")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private float _initY;
+    public float initY
+    {
+        get
+        {
+            return _initY;
+        }
+        private set
+        {
+            _initY = value;
+        }
+    }
+
     [Tooltip ("Player's move speed")]
     [SerializeField, Candlelight.PropertyBackingField]
     private float _moveSpeed = 10f;
@@ -264,7 +387,6 @@ public class Player : MonoBehaviour
             _gridColor = value;
         }
     }
-
 
     [Tooltip ("Player's GridBlockColor")]
     [SerializeField, Candlelight.PropertyBackingField]
@@ -352,7 +474,13 @@ public class Player : MonoBehaviour
         float musicBPM = (float) rhythmSystem_ref.currentMusicBPM;
 
         duration = (float) (60 / musicBPM) / 2;
-        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.eventID, OnMainBeat);
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, OnMainBeat);
+        initY = grid_ref.playerInitY;
+
+        stunTimer = gameObject.AddComponent<Countdown> ();
+        immunityTimer = gameObject.AddComponent<Countdown> ();
+        fallenTimer = gameObject.AddComponent<Countdown> ();
+        respawnTimer = gameObject.AddComponent<Countdown> ();
 
     }
 
@@ -365,12 +493,81 @@ public class Player : MonoBehaviour
             x = gb.X;
             z = gb.Z;
 
+            if (other.GetComponent<GridBlock> ().isFallen && !isImmune && !isShielded && !isFallen) //if stepped on fallen gridblock
+            {
+                //make player fall down on the next beat
+                fall_gridBlock_Ref = other.GetComponent<GridBlock> ();
+                rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (Fall);
+            }
+
+        }
+
+    }
+
+    private void OnTriggerStay (Collider other)
+    {
+
+        if (other.gameObject.CompareTag ("GridBlock"))
+        {
+
+            if (other.GetComponent<GridBlock> ().isFallen && !isImmune && !isShielded && !isFallen) //if stepped on fallen gridblock
+            {
+                //make player fall down on the next beat
+                fall_gridBlock_Ref = other.GetComponent<GridBlock> ();
+                rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (Fall);
+            }
+
         }
     }
 
     public void Update ()
     {
+        if (!disableInput)
+            handleInput ();
 
+        if (isFallen) // if is death/fallen
+        {
+            if (fallenTimer.stop) // if death time ended
+            {
+
+                Respawn (); // respawn charcter
+
+            }
+        }
+
+        if (isRespawning) // if is respawning
+        {
+            if (respawnTimer.stop) // if respawn time ended
+            {
+                print("Respawn Done");
+                isRespawning = false;
+                //let player move again;
+                disableInput = false;
+                fall_gridBlock_Ref = null;
+
+                        
+                immunityTimer.startTimer (respawnImmunity_duration); // make player imune for a few more seconds
+
+            }
+        }
+
+        if (isImmune)
+        {
+
+            if (immunityTimer.stop) // if our immune time ended
+            {
+                if(!isRespawning)
+                isImmune = false;
+                
+                
+                       
+
+            }
+        }
+    }
+
+    void handleInput ()
+    {
         HandleAxisState (ref horizontalAxisState, "Horizontal" + ID);
         HandleAxisState (ref verticalAxisState, "Vertical" + ID);
 
@@ -433,13 +630,68 @@ public class Player : MonoBehaviour
 
             }
         }
-    }
 
+    }
     public void setIsMoving (bool value)
     {
         isMoving = value;
     }
 
+    void Fall ()
+    {
+        isFallen = true;
+        disableInput = true;
+
+        //lose item when falling
+        if (hasItem)
+            item.Kill (null);
+
+        Vector3 startPos = transform.position;
+        startPos.y -= 20;
+
+        transform.DOMove (startPos, rhythmSystem_ref.rhythmTarget_Ref.duration / 2);
+
+        rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (Fall);
+
+        fallenTimer.startTimer (fall_duration);
+
+    }
+
+    void Respawn ()
+    {
+        //find neighbour gridblock to serve as spawn point
+        RetryToFindNeighbour : GridBlock respawnBlock;
+        if (fall_gridBlock_Ref)
+        {
+
+            respawnBlock = grid_ref.GetRandomNeighbourGridBlock (fall_gridBlock_Ref.X, fall_gridBlock_Ref.Z, true, false, false, false, false, false);
+        }
+
+        else
+        {
+            respawnBlock = grid_ref.GetRandomGridBlock (1, false, false, false, false, false);
+        }
+
+        if (!respawnBlock)
+            goto RetryToFindNeighbour;
+
+        respawnBlock.isRespawning = true;
+        isRespawning = true;
+        isFallen = false;
+
+
+        isImmune = true;
+
+        Vector3 respawnPos = respawnBlock.transform.position;
+        respawnPos.y += 10;
+
+        transform.position = respawnPos;
+
+        //start moving player down from above and start respawn timer
+        transform.DOMoveY (initY, respawn_duration);
+        respawnTimer.startTimer (respawn_duration);
+
+    }
     public void Stun ()
     {
 
@@ -859,7 +1111,7 @@ public class Player : MonoBehaviour
 
     }
 
-    //movement coroutine stuff
+    //movement coroutine stuff | currently not using
     public IEnumerator move (Transform transform)
     {
 

@@ -3686,7 +3686,13 @@ MonoBehaviour:
   _hasItem: 0
   _item: {fileID: 0}
   _isStunned: 0
+  _isFallen: 0
+  _isRespawning: 0
+  _isImmune: 0
+  disableInput: 0
   stunTimer: {fileID: 0}
+  fallenTimer: {fileID: 0}
+  immunityTimer: {fileID: 0}
   _score: 0
   _combo: 0
   _multiplierCombo: 0

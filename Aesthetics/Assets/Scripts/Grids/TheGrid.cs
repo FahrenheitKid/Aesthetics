@@ -96,6 +96,10 @@ public class TheGrid : MonoBehaviour
     private int zOffset = 1;
 
     [SerializeField]
+    public float playerInitY = 0.1f;
+
+
+    [SerializeField]
     Countdown scoreMakerTimer;
 
     [SerializeField]
@@ -190,6 +194,9 @@ public class TheGrid : MonoBehaviour
     void Start ()
     {
 
+        QualitySettings.vSyncCount = 0; // VSync must be disabled
+        Application.targetFrameRate = 45;
+
 #if DEBUG
         prefabsAssertions ();
 #endif
@@ -233,7 +240,7 @@ public class TheGrid : MonoBehaviour
             else
                 scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax + ScoreMakerSpawnTimeMin) / 2);
 
-            // if more than 5 scoremakers in the stage
+            // if less than 5 scoremakers in the stage
             if (itemList.OfType<ScoreMaker> ().Count () < scoreMakerCountLimit)
             {
                 ScoreMaker sm = SpawnScoreMaker (2.0f);
@@ -249,7 +256,7 @@ public class TheGrid : MonoBehaviour
             else
                 lockTimer.startTimer ((lockSpawnTimeMin + lockSpawnTimeMax) / 2);
 
-            // if more than 5 scoremakers in the stage
+            // if less than 5 scoremakers in the stage
             if (itemList.OfType<Lock> ().Count () < lockCountLimit)
             {
                 Lock sm = SpawnLock (2.0f);
@@ -319,13 +326,13 @@ public class TheGrid : MonoBehaviour
             if (i == 0)
             {
                 initial_pos = GetGridBlock (0, 0).gameObject.transform.position;
-                initial_pos.y = 0.1f;
+                initial_pos.y = playerInitY;
 
             }
             else if (i == 1)
             {
                 initial_pos = GetGridBlock (mapWidth - 1, mapHeight - 1).gameObject.transform.position;
-                initial_pos.y = 0.1f;
+                initial_pos.y = playerInitY;
             }
             GameObject player_prefab = Instantiate (playerPrefabList[i], initial_pos, Quaternion.identity) as GameObject;
             player_prefab.GetComponent<Player> ().setGridRef (this);
@@ -361,7 +368,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetEmptyIsolatedGridBlock (range);
+            gb = GetRandomGridBlock (range, false, false, false, false, false);
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -424,7 +431,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetEmptyIsolatedGridBlock (range);
+            gb = GetRandomGridBlock (range, false, false, false, false, false);
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -469,8 +476,8 @@ public class TheGrid : MonoBehaviour
         if (gb.isOccupied || gb.hasItem) return null;
 
         GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
-        
-        lockPrefab.GetComponent<Lock> ().Setup(GetComponent<TheGrid> (),rhythmSystem_ref, gb);
+
+        lockPrefab.GetComponent<Lock> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
         gb.hasItem = true;
         itemList.Add (lockPrefab.GetComponent<Lock> ());
@@ -482,12 +489,12 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetEmptyIsolatedGridBlock (range);
+            gb = GetRandomGridBlock (range, false, false, false, false, false);
 
         if (gb.isOccupied || gb.hasItem) return null;
 
         GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
-        lockPrefab.GetComponent<Lock> ().Setup(GetComponent<TheGrid> (),rhythmSystem_ref, gb);
+        lockPrefab.GetComponent<Lock> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
         gb.hasItem = true;
         itemList.Add (lockPrefab.GetComponent<Lock> ());
@@ -501,6 +508,7 @@ public class TheGrid : MonoBehaviour
 #if MAP_LOADING_DEBUG
         Debug.Log ("Building Map...");
 #endif
+
         for (int i = 0; i < tiles.GetLength (0); i++)
         {
             for (int j = 0; j < tiles.GetLength (1); j++)
@@ -508,17 +516,20 @@ public class TheGrid : MonoBehaviour
                 GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xOffset * j - mapWidth * xOffset, 0, zOffset * mapHeight - i * zOffset), Quaternion.identity) as GameObject;
 
                 TilePrefab.transform.parent = transform;
-                TilePrefab.GetComponent<GridBlock> ().init (j, 0, i);
+                TilePrefab.GetComponent<GridBlock> ().init (j, 0, i, GetComponent<TheGrid> (), rhythmSystem_ref);
                 TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor) tiles[i, j]);
+                TilePrefab.GetComponent<GridBlock> ().startTransform = TilePrefab.transform;
                 _GridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
 
             }
         }
+
 #if MAP_LOADING_DEBUG
         Debug.Log ("Building Completed!");
 
         print (mapWidth / 2 + " | " + mapHeight / 2);
 #endif
+
         cameraScript.cameraParentToCenterPosition ();
         //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
 
@@ -683,14 +694,77 @@ public class TheGrid : MonoBehaviour
     }
 
     //returns random empty gridblock with no players in that range
-    public GridBlock GetEmptyIsolatedGridBlock (float range)
+    public List<GridBlock> GetNeighbourGridBlocks (int x, int z, bool allowDiagonals, bool? hasItem, bool? isOccupied, bool? isFallen, bool? isFalling, bool? isRespawning)
+    {
+        List<GridBlock> neighbours = new List<GridBlock> ();
+
+        /*
+
+        0,0 | 1,0 | 2,0
+        0,1 | 1,1 | 2,1
+        0,2 | 1,2 | 2,2
+
+        */
+        foreach (GridBlock gb in _GridBlockList)
+        {
+            //skip block we are comparing
+
+            if (gb.X == x && gb.Z == z) continue;
+            if (!gb) continue;
+
+            int x_delta = Mathf.Abs (gb.X - x);
+            int z_delta = Mathf.Abs (gb.Z - z);
+            int delta_sum = x_delta + z_delta;
+
+            if ((hasItem != null && gb.hasItem == hasItem) || hasItem == null)
+            {
+
+                if ((isOccupied != null && gb.isOccupied == isOccupied) || isOccupied == null)
+                {
+
+                    if ((isFallen != null && gb.isFallen == isFallen) || isFallen == null)
+                    {
+
+                        if ((isFalling != null && gb.isFalling == isFalling) || isFalling == null)
+                        {
+
+                            if ((isRespawning != null && gb.isRespawning == isRespawning) || isRespawning == null)
+                            {
+                                if ((allowDiagonals && delta_sum <= 2) || (!allowDiagonals && delta_sum <= 1))
+                                {
+                                    neighbours.Add (gb);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return neighbours;
+    }
+
+    public GridBlock GetRandomNeighbourGridBlock (int x, int z, bool allowDiagonals, bool? hasItem, bool? isOccupied, bool? isFallen, bool? isFalling, bool? isRespawning)
+    {
+        List<GridBlock> neighbours = GetNeighbourGridBlocks (x, z, allowDiagonals, hasItem, isOccupied, isFallen, isFalling, isRespawning);
+
+        return neighbours[Random.Range (0, neighbours.Count)];
+    }
+
+    //returns random empty gridblock with no players in that range
+    public GridBlock GetRandomGridBlock (float range, bool? hasItem, bool? isOccupied, bool? isFallen, bool? isFalling, bool? isRespawning)
     {
 
-        bool selected = false;
+        int selected_count = 0; // count how many blocks are valid trhoughout the players
         int it = -1;
-        while (!selected && GetGridBlockList ().Count > 0 && playerList.Count > 0)
+
+        List<int> index = new List<int> ();
+
+        for (int i = 0; i < GetGridBlockList ().Count; i++)
         {
-            it = Random.Range (0, GetGridBlockList ().Count);
+            it = i;
+            if (!GetGridBlockList () [it]) continue;
 
             foreach (Player p in playerList)
             {
@@ -699,20 +773,54 @@ public class TheGrid : MonoBehaviour
                 Vector3 gb_pos = new Vector3 (GetGridBlockList () [it].X, 0, GetGridBlockList () [it].Z);
                 Vector3 p_pos = new Vector3 (p.x, 0, p.z);
 
-                if (Vector3.Distance (gb_pos, p_pos) >= range && GetGridBlockList () [it].hasItem == false)
+                if (Vector3.Distance (gb_pos, p_pos) >= range)
                 {
-                    selected = true;
-                    break;
+
+                    if ((hasItem != null && GetGridBlockList () [it].hasItem == hasItem) || hasItem == null)
+                    {
+
+                        if ((isOccupied != null && GetGridBlockList () [it].isOccupied == isOccupied) || isOccupied == null)
+                        {
+
+                            if ((isFallen != null && GetGridBlockList () [it].isFallen == isFallen) || isFallen == null)
+                            {
+
+                                if ((isFalling != null && GetGridBlockList () [it].isFalling == isFalling) || isFalling == null)
+                                {
+
+                                    if ((isRespawning != null && GetGridBlockList () [it].isRespawning == isRespawning) || isRespawning == null)
+                                    {
+
+                                        selected_count++;
+                                        //break;
+                                    }
+                                    //break;
+                                }
+                                //break;
+                            }
+                        }
+                    }
+
                 }
 
             }
 
+            if (selected_count >= playerList.Count)
+            {
+                index.Add (it);
+            }
+
+            selected_count = 0;
+
         }
 
-        if (it > 0)
-            return GetGridBlockList () [it];
+        if (index.Count > 0)
+            return GetGridBlockList () [index[Random.Range (0, index.Count)]];
         else
+        {
             return null;
+        }
+
     }
 
     public Vector3 getGridBlockPosition (int x, int z, float y)
@@ -749,23 +857,6 @@ public class TheGrid : MonoBehaviour
             if (i < 2)
                 Assert.IsNotNull (playerUIList[i]);
         }
-
-        /*
-        
-    private GameObject gridBlock_prefab1;
-
-    [SerializeField]
-    private GameObject scoreMaker_prefab;
-
-    [SerializeField]
-    private GameObject scoreFloatingText_prefab;
-
-    [SerializeField]
-    private GameObject missFloatingText_prefab;
-
-    [SerializeField]
-    private RhythmSystem rhythmSystem_ref;
-         */
 
     }
     public void QuitGame ()

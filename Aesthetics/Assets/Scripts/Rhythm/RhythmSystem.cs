@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SonicBloom.Koreo;
@@ -12,7 +13,11 @@ public class RhythmSystem : MonoBehaviour
 
     [Tooltip ("The Event ID of the track to use for target generation.")]
     [EventID]
-    public string eventID;
+    public string mainBeatID;
+
+    [Tooltip ("The Event ID of the track to use for target generation.")]
+    [EventID]
+    public string fallBeatID;
 
     [Tooltip ("The number of milliseconds (both early and late) within which input will be detected as a Hit.")]
     [Range (8f, 150f)]
@@ -24,18 +29,20 @@ public class RhythmSystem : MonoBehaviour
     [Tooltip ("The archetype (blueprints) to use for generating notes.  Can be a prefab.")]
     public RhythmNote rhythmNotePrefab;
 
-
     [SerializeField]
     private GameObject rhyhtmNotesParent_ref;
 
-	 [SerializeField]
+    [SerializeField]
     private GameObject MusicPlayback_ref;
 
-     [SerializeField]
+    [SerializeField]
     private SimpleMusicPlayer musicPlayer_ref;
 
-     [SerializeField]
-    private List <Koreography> koreographyList;
+    [SerializeField]
+    private TheGrid grid_ref;
+
+    [SerializeField]
+    private List<Koreography> koreographyList;
 
     [Tooltip ("The amount of time in seconds to provide before playback of the audio begins.  Changes to this value are not immediately handled during the lead-in phase while playing in the Editor.")]
     public float leadInTime;
@@ -85,6 +92,9 @@ public class RhythmSystem : MonoBehaviour
 
     // list with all beat events
     List<KoreographyEvent> beatEvents;
+
+    // list with all fall events
+    List<KoreographyEvent> fallEvents;
 
     // A Queue that contains all of the Note Objects currently active (on-screen) within this lane.  Input and
     //  lifetime validity checks are tracked with operations on this Queue.
@@ -180,112 +190,127 @@ public class RhythmSystem : MonoBehaviour
 
     #region Methods
 
+    private void Awake ()
+    {
 
-    private void Awake() {
-        
-        if(Random.Range(0,3) == 5 )
-		{
-           if(!musicPlayer_ref.IsPlaying)
+        UnityEngine.Random.InitState (System.Environment.TickCount);
 
-           {
-                musicPlayer_ref.LoadSong(koreographyList[0],0,true);
-             //gets main beat track
-            eventID = koreographyList[0].GetEventIDs()[0];
-            //musicPlayer_ref.Play();
+        if (!grid_ref)
+            grid_ref = GameObject.FindGameObjectWithTag ("Grid").GetComponent<TheGrid> ();
 
-           }
-			
-		}
-        else if(Random.Range(0,3) == 1)
+        if (UnityEngine.Random.Range (0, 3) == 5)
         {
-            if(!musicPlayer_ref.IsPlaying)
+            if (!musicPlayer_ref.IsPlaying)
 
-           {
-                musicPlayer_ref.LoadSong(koreographyList[1],0,true);
-             //gets main beat track
-            eventID = koreographyList[1].GetEventIDs()[0];
-             //musicPlayer_ref.Play();
+            {
+                musicPlayer_ref.LoadSong (koreographyList[0], 0, true);
+                //gets main beat track
+                mainBeatID = koreographyList[0].GetEventIDs () [0];
+                fallBeatID = koreographyList[1].GetEventIDs () [1];
 
-           }
+                //musicPlayer_ref.Play();
+
+            }
+
+        }
+        else if (UnityEngine.Random.Range (0, 3) == 1)
+        {
+            if (!musicPlayer_ref.IsPlaying)
+
+            {
+                musicPlayer_ref.LoadSong (koreographyList[1], 0, true);
+                //gets main beat track
+                mainBeatID = koreographyList[1].GetEventIDs () [0];
+                fallBeatID = koreographyList[1].GetEventIDs () [1];
+
+                //musicPlayer_ref.Play();
+
+            }
         }
         else //if(Random.Range(0,3) == 2)
         {
-            if(!musicPlayer_ref.IsPlaying)
+            if (!musicPlayer_ref.IsPlaying)
 
-           {
-                musicPlayer_ref.LoadSong(koreographyList[2],0,true);
-             //gets main beat track
-            eventID = koreographyList[2].GetEventIDs()[0];
-             //musicPlayer_ref.Play();
+            {
+                musicPlayer_ref.LoadSong (koreographyList[2], 0, true);
+                //gets main beat track
+                mainBeatID = koreographyList[2].GetEventIDs () [0];
+                fallBeatID = koreographyList[2].GetEventIDs () [1];
 
-           }
+                //musicPlayer_ref.Play();
+
+            }
         }
-         
-         
 
     }
     void Start ()
     {
-         if (onNoteReturnedToPool == null)
-            onNoteReturnedToPool = new UnityEvent();
-        
+
+        UnityEngine.Random.InitState (System.Environment.TickCount);
+        if (onNoteReturnedToPool == null)
+            onNoteReturnedToPool = new UnityEvent ();
+
         // Ensure the slider and the readout are properly in sync with the AudioSource on Start!
         pitch = audioCom.pitch;
 
         InitializeLeadIn ();
 
-        
-
-       if(Random.Range(0,3) == 5 )
-		{
-           if(!musicPlayer_ref.IsPlaying)
-
-           {
-                musicPlayer_ref.LoadSong(koreographyList[0],0,true);
-             //gets main beat track
-            eventID = koreographyList[0].GetEventIDs()[0];
-            musicPlayer_ref.Play();
-
-           }
-			
-		}
-        else if(Random.Range(0,3) == 1)
+        if (UnityEngine.Random.Range (0, 3) == 5)
         {
-            if(!musicPlayer_ref.IsPlaying)
+            if (!musicPlayer_ref.IsPlaying)
 
-           {
-                musicPlayer_ref.LoadSong(koreographyList[1],0,true);
-             //gets main beat track
-            eventID = koreographyList[1].GetEventIDs()[0];
-             musicPlayer_ref.Play();
+            {
+                musicPlayer_ref.LoadSong (koreographyList[0], 0, true);
+                //gets main beat track
+                mainBeatID = koreographyList[0].GetEventIDs () [0];
+                fallBeatID = koreographyList[1].GetEventIDs () [1];
+                musicPlayer_ref.Play ();
 
-           }
+            }
+
+        }
+        else if (UnityEngine.Random.Range (0, 3) == 1)
+        {
+            if (!musicPlayer_ref.IsPlaying)
+
+            {
+                musicPlayer_ref.LoadSong (koreographyList[1], 0, true);
+                //gets main beat track
+                mainBeatID = koreographyList[1].GetEventIDs () [0];
+                fallBeatID = koreographyList[1].GetEventIDs () [1];
+
+                musicPlayer_ref.Play ();
+
+            }
         }
         else //if(Random.Range(0,3) == 2)
         {
-            if(!musicPlayer_ref.IsPlaying)
+            if (!musicPlayer_ref.IsPlaying)
 
-           {
-                musicPlayer_ref.LoadSong(koreographyList[2],0,true);
-             //gets main beat track
-            eventID = koreographyList[2].GetEventIDs()[0];
-             musicPlayer_ref.Play();
+            {
+                musicPlayer_ref.LoadSong (koreographyList[2], 0, true);
+                //gets main beat track
+                mainBeatID = koreographyList[2].GetEventIDs () [0];
+                fallBeatID = koreographyList[2].GetEventIDs () [1];
 
-           }
+                musicPlayer_ref.Play ();
+
+            }
         }
 
         targetVisuals = rhythmTarget_Ref.GetComponent<SpriteRenderer> ();
 
-		
         // Initialize events.
         playingKoreo = Koreographer.Instance.GetKoreographyAtIndex (0);
-        
 
         // Grab all the events out of the Koreography.
-        KoreographyTrackBase rhythmTrack = playingKoreo.GetTrackByID (eventID);
+        KoreographyTrackBase rhythmTrack = playingKoreo.GetTrackByID (mainBeatID);
+        KoreographyTrackBase fallTrack = playingKoreo.GetTrackByID (fallBeatID);
 
         beatEvents = rhythmTrack.GetAllEvents ();
+        fallEvents = fallTrack.GetAllEvents ();
 
+        Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
         /*------------------------------------------------------------- */
 
         SetupSpawnPositions ();
@@ -323,7 +348,7 @@ public class RhythmSystem : MonoBehaviour
         // Clear out invalid entries.
         while (trackedNotes.Count > 0 && trackedNotes[0].IsNoteMissed ())
         {
-            trackedNotes.RemoveAt(0);
+            trackedNotes.RemoveAt (0);
 
         }
 
@@ -362,7 +387,7 @@ public class RhythmSystem : MonoBehaviour
         //  currently supported.
         if (Input.GetKeyDown (KeyCode.W) || Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.S) || Input.GetKeyDown (KeyCode.D))
         {
-           // CheckNoteHit ();
+            // CheckNoteHit ();
             //SetScalePress();
         }
         else if (Input.GetKey (keyboardButton))
@@ -408,7 +433,7 @@ public class RhythmSystem : MonoBehaviour
         return retObj;
     }
 
-	public RhythmNote GetFreshNoteObject (KoreographyEvent ev, RhythmSystem refer)
+    public RhythmNote GetFreshNoteObject (KoreographyEvent ev, RhythmSystem refer)
     {
         RhythmNote retObj;
 
@@ -421,12 +446,11 @@ public class RhythmSystem : MonoBehaviour
             retObj = GameObject.Instantiate<RhythmNote> (rhythmNotePrefab);
         }
 
-
         retObj.rhythmSystem_ref = refer;
-		retObj.trackedEvent = ev;
+        retObj.trackedEvent = ev;
         retObj.gameObject.transform.SetParent (rhyhtmNotesParent_ref.transform);
         retObj.gameObject.transform.localRotation = Quaternion.Euler (0, 0, 0);
-		retObj.gameObject.SetActive (true);
+        retObj.gameObject.SetActive (true);
         retObj.enabled = true;
         //retObj.gameObject.transform.rotation = rhythmTarget_Ref.transform.rotation;
 
@@ -440,15 +464,16 @@ public class RhythmSystem : MonoBehaviour
     {
         if (obj != null)
         {
-			if(trackedNotes.Contains(obj))
-				trackedNotes.Remove(obj);
+            if (trackedNotes.Contains (obj))
+                trackedNotes.Remove (obj);
             obj.enabled = false;
             obj.gameObject.SetActive (false);
 
             noteObjectPool.Push (obj);
         }
 
-        onNoteReturnedToPool.Invoke();
+        if (!obj.isMirror)
+            onNoteReturnedToPool.Invoke ();
     }
 
     // Adjusts the scale with a multiplier against the default scale.
@@ -514,14 +539,14 @@ public class RhythmSystem : MonoBehaviour
         {
             KoreographyEvent evt = beatEvents[pendingEventIdx];
 
-            RhythmNote newObj = GetFreshNoteObject (evt,this);
+            RhythmNote newObj = GetFreshNoteObject (evt, this);
             newObj.Initialize (evt, Color.cyan, this, false);
 
             //mirror objects
 
             if (enableMirrorNotes)
             {
-                RhythmNote newObj2 = GetFreshNoteObject (evt,this);
+                RhythmNote newObj2 = GetFreshNoteObject (evt, this);
                 newObj2.Initialize (evt, Color.cyan, gameObject.GetComponent<RhythmSystem> (), true);
                 newObj.mirror_ref = newObj2;
             }
@@ -560,7 +585,7 @@ public class RhythmSystem : MonoBehaviour
         int numToClear = trackedNotes.Count;
         for (int i = 0; i < numToClear; ++i)
         {
-            trackedNotes.Clear();
+            trackedNotes.Clear ();
         }
 
         // Reset the audio.
@@ -598,11 +623,39 @@ public class RhythmSystem : MonoBehaviour
         mirrorDespawnPosition.x += 0.1f;
     }
 
-
-    public UnityEvent getRhythmNoteToPoolEvent()
+    public UnityEvent getRhythmNoteToPoolEvent ()
     {
         return onNoteReturnedToPool;
+    }
+
+    void OnFallBeat (KoreographyEvent evt)
+    {
+        int pattern = 0;
+        int countdown = 0;
+        int duration = 0;
+
+        string[] result;
+        string[] stringSeparators = new string[] { "," };
+        if (evt.Payload is TextPayload)
+        {
+            TextPayload tp = evt.Payload as TextPayload;
+            result = tp.TextVal.Split (stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            if (result.Length == 3)
+            {
+                pattern = Convert.ToInt32 (result[0]);
+                countdown = Convert.ToInt32 (result[1]);
+                duration = Convert.ToInt32 (result[2]);
+            }
+
+            GridBlock gb = grid_ref.GetRandomGridBlock (0, null, null, false, false, false);
+            if (gb)
+                gb.Fall (pattern, countdown, duration);
+
         }
+
+    }
+
     #endregion
 
 }
