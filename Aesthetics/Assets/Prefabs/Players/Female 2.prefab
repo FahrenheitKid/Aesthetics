@@ -59,7 +59,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 8c2ba217b703db041b5bd70ebc93c84e, type: 2}
+  - {fileID: 2100000, guid: c965a51294fb5254184fc8ec193ee183, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -129,7 +129,19 @@ MonoBehaviour:
   _hasItem: 0
   _item: {fileID: 0}
   _isStunned: 0
+  _isFallen: 0
+  fall_duration: 3
+  respawn_duration: 1.5
+  respawnImmunity_duration: 2
+  fall_gridBlock_Ref: {fileID: 0}
+  _isRespawning: 0
+  _isImmune: 0
+  _isShielded: 0
+  disableInput: 0
   stunTimer: {fileID: 0}
+  fallenTimer: {fileID: 0}
+  respawnTimer: {fileID: 0}
+  immunityTimer: {fileID: 0}
   _score: 0
   _combo: 0
   _multiplierCombo: 0

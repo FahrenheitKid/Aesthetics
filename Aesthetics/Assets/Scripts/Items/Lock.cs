@@ -119,7 +119,7 @@ public class Lock : Item
         base.Activate ();
 
         gridBlockOwner.hasItem = false;
-        gameObject.GetComponent<MeshRenderer> ().enabled = false;
+        //gameObject.GetComponent<MeshRenderer> ().enabled = false;
         gameObject.GetComponent<BoxCollider> ().enabled = false;
 
         foreach (GridBlock gb in grid_ref.GetGridBlockList ())

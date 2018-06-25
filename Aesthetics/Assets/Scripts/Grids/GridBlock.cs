@@ -223,7 +223,7 @@ public class GridBlock : MonoBehaviour
         get
         {
             return _mainColor;
-            
+
         }
         set
         {
@@ -331,6 +331,20 @@ public class GridBlock : MonoBehaviour
         }
     }
 
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isRespawning = false; // while stil on the countdown
+    public bool isRespawning
+    {
+        get
+        {
+            return _isRespawning;
+        }
+        set
+        {
+            _isRespawning = value;
+        }
+    }
+
     public void init (int x, int y, int z, TheGrid gr, RhythmSystem rs)
     {
         _x = x;
@@ -420,8 +434,8 @@ public class GridBlock : MonoBehaviour
     public void Fall (int pattern, int countdown, int duration)
     {
 
-        if(isFallen || isFalling) //already falling/fallen, must return
-        return;
+        if (isFallen || isFalling) //already falling/fallen, must return
+            return;
 
         fall_data.pattern = pattern;
         fall_data.countdown = countdown;
@@ -524,7 +538,7 @@ public class GridBlock : MonoBehaviour
 
                 //make gridblock "invisible" by scaling it down, but not totally because we still need the collider
                 transform.DOScale (new Vector3 (0.001f, 0.001f, 0.001f), rhythmSystem_ref.rhythmTarget_Ref.duration);
-               
+
             }
         }
 

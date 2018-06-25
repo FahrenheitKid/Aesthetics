@@ -165,7 +165,14 @@ public class Item : MonoBehaviour
         p.hasItem = true;
         p.item = this;
         owner = p;
-        print ("Base item equiped");
+
+
+        //make item stay above player s head
+        transform.parent = p.transform;
+        transform.localScale = new Vector3(0.4f,0.4f,0.4f);
+        float player_height = p.gameObject.GetComponent<MeshRenderer>().bounds.max.y;
+        transform.localPosition = new Vector3(0.0f,player_height,0.0f);
+        //print ("Base item equiped");
     }
 
     public virtual void Kill (Item current_Item)

@@ -193,10 +193,10 @@ public class RhythmSystem : MonoBehaviour
     private void Awake ()
     {
 
-         UnityEngine.Random.InitState(System.Environment.TickCount);
+        UnityEngine.Random.InitState (System.Environment.TickCount);
 
-        if(!grid_ref)
-       grid_ref = GameObject.FindGameObjectWithTag("Grid").GetComponent<TheGrid>();
+        if (!grid_ref)
+            grid_ref = GameObject.FindGameObjectWithTag ("Grid").GetComponent<TheGrid> ();
 
         if (UnityEngine.Random.Range (0, 3) == 5)
         {
@@ -246,7 +246,7 @@ public class RhythmSystem : MonoBehaviour
     void Start ()
     {
 
-         UnityEngine.Random.InitState(System.Environment.TickCount);
+        UnityEngine.Random.InitState (System.Environment.TickCount);
         if (onNoteReturnedToPool == null)
             onNoteReturnedToPool = new UnityEvent ();
 
@@ -472,8 +472,8 @@ public class RhythmSystem : MonoBehaviour
             noteObjectPool.Push (obj);
         }
 
-        if(!obj.isMirror)
-        onNoteReturnedToPool.Invoke ();
+        if (!obj.isMirror)
+            onNoteReturnedToPool.Invoke ();
     }
 
     // Adjusts the scale with a multiplier against the default scale.
@@ -648,15 +648,11 @@ public class RhythmSystem : MonoBehaviour
                 duration = Convert.ToInt32 (result[2]);
             }
 
-           
+            GridBlock gb = grid_ref.GetRandomGridBlock (0, null, null, false, false, false);
+            if (gb)
+                gb.Fall (pattern, countdown, duration);
 
-            GridBlock gb = grid_ref.GetRandomGridBlock(0,null,null,false,false);
-            if(gb)
-            gb.Fall(pattern,countdown, duration);
-            
         }
-
-
 
     }
 
