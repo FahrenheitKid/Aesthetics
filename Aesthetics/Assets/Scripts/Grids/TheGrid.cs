@@ -513,7 +513,7 @@ public class TheGrid : MonoBehaviour
                 TilePrefab.transform.parent = transform;
                 TilePrefab.GetComponent<GridBlock> ().init (j, 0, i, GetComponent<TheGrid> (), rhythmSystem_ref);
                 TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor) tiles[i, j]);
-                TilePrefab.GetComponent<GridBlock> ().startPosition = TilePrefab.transform.position;
+                TilePrefab.GetComponent<GridBlock> ().startTransform = TilePrefab.transform;
                 _GridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
 
             }
@@ -720,10 +720,9 @@ public class TheGrid : MonoBehaviour
     }
 
     //returns random empty gridblock with no players in that range
-    public GridBlock GetRandomGridBlock (float range, bool? hasItem, bool? isOccupied, bool? isFallen)
+    public GridBlock GetRandomGridBlock (float range, bool? hasItem, bool? isOccupied, bool? isFallen, bool? isFalling)
     {
-        int while_max_count = 0;
-        bool selected = false;
+
         int selected_count = 0; // count how many blocks are valid trhoughout the players
         int it = -1;
 
@@ -753,7 +752,12 @@ public class TheGrid : MonoBehaviour
                             if ((isFallen != null && GetGridBlockList () [it].isFallen == isFallen) || isFallen == null)
                             {
 
-                                selected_count++;
+                                if ((isFalling != null && GetGridBlockList () [it].isFalling == isFalling) || isFalling == null)
+                                {
+
+                                    selected_count++;
+                                    //break;
+                                }
                                 //break;
                             }
                         }
@@ -763,7 +767,6 @@ public class TheGrid : MonoBehaviour
 
             }
 
-           
             if (selected_count >= playerList.Count)
             {
                 index.Add (it);

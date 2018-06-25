@@ -105,8 +105,70 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Tooltip ("Is the player fallen?")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isFallen = false;
+    public bool isFallen
+    {
+        get
+        {
+            return _isFallen;
+        }
+        set
+        {
+
+            _isFallen = value;
+
+        }
+    }
+
+    [Tooltip ("Is the player respawning?")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isRespawning = false;
+    public bool isRespawning
+    {
+        get
+        {
+            return _isRespawning;
+        }
+        set
+        {
+
+            _isRespawning = value;
+
+        }
+    }
+
+    [Tooltip ("Is the player immune?")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isImmune = false;
+    public bool isImmune
+    {
+        get
+        {
+            return _isImmune;
+        }
+        set
+        {
+
+            _isImmune = value;
+
+        }
+    }
+
+    [Tooltip ("disable all player inputs")]
+    [SerializeField]
+    private bool disableInput = false;
+
+
     [SerializeField]
     Countdown stunTimer;
+
+    [SerializeField]
+    Countdown fallenTimer;
+
+    [SerializeField]
+    Countdown immunityTimer;
 
     [Tooltip ("ThPlayer's current score")]
     [SerializeField, Candlelight.PropertyBackingField]
@@ -365,12 +427,27 @@ public class Player : MonoBehaviour
             x = gb.X;
             z = gb.Z;
 
+            if(other.GetComponent<GridBlock>().isFallen) //if stepped on fallen gridblock
+            {
+               //make player fall down on the next beat
+
+               //rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (FallIncrement);
+            }
+
         }
+
     }
 
     public void Update ()
     {
+       if(!disableInput)
+       handleInput();
+        
+    }
 
+
+    void handleInput()
+    {
         HandleAxisState (ref horizontalAxisState, "Horizontal" + ID);
         HandleAxisState (ref verticalAxisState, "Vertical" + ID);
 
@@ -393,6 +470,7 @@ public class Player : MonoBehaviour
                     input.x = 0;
                 }
             }
+
 
             if (input != Vector2.zero && !_isStunned)
             {
@@ -433,8 +511,8 @@ public class Player : MonoBehaviour
 
             }
         }
-    }
 
+    }
     public void setIsMoving (bool value)
     {
         isMoving = value;
@@ -859,7 +937,7 @@ public class Player : MonoBehaviour
 
     }
 
-    //movement coroutine stuff
+    //movement coroutine stuff | currently not using
     public IEnumerator move (Transform transform)
     {
 

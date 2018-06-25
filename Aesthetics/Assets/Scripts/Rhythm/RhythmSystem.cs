@@ -650,7 +650,7 @@ public class RhythmSystem : MonoBehaviour
 
            
 
-            GridBlock gb = grid_ref.GetRandomGridBlock(0,false,null,false);
+            GridBlock gb = grid_ref.GetRandomGridBlock(0,null,null,false,false);
             if(gb)
             gb.Fall(pattern,countdown, duration);
             

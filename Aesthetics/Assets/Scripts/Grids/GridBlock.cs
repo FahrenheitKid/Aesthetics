@@ -209,7 +209,7 @@ public class GridBlock : MonoBehaviour
         }
     }
 
-    public Vector3 startPosition;
+    public Transform startTransform;
 
     [SerializeField]
     private GameObject textCountdown_prefab;
@@ -223,6 +223,7 @@ public class GridBlock : MonoBehaviour
         get
         {
             return _mainColor;
+            
         }
         set
         {
@@ -303,7 +304,7 @@ public class GridBlock : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
-    private bool _isFallen = false;
+    private bool _isFallen = false; // when the block is already fallen/dissapeared
     public bool isFallen
     {
         get
@@ -313,6 +314,20 @@ public class GridBlock : MonoBehaviour
         set
         {
             _isFallen = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private bool _isFalling = false; // while stil on the countdown
+    public bool isFalling
+    {
+        get
+        {
+            return _isFalling;
+        }
+        set
+        {
+            _isFalling = value;
         }
     }
 
@@ -404,6 +419,10 @@ public class GridBlock : MonoBehaviour
     //triggers the fall event
     public void Fall (int pattern, int countdown, int duration)
     {
+
+        if(isFallen || isFalling) //already falling/fallen, must return
+        return;
+
         fall_data.pattern = pattern;
         fall_data.countdown = countdown;
         fall_data.duration = duration;
@@ -411,13 +430,14 @@ public class GridBlock : MonoBehaviour
         fall_data.duration_count = 0;
         fall_data.startCountdown = true;
         fall_data.startDuration = false;
+        isFalling = true;
 
-        Vector3 pos = startPosition;
+        Vector3 pos = startTransform.position;
         //pos.y += this.GetComponent<Renderer> ().bounds.size.y + 0.2f;
         pos.y += 0.2f;
 
         //Color c(0,0,0);
-        SpawnCountdownText (pos, fall_data.countdown.ToString(), Color.green);
+        SpawnCountdownText (pos, fall_data.countdown.ToString (), Color.green);
         // textMesh.text =    fall_data.countdown.ToString();
 
         rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (FallIncrement);
@@ -430,7 +450,7 @@ public class GridBlock : MonoBehaviour
 
     }
 
-    public void SpawnCountdownText (Vector3 pos, string tex, Color texCol)
+    public void SpawnCountdownText (Vector3 pos, string tex, Color texCol) //spawn text above the gridblock
     {
         GameObject countdownPrefab = Instantiate (textCountdown_prefab, pos, Quaternion.identity) as GameObject;
         GridBlockText gt = countdownPrefab.GetComponent<GridBlockText> ();
@@ -452,11 +472,10 @@ public class GridBlock : MonoBehaviour
     {
         //print (fall_data.pattern + " " + fall_data.countdown + " " + fall_data.duration);
 
-        if (fall_data.startCountdown)
+        if (fall_data.startCountdown) //if can start the countdown
         {
-            if (fall_data.countdown_count < fall_data.countdown)
+            if (fall_data.countdown_count < fall_data.countdown) //if countdown still going
             {
-                
 
                 int result = fall_data.countdown - fall_data.countdown_count; // never show 0
                 int crossResult = (100 * result) / fall_data.countdown;
@@ -487,25 +506,25 @@ public class GridBlock : MonoBehaviour
                 textCountdown_ref.GetComponent<TextMeshPro> ().color = col;
                 fall_data.countdown_count++;
             }
-            else
+            else //countdown ended
             {
-                print ("fall timeout ");
+                //adjust fall_data values
                 fall_data.countdown_count = 0;
                 fall_data.startCountdown = false;
                 fall_data.startDuration = true;
                 textCountdown_ref.GetComponent<TextMeshPro> ().text = "";
-                textCountdown_ref.GetComponent<GridBlockText>().isDone = true;
+                textCountdown_ref.GetComponent<GridBlockText> ().isDone = true;
                 textCountdown_ref = null;
+                isFallen = true;
+                isFalling = false;
                 //textMeshObject.SetActive(false);
 
-                Vector3 endPosition = startPosition;
+                Vector3 endPosition = startTransform.position;
                 endPosition.y = endPosition.y - 10;
 
-                transform.DOMove (endPosition, rhythmSystem_ref.rhythmTarget_Ref.duration);
-
-                //startCount = false;
-
-                //Kill (null);
+                //make gridblock "invisible" by scaling it down, but not totally because we still need the collider
+                transform.DOScale (new Vector3 (0.001f, 0.001f, 0.001f), rhythmSystem_ref.rhythmTarget_Ref.duration);
+               
             }
         }
 
@@ -518,12 +537,13 @@ public class GridBlock : MonoBehaviour
             }
             else
             {
-                print ("fall timeout ");
+                //print ("fall timeout ");
                 fall_data.duration_count = 0;
                 fall_data.startDuration = false;
+                isFallen = false;
 
                 //startCount = false;
-
+                transform.DOScale (new Vector3 (1, 1, 1), rhythmSystem_ref.rhythmTarget_Ref.duration / 2);
                 rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (FallIncrement);
                 //Kill (null);
             }
