@@ -1,0 +1,123 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1223223985, guid: aa81bbec85a3f423193272a7c6154986, type: 3}
+  m_Name: FootstepsBlockBeat
+  m_EditorClassIdentifier: 
+  mEventID: BlockBeat
+  mEventList:
+  - mStartSample: 24271
+    mEndSample: 24271
+  - mStartSample: 47482
+    mEndSample: 47482
+  - mStartSample: 627745
+    mEndSample: 627745
+  - mStartSample: 650955
+    mEndSample: 650955
+  - mStartSample: 674166
+    mEndSample: 674166
+  - mStartSample: 720587
+    mEndSample: 720587
+  - mStartSample: 1370482
+    mEndSample: 1370482
+  - mStartSample: 1393692
+    mEndSample: 1393692
+  - mStartSample: 1416903
+    mEndSample: 1416903
+  - mStartSample: 1463324
+    mEndSample: 1463324
+  - mStartSample: 1556166
+    mEndSample: 1556166
+  - mStartSample: 1625797
+    mEndSample: 1625797
+  - mStartSample: 1649008
+    mEndSample: 1649008
+  - mStartSample: 1672218
+    mEndSample: 1672218
+  - mStartSample: 1695429
+    mEndSample: 1695429
+  - mStartSample: 1741850
+    mEndSample: 1741850
+  - mStartSample: 1811482
+    mEndSample: 1811482
+  - mStartSample: 1834692
+    mEndSample: 1834692
+  - mStartSample: 1857903
+    mEndSample: 1857903
+  - mStartSample: 1881113
+    mEndSample: 1881113
+  - mStartSample: 1927534
+    mEndSample: 1927534
+  - mStartSample: 1997166
+    mEndSample: 1997166
+  - mStartSample: 2020376
+    mEndSample: 2020376
+  - mStartSample: 2043587
+    mEndSample: 2043587
+  - mStartSample: 2066797
+    mEndSample: 2066797
+  - mStartSample: 2113218
+    mEndSample: 2113218
+  - mStartSample: 2182850
+    mEndSample: 2182850
+  - mStartSample: 2206061
+    mEndSample: 2206061
+  - mStartSample: 2229271
+    mEndSample: 2229271
+  - mStartSample: 2298903
+    mEndSample: 2298903
+  _SerializedPayloadTypes:
+  - SonicBloom.Koreo.TextPayload
+  _AssetPayloads: []
+  _AssetPayloadIdxs: 
+  _ColorPayloads: []
+  _ColorPayloadIdxs: 
+  _CurvePayloads: []
+  _CurvePayloadIdxs: 
+  _FloatPayloads: []
+  _FloatPayloadIdxs: 
+  _GradientPayloads: []
+  _GradientPayloadIdxs: 
+  _IntPayloads: []
+  _IntPayloadIdxs: 
+  _SpectrumPayloads: []
+  _SpectrumPayloadIdxs: 
+  _TextPayloads:
+  - mTextVal: 5,3,8
+  - mTextVal: 1,2,8
+  - mTextVal: 0,0,8
+  - mTextVal: 0,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 3,0,8
+  - mTextVal: 0,0,8
+  - mTextVal: 0,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 4,0,8
+  - mTextVal: 4,3,4
+  - mTextVal: 0,0,8
+  - mTextVal: 0,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 3,0,8
+  - mTextVal: 1,0,8
+  _TextPayloadIdxs: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d000000

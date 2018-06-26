@@ -98,6 +98,8 @@ public class TheGrid : MonoBehaviour
     [SerializeField]
     public float playerInitY = 0.1f;
 
+     [SerializeField]
+    public float blockStunDuration = 3.0f;
 
     [SerializeField]
     Countdown scoreMakerTimer;
@@ -312,6 +314,11 @@ public class TheGrid : MonoBehaviour
             SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
         }
 
+        if (Input.GetKeyDown (KeyCode.G))
+        {
+            playerList[0].Stun(4);
+        }
+
         itemTimersUpdate ();
 
     }
@@ -368,7 +375,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, false, false, false, false, false);
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -431,7 +438,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, false, false, false, false, false);
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -489,7 +496,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, false, false, false, false, false);
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -694,7 +701,7 @@ public class TheGrid : MonoBehaviour
     }
 
     //returns random empty gridblock with no players in that range
-    public List<GridBlock> GetNeighbourGridBlocks (int x, int z, bool allowDiagonals, bool? hasItem, bool? isOccupied, bool? isFallen, bool? isFalling, bool? isRespawning)
+    public List<GridBlock> GetNeighbourGridBlocks (int x, int z, bool allowDiagonals, GridBlock.GridBlockStatus status)
     {
         List<GridBlock> neighbours = new List<GridBlock> ();
 
@@ -716,23 +723,30 @@ public class TheGrid : MonoBehaviour
             int z_delta = Mathf.Abs (gb.Z - z);
             int delta_sum = x_delta + z_delta;
 
-            if ((hasItem != null && gb.hasItem == hasItem) || hasItem == null)
+            if ((status.hasItem != null && gb.hasItem == status.hasItem) || status.hasItem == null)
             {
 
-                if ((isOccupied != null && gb.isOccupied == isOccupied) || isOccupied == null)
+                if ((status.isOccupied != null && gb.isOccupied == status.isOccupied) || status.isOccupied == null)
                 {
-
-                    if ((isFallen != null && gb.isFallen == isFallen) || isFallen == null)
+                    if ((status.isBlocked != null && gb.isBlocked == status.isBlocked) || status.isBlocked == null)
                     {
 
-                        if ((isFalling != null && gb.isFalling == isFalling) || isFalling == null)
+                        if ((status.isPreBlocked != null && gb.isPreBlocked == status.isPreBlocked) || status.isPreBlocked == null)
                         {
 
-                            if ((isRespawning != null && gb.isRespawning == isRespawning) || isRespawning == null)
+                            if ((status.isFallen != null && gb.isFallen == status.isFallen) || status.isFallen == null)
                             {
-                                if ((allowDiagonals && delta_sum <= 2) || (!allowDiagonals && delta_sum <= 1))
+
+                                if ((status.isPreFallen != null && gb.isPreFallen == status.isPreFallen) || status.isPreFallen == null)
                                 {
-                                    neighbours.Add (gb);
+
+                                    if ((status.isRespawning != null && gb.isRespawning == status.isRespawning) || status.isRespawning == null)
+                                    {
+                                        if ((allowDiagonals && delta_sum <= 2) || (!allowDiagonals && delta_sum <= 1))
+                                        {
+                                            neighbours.Add (gb);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -745,21 +759,20 @@ public class TheGrid : MonoBehaviour
         return neighbours;
     }
 
-    public GridBlock GetRandomNeighbourGridBlock (int x, int z, bool allowDiagonals, bool? hasItem, bool? isOccupied, bool? isFallen, bool? isFalling, bool? isRespawning)
+    public GridBlock GetRandomNeighbourGridBlock (int x, int z, bool allowDiagonals, GridBlock.GridBlockStatus status)
     {
-        List<GridBlock> neighbours = GetNeighbourGridBlocks (x, z, allowDiagonals, hasItem, isOccupied, isFallen, isFalling, isRespawning);
+        List<GridBlock> neighbours = GetNeighbourGridBlocks (x, z, allowDiagonals, status);
 
         return neighbours[Random.Range (0, neighbours.Count)];
     }
 
     //returns random empty gridblock with no players in that range
-    public GridBlock GetRandomGridBlock (float range, bool? hasItem, bool? isOccupied, bool? isFallen, bool? isFalling, bool? isRespawning)
+    public GridBlock GetRandomGridBlock (float range, GridBlock.GridBlockStatus status)
     {
+        List<GridBlock> selecteds = new List<GridBlock> ();
 
         int selected_count = 0; // count how many blocks are valid trhoughout the players
         int it = -1;
-
-        List<int> index = new List<int> ();
 
         for (int i = 0; i < GetGridBlockList ().Count; i++)
         {
@@ -776,27 +789,112 @@ public class TheGrid : MonoBehaviour
                 if (Vector3.Distance (gb_pos, p_pos) >= range)
                 {
 
-                    if ((hasItem != null && GetGridBlockList () [it].hasItem == hasItem) || hasItem == null)
+                    if ((status.hasItem != null && GetGridBlockList () [it].hasItem == status.hasItem) || status.hasItem == null)
                     {
 
-                        if ((isOccupied != null && GetGridBlockList () [it].isOccupied == isOccupied) || isOccupied == null)
+                        if ((status.isOccupied != null && GetGridBlockList () [it].isOccupied == status.isOccupied) || status.isOccupied == null)
                         {
-
-                            if ((isFallen != null && GetGridBlockList () [it].isFallen == isFallen) || isFallen == null)
+                            if ((status.isBlocked != null && GetGridBlockList () [it].isBlocked == status.isBlocked) || status.isBlocked == null)
                             {
 
-                                if ((isFalling != null && GetGridBlockList () [it].isFalling == isFalling) || isFalling == null)
+                                if ((status.isPreBlocked != null && GetGridBlockList () [it].isPreBlocked == status.isPreBlocked) || status.isPreBlocked == null)
                                 {
 
-                                    if ((isRespawning != null && GetGridBlockList () [it].isRespawning == isRespawning) || isRespawning == null)
+                                    if ((status.isFallen != null && GetGridBlockList () [it].isFallen == status.isFallen) || status.isFallen == null)
                                     {
 
-                                        selected_count++;
+                                        if ((status.isPreFallen != null && GetGridBlockList () [it].isPreFallen == status.isPreFallen) || status.isPreFallen == null)
+                                        {
+
+                                            if ((status.isRespawning != null && GetGridBlockList () [it].isRespawning == status.isRespawning) || status.isRespawning == null)
+                                            {
+                                                //print("1 pelo menos");
+                                                selected_count++;
+                                                //break;
+                                            }
+                                            //break;
+                                        }
+                                        //break;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
+            if (selected_count >= playerList.Count)
+            {
+                selecteds.Add (GetGridBlockList () [it]);
+            }
+
+            selected_count = 0;
+        }
+
+        if (selecteds.Count > 0)
+            return selecteds[Random.Range (0, selecteds.Count)];
+        else
+        {
+            //print("nao achei");
+            return null;
+        }
+
+    }
+
+    //returns random empty gridblock with no players in that range
+    public List<GridBlock> GetRandomGridBlocks (float range, GridBlock.GridBlockStatus status)
+    {
+        List<GridBlock> selecteds = new List<GridBlock> ();
+
+        int selected_count = 0; // count how many blocks are valid trhoughout the players
+        int it = -1;
+
+        for (int i = 0; i < GetGridBlockList ().Count; i++)
+        {
+            it = i;
+            if (!GetGridBlockList () [it]) continue;
+
+            foreach (Player p in playerList)
+            {
+                if (!p) continue;
+
+                Vector3 gb_pos = new Vector3 (GetGridBlockList () [it].X, 0, GetGridBlockList () [it].Z);
+                Vector3 p_pos = new Vector3 (p.x, 0, p.z);
+
+                if (Vector3.Distance (gb_pos, p_pos) >= range)
+                {
+
+                    if ((status.hasItem != null && GetGridBlockList () [it].hasItem == status.hasItem) || status.hasItem == null)
+                    {
+
+                        if ((status.isOccupied != null && GetGridBlockList () [it].isOccupied == status.isOccupied) || status.isOccupied == null)
+                        {
+                            if ((status.isBlocked != null && GetGridBlockList () [it].isBlocked == status.isBlocked) || status.isBlocked == null)
+                            {
+
+                                if ((status.isPreBlocked != null && GetGridBlockList () [it].isPreBlocked == status.isPreBlocked) || status.isPreBlocked == null)
+                                {
+
+                                    if ((status.isFallen != null && GetGridBlockList () [it].isFallen == status.isFallen) || status.isFallen == null)
+                                    {
+
+                                        if ((status.isPreFallen != null && GetGridBlockList () [it].isPreFallen == status.isPreFallen) || status.isPreFallen == null)
+                                        {
+
+                                            if ((status.isRespawning != null && GetGridBlockList () [it].isRespawning == status.isRespawning) || status.isRespawning == null)
+                                            {
+
+                                                selected_count++;
+                                                //break;
+                                            }
+                                        }
                                         //break;
                                     }
                                     //break;
                                 }
-                                //break;
                             }
                         }
                     }
@@ -807,15 +905,15 @@ public class TheGrid : MonoBehaviour
 
             if (selected_count >= playerList.Count)
             {
-                index.Add (it);
+                selecteds.Add (GetGridBlockList () [it]);
             }
 
             selected_count = 0;
 
         }
 
-        if (index.Count > 0)
-            return GetGridBlockList () [index[Random.Range (0, index.Count)]];
+        if (selecteds.Count > 0)
+            return selecteds;
         else
         {
             return null;
@@ -823,6 +921,221 @@ public class TheGrid : MonoBehaviour
 
     }
 
+    public List<GridBlock> GetRandomPatternGridBlocks (GridBlock.gridBlockPattern pattern, float range, GridBlock.GridBlockStatus status)
+    {
+        List<GridBlock> list = null;
+        List<List<GridBlock>> availablePatterns = GetPatternGridBlocks (pattern, range, status);
+
+        if (pattern != GridBlock.gridBlockPattern.Single)
+        {
+            if (availablePatterns != null)
+            {
+
+                list = availablePatterns[Random.Range (0, availablePatterns.Count)];
+            }
+        }
+        else //if(pattern == GridBlock.gridBlockPattern.Single)
+        {
+            list = GetRandomGridBlocks (range, status);
+        }
+
+        return list;
+
+    }
+
+    public List<List<GridBlock>> GetPatternGridBlocks (GridBlock.gridBlockPattern pattern, float range, GridBlock.GridBlockStatus status)
+    {
+        List<List<GridBlock>> list = null;
+
+        List<GridBlock> availableBlocks = GetRandomGridBlocks (range, status);
+        List<List<GridBlock>> validPatterns = new List<List<GridBlock>> ();
+        List<GridBlock> already_added = new List<GridBlock> ();
+
+        switch (pattern)
+        {
+
+            case GridBlock.gridBlockPattern.Cross:
+
+                //print("first size " + availableBlocks.Count);
+                //for each of the possible blocks to check
+                foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    // if we have the 4 sides neighbours
+                    if (neighbours.Count == 4)
+                    {
+                        neighbours.Add (gb);
+                        validPatterns.Add (neighbours);
+                    }
+
+                }
+
+                list = validPatterns;
+
+                break;
+
+            case GridBlock.gridBlockPattern.Triple_V: // 4
+
+                //print("first size " + availableBlocks.Count);
+                //for each of the possible blocks to check
+                foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    foreach (GridBlock nb in neighbours)
+                    {
+                        //if the neighbours are in the same horizontal lane
+                        if (nb.X == gb.X)
+                        {
+                            validNeighbours.Add (nb);
+                        }
+                    }
+
+                    //to be a triplet we need 2 neighbours
+                    if (validNeighbours.Count == 2)
+                    {
+                        //print("achei 2 vizinhos!");
+                        List<GridBlock> temp = new List<GridBlock> ();
+                        temp.Add (gb);
+                        temp.AddRange (validNeighbours);
+
+                        validPatterns.Add (temp);
+
+                    }
+
+                }
+
+                list = validPatterns;
+                break;
+            case GridBlock.gridBlockPattern.Triple_H: // 3
+
+                //print("first size " + availableBlocks.Count);
+                //for each of the possible blocks to check
+                foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    foreach (GridBlock nb in neighbours)
+                    {
+                        //if the neighbours are in the same horizontal lane
+                        if (nb.Z == gb.Z)
+                        {
+                            validNeighbours.Add (nb);
+                        }
+                    }
+
+                    //to be a triplet we need 2 neighbours
+                    if (validNeighbours.Count == 2)
+                    {
+                        //print("achei 2 vizinhos!");
+                        List<GridBlock> temp = new List<GridBlock> ();
+                        temp.Add (gb);
+                        temp.AddRange (validNeighbours);
+
+                        validPatterns.Add (temp);
+
+                    }
+
+                }
+
+                list = validPatterns;
+                break;
+
+            case GridBlock.gridBlockPattern.Double_V: // 2
+
+                  foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    foreach (GridBlock nb in neighbours)
+                    {
+                        //if the neighbours are in the same horizontal lane
+                        if (nb.X == gb.X)
+                        {
+                            validNeighbours.Add (nb);
+                        }
+                    }
+
+                    //to be a triplet we need 2 neighbours
+                    foreach (GridBlock vb in validNeighbours)
+                    {
+                        //print("achei 2 vizinhos!");
+                        List<GridBlock> temp = new List<GridBlock> ();
+                        temp.Add(gb);
+                        temp.Add(vb);
+
+                        validPatterns.Add(temp);
+
+                    }
+
+                }
+
+                list = validPatterns;
+                break;
+
+            case GridBlock.gridBlockPattern.Double_H: // 1
+
+              foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    foreach (GridBlock nb in neighbours)
+                    {
+                        //if the neighbours are in the same horizontal lane
+                        if (nb.Z == gb.Z)
+                        {
+                            validNeighbours.Add (nb);
+                        }
+                    }
+
+                    //to be a triplet we need 2 neighbours
+                    foreach (GridBlock vb in validNeighbours)
+                    {
+                        //print("achei 2 vizinhos!");
+                        List<GridBlock> temp = new List<GridBlock> ();
+                        temp.Add(gb);
+                        temp.Add(vb);
+
+                        validPatterns.Add(temp);
+
+                    }
+
+                }
+
+                list = validPatterns;
+                break;
+            default:
+                break;
+
+        }
+        return list;
+    }
     public Vector3 getGridBlockPosition (int x, int z, float y)
     {
         Vector3 pos = GetGridBlock (x, z).gameObject.transform.position;

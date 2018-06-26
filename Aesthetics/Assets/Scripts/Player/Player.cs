@@ -99,6 +99,26 @@ public class Player : MonoBehaviour
         }
         set
         {
+            
+            if(value)
+            {
+                combo = 0;
+                multiplierCombo = 0;
+                multiplier = 0;
+                disableInput = true;
+                Shader shader_ref = gameObject.GetComponent<Renderer> ().materials[0].shader;
+               
+                gameObject.GetComponent<Renderer> ().materials[0].SetColor("_Color",Color.blue);
+            }
+            else
+            {
+
+                Shader shader_ref = gameObject.GetComponent<Renderer> ().materials[0].shader;
+               
+                gameObject.GetComponent<Renderer> ().materials[0].SetColor("_Color",Color.white);
+
+                disableInput = false;
+            }
 
             _isStunned = value;
 
@@ -166,18 +186,19 @@ public class Player : MonoBehaviour
         }
         set
         {
-            if(value)
+            if (value)
             {
-                 Shader glass = Shader.Find ("FX/Glass/Stained BumpDistort");
-                        gameObject.GetComponent<Renderer> ().materials[0].shader = glass;
+                
+                Shader glass = Shader.Find ("FX/Glass/Stained BumpDistort");
+                gameObject.GetComponent<Renderer> ().materials[0].shader = glass;
 
             }
             else
             {
-                 Shader normal = Shader.Find ("Standard");
-                        gameObject.GetComponent<Renderer> ().materials[0].shader = normal;
+                Shader normal = Shader.Find ("Standard");
+                gameObject.GetComponent<Renderer> ().materials[0].shader = normal;
             }
-           
+
             _isImmune = value;
 
         }
@@ -539,13 +560,12 @@ public class Player : MonoBehaviour
         {
             if (respawnTimer.stop) // if respawn time ended
             {
-                print("Respawn Done");
+
                 isRespawning = false;
                 //let player move again;
                 disableInput = false;
                 fall_gridBlock_Ref = null;
 
-                        
                 immunityTimer.startTimer (respawnImmunity_duration); // make player imune for a few more seconds
 
             }
@@ -556,12 +576,17 @@ public class Player : MonoBehaviour
 
             if (immunityTimer.stop) // if our immune time ended
             {
-                if(!isRespawning)
-                isImmune = false;
-                
-                
-                       
+                if (!isRespawning)
+                    isImmune = false;
 
+            }
+        }
+
+        if(isStunned)
+        {
+            if(stunTimer.stop)
+            {
+                isStunned = false;
             }
         }
     }
@@ -659,26 +684,37 @@ public class Player : MonoBehaviour
 
     void Respawn ()
     {
+        int safe_count = 0;
         //find neighbour gridblock to serve as spawn point
-        RetryToFindNeighbour : GridBlock respawnBlock;
+        RetryToFindNeighbour:
+
+            GridBlock respawnBlock;
         if (fall_gridBlock_Ref)
         {
 
-            respawnBlock = grid_ref.GetRandomNeighbourGridBlock (fall_gridBlock_Ref.X, fall_gridBlock_Ref.Z, true, false, false, false, false, false);
+            respawnBlock = grid_ref.GetRandomNeighbourGridBlock (fall_gridBlock_Ref.X, fall_gridBlock_Ref.Z, true, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
         }
 
         else
         {
-            respawnBlock = grid_ref.GetRandomGridBlock (1, false, false, false, false, false);
+            respawnBlock = grid_ref.GetRandomGridBlock (1, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
         }
 
-        if (!respawnBlock)
+        if (!respawnBlock && safe_count < 450)
+        {
+            safe_count++;
             goto RetryToFindNeighbour;
+        }
+
+        if (safe_count >= 450)
+        {
+            //timer to research for new spawnpoint
+            print ("NÃO ACHOU SPAWN POINT, EU SABIAAAAA!");
+        }
 
         respawnBlock.isRespawning = true;
         isRespawning = true;
         isFallen = false;
-
 
         isImmune = true;
 
@@ -692,9 +728,14 @@ public class Player : MonoBehaviour
         respawnTimer.startTimer (respawn_duration);
 
     }
-    public void Stun ()
+    public void Stun (float duration)
     {
+            if(isImmune) return;
 
+
+            stunTimer.startTimer(duration);
+            isStunned = true;
+            
     }
     public bool Move ()
     {
@@ -872,10 +913,10 @@ public class Player : MonoBehaviour
         endGridBlock = grid_ref.GetGridBlock ((int) endGridPosition.x, (int) endGridPosition.z);
 
         //if destination gridBlock is already occupied
-        if (endGridBlock.isOccupied)
+        if (endGridBlock.isOccupied || endGridBlock.isBlocked || endGridBlock.isRespawning)
         {
 
-            print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
+            //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
             return false;
 
         }
