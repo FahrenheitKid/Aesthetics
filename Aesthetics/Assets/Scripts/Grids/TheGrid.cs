@@ -98,6 +98,9 @@ public class TheGrid : MonoBehaviour
     [SerializeField]
     public float playerInitY = 0.1f;
 
+     [SerializeField]
+    public float blockStunDuration = 3.0f;
+
     [SerializeField]
     Countdown scoreMakerTimer;
 
@@ -311,6 +314,11 @@ public class TheGrid : MonoBehaviour
             SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
         }
 
+        if (Input.GetKeyDown (KeyCode.G))
+        {
+            playerList[0].Stun(4);
+        }
+
         itemTimersUpdate ();
 
     }
@@ -367,7 +375,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus(false, false, false, false, false, false, false));
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -430,7 +438,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus(false, false, false, false, false, false, false));
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -488,7 +496,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus(false, false, false, false, false, false, false));
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -816,15 +824,14 @@ public class TheGrid : MonoBehaviour
 
                 }
 
-               
             }
 
-             if (selected_count >= playerList.Count)
-                {
-                    selecteds.Add (GetGridBlockList () [it]);
-                }
+            if (selected_count >= playerList.Count)
+            {
+                selecteds.Add (GetGridBlockList () [it]);
+            }
 
-                selected_count = 0;
+            selected_count = 0;
         }
 
         if (selecteds.Count > 0)
@@ -880,8 +887,8 @@ public class TheGrid : MonoBehaviour
                                             if ((status.isRespawning != null && GetGridBlockList () [it].isRespawning == status.isRespawning) || status.isRespawning == null)
                                             {
 
-                                            selected_count++;
-                                            //break;
+                                                selected_count++;
+                                                //break;
                                             }
                                         }
                                         //break;
@@ -914,19 +921,216 @@ public class TheGrid : MonoBehaviour
 
     }
 
-    public List<GridBlock> GetPatternGridBlocks (GridBlock.gridBlockPattern pattern, float range, GridBlock.GridBlockStatus status)
+    public List<GridBlock> GetRandomPatternGridBlocks (GridBlock.gridBlockPattern pattern, float range, GridBlock.GridBlockStatus status)
     {
-        List<GridBlock> list = new List<GridBlock> ();
+        List<GridBlock> list = null;
+        List<List<GridBlock>> availablePatterns = GetPatternGridBlocks (pattern, range, status);
+
+        if (pattern != GridBlock.gridBlockPattern.Single)
+        {
+            if (availablePatterns != null)
+            {
+
+                list = availablePatterns[Random.Range (0, availablePatterns.Count)];
+            }
+        }
+        else //if(pattern == GridBlock.gridBlockPattern.Single)
+        {
+            list = GetRandomGridBlocks (range, status);
+        }
+
+        return list;
+
+    }
+
+    public List<List<GridBlock>> GetPatternGridBlocks (GridBlock.gridBlockPattern pattern, float range, GridBlock.GridBlockStatus status)
+    {
+        List<List<GridBlock>> list = null;
+
+        List<GridBlock> availableBlocks = GetRandomGridBlocks (range, status);
+        List<List<GridBlock>> validPatterns = new List<List<GridBlock>> ();
+        List<GridBlock> already_added = new List<GridBlock> ();
+
         switch (pattern)
         {
+
             case GridBlock.gridBlockPattern.Cross:
-                break;
-            case GridBlock.gridBlockPattern.Triple_H:
+
+                //print("first size " + availableBlocks.Count);
+                //for each of the possible blocks to check
+                foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    // if we have the 4 sides neighbours
+                    if (neighbours.Count == 4)
+                    {
+                        neighbours.Add (gb);
+                        validPatterns.Add (neighbours);
+                    }
+
+                }
+
+                list = validPatterns;
 
                 break;
-            case GridBlock.gridBlockPattern.Single:
+
+            case GridBlock.gridBlockPattern.Triple_V: // 4
+
+                //print("first size " + availableBlocks.Count);
+                //for each of the possible blocks to check
+                foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    foreach (GridBlock nb in neighbours)
+                    {
+                        //if the neighbours are in the same horizontal lane
+                        if (nb.X == gb.X)
+                        {
+                            validNeighbours.Add (nb);
+                        }
+                    }
+
+                    //to be a triplet we need 2 neighbours
+                    if (validNeighbours.Count == 2)
+                    {
+                        //print("achei 2 vizinhos!");
+                        List<GridBlock> temp = new List<GridBlock> ();
+                        temp.Add (gb);
+                        temp.AddRange (validNeighbours);
+
+                        validPatterns.Add (temp);
+
+                    }
+
+                }
+
+                list = validPatterns;
+                break;
+            case GridBlock.gridBlockPattern.Triple_H: // 3
+
+                //print("first size " + availableBlocks.Count);
+                //for each of the possible blocks to check
+                foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    foreach (GridBlock nb in neighbours)
+                    {
+                        //if the neighbours are in the same horizontal lane
+                        if (nb.Z == gb.Z)
+                        {
+                            validNeighbours.Add (nb);
+                        }
+                    }
+
+                    //to be a triplet we need 2 neighbours
+                    if (validNeighbours.Count == 2)
+                    {
+                        //print("achei 2 vizinhos!");
+                        List<GridBlock> temp = new List<GridBlock> ();
+                        temp.Add (gb);
+                        temp.AddRange (validNeighbours);
+
+                        validPatterns.Add (temp);
+
+                    }
+
+                }
+
+                list = validPatterns;
+                break;
+
+            case GridBlock.gridBlockPattern.Double_V: // 2
+
+                  foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    foreach (GridBlock nb in neighbours)
+                    {
+                        //if the neighbours are in the same horizontal lane
+                        if (nb.X == gb.X)
+                        {
+                            validNeighbours.Add (nb);
+                        }
+                    }
+
+                    //to be a triplet we need 2 neighbours
+                    foreach (GridBlock vb in validNeighbours)
+                    {
+                        //print("achei 2 vizinhos!");
+                        List<GridBlock> temp = new List<GridBlock> ();
+                        temp.Add(gb);
+                        temp.Add(vb);
+
+                        validPatterns.Add(temp);
+
+                    }
+
+                }
+
+                list = validPatterns;
+                break;
+
+            case GridBlock.gridBlockPattern.Double_H: // 1
+
+              foreach (GridBlock gb in availableBlocks)
+                {
+                    //dont check for blocks we already added
+                    //if(already_added.Contains(gb)) continue;
+
+                    List<GridBlock> neighbours = GetNeighbourGridBlocks (gb.X, gb.Z, false, status);
+
+                    List<GridBlock> validNeighbours = new List<GridBlock> ();
+
+                    foreach (GridBlock nb in neighbours)
+                    {
+                        //if the neighbours are in the same horizontal lane
+                        if (nb.Z == gb.Z)
+                        {
+                            validNeighbours.Add (nb);
+                        }
+                    }
+
+                    //to be a triplet we need 2 neighbours
+                    foreach (GridBlock vb in validNeighbours)
+                    {
+                        //print("achei 2 vizinhos!");
+                        List<GridBlock> temp = new List<GridBlock> ();
+                        temp.Add(gb);
+                        temp.Add(vb);
+
+                        validPatterns.Add(temp);
+
+                    }
+
+                }
+
+                list = validPatterns;
+                break;
             default:
-                list = GetRandomGridBlocks (range, status);
                 break;
 
         }

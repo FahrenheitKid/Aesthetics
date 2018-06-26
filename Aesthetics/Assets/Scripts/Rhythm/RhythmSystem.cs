@@ -601,6 +601,8 @@ public class RhythmSystem : MonoBehaviour
             }
 
             GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
+            GridBlock.GridBlockStatus status = new GridBlock.GridBlockStatus(null, null, false, false, false, false, false);
+
             switch (pat)
             {
 
@@ -610,10 +612,27 @@ public class RhythmSystem : MonoBehaviour
                     break;
                 case GridBlock.gridBlockPattern.Triple_H:
 
+                    List<GridBlock> triplet = null;
+                    RetryToFindPattern:
+                    triplet = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+
+                    if(triplet != null)
+                    {
+                        foreach (GridBlock tri in triplet)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        goto RetryToFindPattern;
+
+                    }
+
                     break;
                 case GridBlock.gridBlockPattern.Single:
                 default:
-                    GridBlock gb = grid_ref.GetRandomGridBlock (0, new GridBlock.GridBlockStatus(null, null, false, false, false, false, false));
+                    GridBlock gb = grid_ref.GetRandomGridBlock (0, status);
                     if (gb)
                         gb.Fall (pat, countdown, duration);
                     break;
@@ -645,20 +664,161 @@ public class RhythmSystem : MonoBehaviour
                 duration = Convert.ToInt32 (result[2]);
             }
 
-            GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
+             GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
+            GridBlock.GridBlockStatus status = new GridBlock.GridBlockStatus(false, false, false, false, false, false, false);
+
+            List<GridBlock> patternBlocks = null;
+            int safecount = 0;
+
             switch (pat)
             {
 
                 
 
-                case GridBlock.gridBlockPattern.Cross:
-                    break;
-                case GridBlock.gridBlockPattern.Triple_H:
+                case GridBlock.gridBlockPattern.Cross: // 5
+                     RetryToFindCross:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindCross;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
 
                     break;
-                case GridBlock.gridBlockPattern.Single:
+                    case GridBlock.gridBlockPattern.Triple_V: // 4
+
+                     
+                         
+                    RetryToFindTriple_V:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindTriple_V;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                case GridBlock.gridBlockPattern.Triple_H: // 3
+                         
+                        
+                    RetryToFindTriple_H:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindTriple_H;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+
+                    case GridBlock.gridBlockPattern.Double_V: // 2
+                         
+                        
+                    RetryToFindDouble_V:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindDouble_V;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+
+                    case GridBlock.gridBlockPattern.Double_H: // 1
+                         
+                        
+                    RetryToFindDouble_H:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindDouble_H;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                case GridBlock.gridBlockPattern.Single: // 0
                 default:
-                    GridBlock gb = grid_ref.GetRandomGridBlock (0, new GridBlock.GridBlockStatus(false,false, false, false, false, false, false));
+                    GridBlock gb = grid_ref.GetRandomGridBlock (0, status);
                     if (gb)
                         gb.Block (pat, countdown, duration);
                     break;

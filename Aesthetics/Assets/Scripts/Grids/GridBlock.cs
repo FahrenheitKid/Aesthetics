@@ -388,6 +388,7 @@ public class GridBlock : MonoBehaviour
         }
     }
 
+    private bool haveBlockStunned = false;
     [Tooltip ("blocked scaling vector")]
     [SerializeField]
     private Vector3 blockScale = new Vector3 (1, 3.5f, 1);
@@ -536,6 +537,27 @@ public class GridBlock : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// OnTriggerStay is called once per frame for every Collider other
+    /// that is touching the trigger.
+    /// </summary>
+    /// <param name="other">The other Collider involved in this collision.</param>
+    void OnTriggerStay(Collider other)
+    {
+         if (other.gameObject.CompareTag ("Player"))
+        {
+             Player p = other.GetComponent<Player> ();
+             
+            if(haveBlockStunned == false && isBlocked && !p.isImmune)
+            {
+                p.Stun(grid_ref.blockStunDuration);
+                haveBlockStunned = true;
+            }
+            
+
+        }
+    }
+
     //triggers the fall event
     public void Fall (GridBlock.gridBlockPattern pattern, int countdown, int duration)
     {
@@ -584,7 +606,10 @@ public class GridBlock : MonoBehaviour
 
         //Color c(0,0,0);
         if (block_data.countdown > 0)
+        {
+
             SpawnCountdownText (pos, block_data.countdown.ToString (), Color.green);
+        }
         // textMesh.text =    fall_data.countdown.ToString();
 
         rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (BlockIncrement);
@@ -737,6 +762,7 @@ public class GridBlock : MonoBehaviour
             }
             else //countdown ended
             {
+                
                 //adjust block_data values
                 block_data.countdown_count = 0;
                 block_data.startCountdown = false;
@@ -748,6 +774,7 @@ public class GridBlock : MonoBehaviour
                     textCountdown_ref = null;
                 }
                 isBlocked = true;
+                haveBlockStunned = false;
                 isPreBlocked = false;
                 //textMeshObject.SetActive(false);
 
@@ -796,6 +823,10 @@ public class GridBlock : MonoBehaviour
 
     }
 
+    public bool isSame (GridBlock gb)
+    {
+        return (gb.X == X && gb.Y == Y);
+    }
     // changes directly the color of the gridblock
     public void changeColor (gridBlockColor col)
     {
