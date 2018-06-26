@@ -539,7 +539,7 @@ public class Player : MonoBehaviour
         {
             if (respawnTimer.stop) // if respawn time ended
             {
-                print("Respawn Done");
+               
                 isRespawning = false;
                 //let player move again;
                 disableInput = false;
@@ -664,12 +664,12 @@ public class Player : MonoBehaviour
         if (fall_gridBlock_Ref)
         {
 
-            respawnBlock = grid_ref.GetRandomNeighbourGridBlock (fall_gridBlock_Ref.X, fall_gridBlock_Ref.Z, true, false, false, false, false, false);
+            respawnBlock = grid_ref.GetRandomNeighbourGridBlock (fall_gridBlock_Ref.X, fall_gridBlock_Ref.Z, true, false, false, false, false, false, false);
         }
 
         else
         {
-            respawnBlock = grid_ref.GetRandomGridBlock (1, false, false, false, false, false);
+            respawnBlock = grid_ref.GetRandomGridBlock (1, false, false,false, false, false, false);
         }
 
         if (!respawnBlock)
@@ -872,10 +872,10 @@ public class Player : MonoBehaviour
         endGridBlock = grid_ref.GetGridBlock ((int) endGridPosition.x, (int) endGridPosition.z);
 
         //if destination gridBlock is already occupied
-        if (endGridBlock.isOccupied)
+        if (endGridBlock.isOccupied || endGridBlock.isBlocked)
         {
 
-            print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
+            //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
             return false;
 
         }

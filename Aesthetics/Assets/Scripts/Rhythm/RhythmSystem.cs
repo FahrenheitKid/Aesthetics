@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using SonicBloom.Koreo;
 using SonicBloom.Koreo.Players;
 using UnityEngine;
@@ -15,9 +16,13 @@ public class RhythmSystem : MonoBehaviour
     [EventID]
     public string mainBeatID;
 
-    [Tooltip ("The Event ID of the track to use for target generation.")]
+    [Tooltip ("The Event ID of the track to use for fall events.")]
     [EventID]
     public string fallBeatID;
+
+    [Tooltip ("The Event ID of the track to use for block events.")]
+    [EventID]
+    public string blockBeatID;
 
     [Tooltip ("The number of milliseconds (both early and late) within which input will be detected as a Hit.")]
     [Range (8f, 150f)]
@@ -198,128 +203,19 @@ public class RhythmSystem : MonoBehaviour
         if (!grid_ref)
             grid_ref = GameObject.FindGameObjectWithTag ("Grid").GetComponent<TheGrid> ();
 
-        if (UnityEngine.Random.Range (0, 3) == 5)
-        {
-            if (!musicPlayer_ref.IsPlaying)
-
-            {
-                musicPlayer_ref.LoadSong (koreographyList[0], 0, true);
-                //gets main beat track
-                mainBeatID = koreographyList[0].GetEventIDs () [0];
-                fallBeatID = koreographyList[1].GetEventIDs () [1];
-
-                //musicPlayer_ref.Play();
-
-            }
-
-        }
-        else if (UnityEngine.Random.Range (0, 3) == 1)
-        {
-            if (!musicPlayer_ref.IsPlaying)
-
-            {
-                musicPlayer_ref.LoadSong (koreographyList[1], 0, true);
-                //gets main beat track
-                mainBeatID = koreographyList[1].GetEventIDs () [0];
-                fallBeatID = koreographyList[1].GetEventIDs () [1];
-
-                //musicPlayer_ref.Play();
-
-            }
-        }
-        else //if(Random.Range(0,3) == 2)
-        {
-            if (!musicPlayer_ref.IsPlaying)
-
-            {
-                musicPlayer_ref.LoadSong (koreographyList[2], 0, true);
-                //gets main beat track
-                mainBeatID = koreographyList[2].GetEventIDs () [0];
-                fallBeatID = koreographyList[2].GetEventIDs () [1];
-
-                //musicPlayer_ref.Play();
-
-            }
-        }
+        LoadKoreography (koreographyList.Find (element => element.name == "MainKoreo"), 0, true);
 
     }
     void Start ()
     {
 
-        UnityEngine.Random.InitState (System.Environment.TickCount);
-        if (onNoteReturnedToPool == null)
-            onNoteReturnedToPool = new UnityEvent ();
-
-        // Ensure the slider and the readout are properly in sync with the AudioSource on Start!
-        pitch = audioCom.pitch;
-
         InitializeLeadIn ();
 
-        if (UnityEngine.Random.Range (0, 3) == 5)
-        {
-            if (!musicPlayer_ref.IsPlaying)
+        //load random or specific Koreo by name
+        LoadKoreography (koreographyList.Find (element => element.name == "MainKoreo"), 0, true);
 
-            {
-                musicPlayer_ref.LoadSong (koreographyList[0], 0, true);
-                //gets main beat track
-                mainBeatID = koreographyList[0].GetEventIDs () [0];
-                fallBeatID = koreographyList[1].GetEventIDs () [1];
-                musicPlayer_ref.Play ();
+        InitKoreography ();
 
-            }
-
-        }
-        else if (UnityEngine.Random.Range (0, 3) == 1)
-        {
-            if (!musicPlayer_ref.IsPlaying)
-
-            {
-                musicPlayer_ref.LoadSong (koreographyList[1], 0, true);
-                //gets main beat track
-                mainBeatID = koreographyList[1].GetEventIDs () [0];
-                fallBeatID = koreographyList[1].GetEventIDs () [1];
-
-                musicPlayer_ref.Play ();
-
-            }
-        }
-        else //if(Random.Range(0,3) == 2)
-        {
-            if (!musicPlayer_ref.IsPlaying)
-
-            {
-                musicPlayer_ref.LoadSong (koreographyList[2], 0, true);
-                //gets main beat track
-                mainBeatID = koreographyList[2].GetEventIDs () [0];
-                fallBeatID = koreographyList[2].GetEventIDs () [1];
-
-                musicPlayer_ref.Play ();
-
-            }
-        }
-
-        targetVisuals = rhythmTarget_Ref.GetComponent<SpriteRenderer> ();
-
-        // Initialize events.
-        playingKoreo = Koreographer.Instance.GetKoreographyAtIndex (0);
-
-        // Grab all the events out of the Koreography.
-        KoreographyTrackBase rhythmTrack = playingKoreo.GetTrackByID (mainBeatID);
-        KoreographyTrackBase fallTrack = playingKoreo.GetTrackByID (fallBeatID);
-
-        beatEvents = rhythmTrack.GetAllEvents ();
-        fallEvents = fallTrack.GetAllEvents ();
-
-        Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
-        /*------------------------------------------------------------- */
-
-        SetupSpawnPositions ();
-
-        // Update our visual color.
-        //targetVisuals.color = color;
-
-        // Capture the default scale set in the Inspector.
-        defaultScale = targetVisuals.transform.localScale;
     }
 
     // Sets up the lead-in-time.  Begins audio playback immediately if the specified lead-in-time is zero.
@@ -341,6 +237,60 @@ public class RhythmSystem : MonoBehaviour
         }
     }
 
+    void LoadKoreography (Koreography koreo, int startSample, bool autoPlay)
+    {
+
+        if (!musicPlayer_ref.IsPlaying)
+        {
+            musicPlayer_ref.LoadSong (koreo, startSample, autoPlay);
+            //gets main beat track
+            mainBeatID = Array.Find (koreo.GetEventIDs (), element => element.Equals ("MainBeat"));
+            //mainBeatID = Array.FindLast(koreo.GetEventIDs(),"MainBeat");
+            fallBeatID = Array.Find (koreo.GetEventIDs (), element => element.Equals ("FallBeat"));
+
+            blockBeatID = Array.Find (koreo.GetEventIDs (), element => element.Equals ("BlockBeat"));
+
+            //musicPlayer_ref.Play();
+
+        }
+
+    }
+
+    void InitKoreography ()
+    {
+        // finishes koreography loading setup
+
+        UnityEngine.Random.InitState (System.Environment.TickCount);
+        if (onNoteReturnedToPool == null)
+            onNoteReturnedToPool = new UnityEvent ();
+
+        // Ensure the slider and the readout are properly in sync with the AudioSource on Start!
+        pitch = audioCom.pitch;
+
+        targetVisuals = rhythmTarget_Ref.GetComponent<SpriteRenderer> ();
+
+        // Initialize events.
+        playingKoreo = Koreographer.Instance.GetKoreographyAtIndex (0);
+
+        // Grab all the events out of the Koreography.
+        KoreographyTrackBase rhythmTrack = playingKoreo.GetTrackByID (mainBeatID);
+        KoreographyTrackBase fallTrack = playingKoreo.GetTrackByID (fallBeatID);
+
+        beatEvents = rhythmTrack.GetAllEvents ();
+
+        Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
+        Koreographer.Instance.RegisterForEvents (blockBeatID, OnBlockBeat);
+        /*------------------------------------------------------------- */
+
+        SetupSpawnPositions ();
+
+        // Update our visual color.
+        //targetVisuals.color = color;
+
+        // Capture the default scale set in the Inspector.
+        defaultScale = targetVisuals.transform.localScale;
+
+    }
     void Update ()
     {
 
@@ -641,16 +591,78 @@ public class RhythmSystem : MonoBehaviour
             TextPayload tp = evt.Payload as TextPayload;
             result = tp.TextVal.Split (stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-            if (result.Length == 3)
+           if (result.Length == 3)
             {
                 pattern = Convert.ToInt32 (result[0]);
+                if(pattern > Enum.GetNames(typeof(GridBlock.gridBlockPattern)).Length)
+                pattern = 0;
                 countdown = Convert.ToInt32 (result[1]);
                 duration = Convert.ToInt32 (result[2]);
             }
 
-            GridBlock gb = grid_ref.GetRandomGridBlock (0, null, null, false, false, false);
-            if (gb)
-                gb.Fall (pattern, countdown, duration);
+            GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
+            switch (pat)
+            {
+
+                
+
+                case GridBlock.gridBlockPattern.Cross:
+                    break;
+                case GridBlock.gridBlockPattern.Triple_H:
+
+                    break;
+                case GridBlock.gridBlockPattern.Single:
+                default:
+                    GridBlock gb = grid_ref.GetRandomGridBlock (0, null, null, false, false, false, false);
+                    if (gb)
+                        gb.Fall (pat, countdown, duration);
+                    break;
+            }
+
+        }
+
+    }
+
+    void OnBlockBeat (KoreographyEvent evt)
+    {
+        int pattern = 0;
+        int countdown = 0;
+        int duration = 0;
+
+        string[] result;
+        string[] stringSeparators = new string[] { "," };
+        if (evt.Payload is TextPayload)
+        {
+            TextPayload tp = evt.Payload as TextPayload;
+            result = tp.TextVal.Split (stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            if (result.Length == 3)
+            {
+                pattern = Convert.ToInt32 (result[0]);
+                if(pattern > Enum.GetNames(typeof(GridBlock.gridBlockPattern)).Length)
+                pattern = 0;
+                countdown = Convert.ToInt32 (result[1]);
+                duration = Convert.ToInt32 (result[2]);
+            }
+
+            GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
+            switch (pat)
+            {
+
+                
+
+                case GridBlock.gridBlockPattern.Cross:
+                    break;
+                case GridBlock.gridBlockPattern.Triple_H:
+
+                    break;
+                case GridBlock.gridBlockPattern.Single:
+                default:
+                    GridBlock gb = grid_ref.GetRandomGridBlock (0, null, null, false, false, false, false);
+                    if (gb)
+                        gb.Block (pat, countdown, duration);
+                    break;
+            }
 
         }
 
