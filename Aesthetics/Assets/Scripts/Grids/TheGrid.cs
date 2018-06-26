@@ -367,7 +367,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, false, false, false, false, false, false);
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus(false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -430,7 +430,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, false, false, false, false, false, false);
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus(false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -488,7 +488,7 @@ public class TheGrid : MonoBehaviour
     {
         GridBlock gb = null;
         while (gb == null)
-            gb = GetRandomGridBlock (range, false, false, false, false, false, false);
+            gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus(false, false, false, false, false, false, false));
 
         if (gb.isOccupied || gb.hasItem) return null;
 
@@ -693,7 +693,7 @@ public class TheGrid : MonoBehaviour
     }
 
     //returns random empty gridblock with no players in that range
-    public List<GridBlock> GetNeighbourGridBlocks (int x, int z, bool allowDiagonals, bool? hasItem, bool? isOccupied, bool? isBlocked, bool? isFallen, bool? isPreFallen, bool? isRespawning)
+    public List<GridBlock> GetNeighbourGridBlocks (int x, int z, bool allowDiagonals, GridBlock.GridBlockStatus status)
     {
         List<GridBlock> neighbours = new List<GridBlock> ();
 
@@ -715,25 +715,29 @@ public class TheGrid : MonoBehaviour
             int z_delta = Mathf.Abs (gb.Z - z);
             int delta_sum = x_delta + z_delta;
 
-            if ((hasItem != null && gb.hasItem == hasItem) || hasItem == null)
+            if ((status.hasItem != null && gb.hasItem == status.hasItem) || status.hasItem == null)
             {
 
-                if ((isOccupied != null && gb.isOccupied == isOccupied) || isOccupied == null)
+                if ((status.isOccupied != null && gb.isOccupied == status.isOccupied) || status.isOccupied == null)
                 {
-                    if ((isBlocked != null && gb.isBlocked == isBlocked) || isBlocked == null)
+                    if ((status.isBlocked != null && gb.isBlocked == status.isBlocked) || status.isBlocked == null)
                     {
 
-                        if ((isFallen != null && gb.isFallen == isFallen) || isFallen == null)
+                        if ((status.isPreBlocked != null && gb.isPreBlocked == status.isPreBlocked) || status.isPreBlocked == null)
                         {
 
-                            if ((isPreFallen != null && gb.isPreFallen == isPreFallen) || isPreFallen == null)
+                            if ((status.isFallen != null && gb.isFallen == status.isFallen) || status.isFallen == null)
                             {
 
-                                if ((isRespawning != null && gb.isRespawning == isRespawning) || isRespawning == null)
+                                if ((status.isPreFallen != null && gb.isPreFallen == status.isPreFallen) || status.isPreFallen == null)
                                 {
-                                    if ((allowDiagonals && delta_sum <= 2) || (!allowDiagonals && delta_sum <= 1))
+
+                                    if ((status.isRespawning != null && gb.isRespawning == status.isRespawning) || status.isRespawning == null)
                                     {
-                                        neighbours.Add (gb);
+                                        if ((allowDiagonals && delta_sum <= 2) || (!allowDiagonals && delta_sum <= 1))
+                                        {
+                                            neighbours.Add (gb);
+                                        }
                                     }
                                 }
                             }
@@ -747,22 +751,20 @@ public class TheGrid : MonoBehaviour
         return neighbours;
     }
 
-    public GridBlock GetRandomNeighbourGridBlock (int x, int z, bool allowDiagonals, bool? hasItem, bool? isOccupied, bool? isBlocked, bool? isFallen, bool? isPreFallen, bool? isRespawning)
+    public GridBlock GetRandomNeighbourGridBlock (int x, int z, bool allowDiagonals, GridBlock.GridBlockStatus status)
     {
-        List<GridBlock> neighbours = GetNeighbourGridBlocks (x, z, allowDiagonals, hasItem, isOccupied, isBlocked, isFallen, isPreFallen, isRespawning);
+        List<GridBlock> neighbours = GetNeighbourGridBlocks (x, z, allowDiagonals, status);
 
         return neighbours[Random.Range (0, neighbours.Count)];
     }
 
-
     //returns random empty gridblock with no players in that range
-    public GridBlock GetRandomGridBlock (float range, bool? hasItem, bool? isOccupied, bool? isBlocked, bool? isFallen, bool? isPreFallen, bool? isRespawning)
+    public GridBlock GetRandomGridBlock (float range, GridBlock.GridBlockStatus status)
     {
+        List<GridBlock> selecteds = new List<GridBlock> ();
 
         int selected_count = 0; // count how many blocks are valid trhoughout the players
         int it = -1;
-
-        List<int> index = new List<int> ();
 
         for (int i = 0; i < GetGridBlockList ().Count; i++)
         {
@@ -779,24 +781,108 @@ public class TheGrid : MonoBehaviour
                 if (Vector3.Distance (gb_pos, p_pos) >= range)
                 {
 
-                    if ((hasItem != null && GetGridBlockList () [it].hasItem == hasItem) || hasItem == null)
+                    if ((status.hasItem != null && GetGridBlockList () [it].hasItem == status.hasItem) || status.hasItem == null)
                     {
 
-                        if ((isOccupied != null && GetGridBlockList () [it].isOccupied == isOccupied) || isOccupied == null)
+                        if ((status.isOccupied != null && GetGridBlockList () [it].isOccupied == status.isOccupied) || status.isOccupied == null)
                         {
-                            if ((isBlocked != null && GetGridBlockList () [it].isBlocked == isBlocked) || isBlocked == null)
+                            if ((status.isBlocked != null && GetGridBlockList () [it].isBlocked == status.isBlocked) || status.isBlocked == null)
                             {
-                                if ((isFallen != null && GetGridBlockList () [it].isFallen == isFallen) || isFallen == null)
+
+                                if ((status.isPreBlocked != null && GetGridBlockList () [it].isPreBlocked == status.isPreBlocked) || status.isPreBlocked == null)
                                 {
 
-                                    if ((isPreFallen != null && GetGridBlockList () [it].isPreFallen == isPreFallen) || isPreFallen == null)
+                                    if ((status.isFallen != null && GetGridBlockList () [it].isFallen == status.isFallen) || status.isFallen == null)
                                     {
 
-                                        if ((isRespawning != null && GetGridBlockList () [it].isRespawning == isRespawning) || isRespawning == null)
+                                        if ((status.isPreFallen != null && GetGridBlockList () [it].isPreFallen == status.isPreFallen) || status.isPreFallen == null)
                                         {
+
+                                            if ((status.isRespawning != null && GetGridBlockList () [it].isRespawning == status.isRespawning) || status.isRespawning == null)
+                                            {
+                                                //print("1 pelo menos");
+                                                selected_count++;
+                                                //break;
+                                            }
+                                            //break;
+                                        }
+                                        //break;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+
+               
+            }
+
+             if (selected_count >= playerList.Count)
+                {
+                    selecteds.Add (GetGridBlockList () [it]);
+                }
+
+                selected_count = 0;
+        }
+
+        if (selecteds.Count > 0)
+            return selecteds[Random.Range (0, selecteds.Count)];
+        else
+        {
+            //print("nao achei");
+            return null;
+        }
+
+    }
+
+    //returns random empty gridblock with no players in that range
+    public List<GridBlock> GetRandomGridBlocks (float range, GridBlock.GridBlockStatus status)
+    {
+        List<GridBlock> selecteds = new List<GridBlock> ();
+
+        int selected_count = 0; // count how many blocks are valid trhoughout the players
+        int it = -1;
+
+        for (int i = 0; i < GetGridBlockList ().Count; i++)
+        {
+            it = i;
+            if (!GetGridBlockList () [it]) continue;
+
+            foreach (Player p in playerList)
+            {
+                if (!p) continue;
+
+                Vector3 gb_pos = new Vector3 (GetGridBlockList () [it].X, 0, GetGridBlockList () [it].Z);
+                Vector3 p_pos = new Vector3 (p.x, 0, p.z);
+
+                if (Vector3.Distance (gb_pos, p_pos) >= range)
+                {
+
+                    if ((status.hasItem != null && GetGridBlockList () [it].hasItem == status.hasItem) || status.hasItem == null)
+                    {
+
+                        if ((status.isOccupied != null && GetGridBlockList () [it].isOccupied == status.isOccupied) || status.isOccupied == null)
+                        {
+                            if ((status.isBlocked != null && GetGridBlockList () [it].isBlocked == status.isBlocked) || status.isBlocked == null)
+                            {
+
+                                if ((status.isPreBlocked != null && GetGridBlockList () [it].isPreBlocked == status.isPreBlocked) || status.isPreBlocked == null)
+                                {
+
+                                    if ((status.isFallen != null && GetGridBlockList () [it].isFallen == status.isFallen) || status.isFallen == null)
+                                    {
+
+                                        if ((status.isPreFallen != null && GetGridBlockList () [it].isPreFallen == status.isPreFallen) || status.isPreFallen == null)
+                                        {
+
+                                            if ((status.isRespawning != null && GetGridBlockList () [it].isRespawning == status.isRespawning) || status.isRespawning == null)
+                                            {
 
                                             selected_count++;
                                             //break;
+                                            }
                                         }
                                         //break;
                                     }
@@ -812,15 +898,15 @@ public class TheGrid : MonoBehaviour
 
             if (selected_count >= playerList.Count)
             {
-                index.Add (it);
+                selecteds.Add (GetGridBlockList () [it]);
             }
 
             selected_count = 0;
 
         }
 
-        if (index.Count > 0)
-            return GetGridBlockList () [index[Random.Range (0, index.Count)]];
+        if (selecteds.Count > 0)
+            return selecteds;
         else
         {
             return null;
@@ -828,23 +914,23 @@ public class TheGrid : MonoBehaviour
 
     }
 
-    public List<GridBlock> GetPatternGridBlocks(GridBlock.gridBlockPattern pattern, float range, bool? hasItem, bool? isOccupied, bool? isBlocked, bool? isFallen, bool? isPreFallen, bool? isRespawning)
+    public List<GridBlock> GetPatternGridBlocks (GridBlock.gridBlockPattern pattern, float range, GridBlock.GridBlockStatus status)
     {
-        List<GridBlock> list = new List<GridBlock>();
-            switch(pattern)
-            {
-                 case GridBlock.gridBlockPattern.Cross:
-                    break;
-                case GridBlock.gridBlockPattern.Triple_H:
+        List<GridBlock> list = new List<GridBlock> ();
+        switch (pattern)
+        {
+            case GridBlock.gridBlockPattern.Cross:
+                break;
+            case GridBlock.gridBlockPattern.Triple_H:
 
-                    break;
-                case GridBlock.gridBlockPattern.Single:
-                default:
-                   
-                    break;
+                break;
+            case GridBlock.gridBlockPattern.Single:
+            default:
+                list = GetRandomGridBlocks (range, status);
+                break;
 
-            }
-            return list;
+        }
+        return list;
     }
     public Vector3 getGridBlockPosition (int x, int z, float y)
     {

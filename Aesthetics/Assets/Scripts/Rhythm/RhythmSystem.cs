@@ -613,7 +613,7 @@ public class RhythmSystem : MonoBehaviour
                     break;
                 case GridBlock.gridBlockPattern.Single:
                 default:
-                    GridBlock gb = grid_ref.GetRandomGridBlock (0, null, null, false, false, false, false);
+                    GridBlock gb = grid_ref.GetRandomGridBlock (0, new GridBlock.GridBlockStatus(null, null, false, false, false, false, false));
                     if (gb)
                         gb.Fall (pat, countdown, duration);
                     break;
@@ -658,7 +658,7 @@ public class RhythmSystem : MonoBehaviour
                     break;
                 case GridBlock.gridBlockPattern.Single:
                 default:
-                    GridBlock gb = grid_ref.GetRandomGridBlock (0, null, null, false, false, false, false);
+                    GridBlock gb = grid_ref.GetRandomGridBlock (0, new GridBlock.GridBlockStatus(false,false, false, false, false, false, false));
                     if (gb)
                         gb.Block (pat, countdown, duration);
                     break;

@@ -664,12 +664,12 @@ public class Player : MonoBehaviour
         if (fall_gridBlock_Ref)
         {
 
-            respawnBlock = grid_ref.GetRandomNeighbourGridBlock (fall_gridBlock_Ref.X, fall_gridBlock_Ref.Z, true, false, false, false, false, false, false);
+            respawnBlock = grid_ref.GetRandomNeighbourGridBlock (fall_gridBlock_Ref.X, fall_gridBlock_Ref.Z, true, new GridBlock.GridBlockStatus(false, false, false, false, false, false, false));
         }
 
         else
         {
-            respawnBlock = grid_ref.GetRandomGridBlock (1, false, false,false, false, false, false);
+            respawnBlock = grid_ref.GetRandomGridBlock (1, new GridBlock.GridBlockStatus(false, false, false, false, false, false, false));
         }
 
         if (!respawnBlock)

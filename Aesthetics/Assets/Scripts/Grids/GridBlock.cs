@@ -168,7 +168,7 @@ public class GridBlock : MonoBehaviour
 
     public struct GridBlockEventStats
     {
-        public GridBlock.gridBlockPattern  pattern;
+        public GridBlock.gridBlockPattern pattern;
         public int countdown;
         public int duration;
 
@@ -179,6 +179,32 @@ public class GridBlock : MonoBehaviour
         public bool startCountdown;
 
         public bool startDuration;
+
+        public GridBlockEventStats (GridBlock.gridBlockPattern pattern,
+            int countdown,
+            int duration,
+
+            int countdown_count,
+
+            int duration_count,
+
+            bool startCountdown,
+
+            bool startDuration)
+        {
+            this.pattern = pattern;
+            this.countdown = countdown;
+            this.duration = duration;
+
+            this.countdown_count = countdown_count;
+
+            this.duration_count = duration_count;
+
+            this.startCountdown = startCountdown;
+
+            this.startDuration = startDuration;
+
+        }
 
     }
 
@@ -287,6 +313,36 @@ public class GridBlock : MonoBehaviour
         }
     }
 
+    public struct GridBlockStatus
+    {
+        public bool? hasItem;
+        public bool? isOccupied;
+        public bool? isPreBlocked;
+        public bool? isBlocked;
+        public bool? isPreFallen;
+        public bool? isFallen;
+        public bool? isRespawning;
+
+        public GridBlockStatus (bool? hasItem,
+            bool? isOccupied,
+
+            bool? isPreBlocked,
+            bool? isBlocked,
+            bool? isPreFallen,
+            bool? isFallen,
+            bool? isRespawning)
+        {
+            this.hasItem = hasItem;
+            this.isOccupied = isOccupied;
+
+            this.isPreBlocked = isPreBlocked;
+            this.isBlocked = isBlocked;
+            this.isPreFallen = isPreFallen;
+            this.isFallen = isFallen;
+            this.isRespawning = isRespawning;
+        }
+    }
+
     [Tooltip ("Is this gridblock occupied by a Player?")]
     [SerializeField, Candlelight.PropertyBackingField]
     private bool _isOccupied = false;
@@ -302,7 +358,7 @@ public class GridBlock : MonoBehaviour
         }
     }
 
-     [Tooltip ("Is this gridblock blocked (cannot allow any player on it?")]
+    [Tooltip ("Is this gridblock blocked (cannot allow any player on it?")]
     [SerializeField, Candlelight.PropertyBackingField]
     private bool _isPreBlocked = false;
     public bool isPreBlocked
@@ -334,8 +390,7 @@ public class GridBlock : MonoBehaviour
 
     [Tooltip ("blocked scaling vector")]
     [SerializeField]
-    private Vector3 blockScale = new Vector3(1,3.5f,1);
-   
+    private Vector3 blockScale = new Vector3 (1, 3.5f, 1);
 
     [Tooltip ("Is this gridblock locked (cannot be colored)")]
     [SerializeField, Candlelight.PropertyBackingField]
@@ -501,8 +556,8 @@ public class GridBlock : MonoBehaviour
         //pos.y += this.GetComponent<Renderer> ().bounds.size.y + 0.2f;
         pos.y += 0.2f;
 
-        if(fall_data.countdown > 0)
-        SpawnCountdownText (pos, fall_data.countdown.ToString (), Color.green);
+        if (fall_data.countdown > 0)
+            SpawnCountdownText (pos, fall_data.countdown.ToString (), Color.green);
         // textMesh.text =    fall_data.countdown.ToString();
 
         rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (FallIncrement);
@@ -528,8 +583,8 @@ public class GridBlock : MonoBehaviour
         pos.y += 0.2f;
 
         //Color c(0,0,0);
-        if(block_data.countdown > 0)
-        SpawnCountdownText (pos, block_data.countdown.ToString (), Color.green);
+        if (block_data.countdown > 0)
+            SpawnCountdownText (pos, block_data.countdown.ToString (), Color.green);
         // textMesh.text =    fall_data.countdown.ToString();
 
         rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (BlockIncrement);
@@ -597,13 +652,13 @@ public class GridBlock : MonoBehaviour
                 fall_data.countdown_count = 0;
                 fall_data.startCountdown = false;
                 fall_data.startDuration = true;
-                if(textCountdown_ref)
+                if (textCountdown_ref)
                 {
-                     textCountdown_ref.GetComponent<TextMeshPro> ().text = "";
+                    textCountdown_ref.GetComponent<TextMeshPro> ().text = "";
                     textCountdown_ref.GetComponent<GridBlockText> ().isDone = true;
                     textCountdown_ref = null;
                 }
-               
+
                 isFallen = true;
                 isPreFallen = false;
                 //textMeshObject.SetActive(false);
@@ -686,9 +741,9 @@ public class GridBlock : MonoBehaviour
                 block_data.countdown_count = 0;
                 block_data.startCountdown = false;
                 block_data.startDuration = true;
-                if(textCountdown_ref)
+                if (textCountdown_ref)
                 {
-                     textCountdown_ref.GetComponent<TextMeshPro> ().text = "";
+                    textCountdown_ref.GetComponent<TextMeshPro> ().text = "";
                     textCountdown_ref.GetComponent<GridBlockText> ().isDone = true;
                     textCountdown_ref = null;
                 }
