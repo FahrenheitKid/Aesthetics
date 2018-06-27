@@ -1482,7 +1482,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 1, g: 0.9843137, b: 0.5882353, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -3687,11 +3687,17 @@ MonoBehaviour:
   _item: {fileID: 0}
   _isStunned: 0
   _isFallen: 0
+  fall_duration: 3
+  respawn_duration: 1.5
+  respawnImmunity_duration: 2
+  fall_gridBlock_Ref: {fileID: 0}
   _isRespawning: 0
   _isImmune: 0
+  _isShielded: 0
   disableInput: 0
   stunTimer: {fileID: 0}
   fallenTimer: {fileID: 0}
+  respawnTimer: {fileID: 0}
   immunityTimer: {fileID: 0}
   _score: 0
   _combo: 0
@@ -3700,6 +3706,7 @@ MonoBehaviour:
   _x: 0
   _y: 0
   _z: 0
+  _initY: 0
   _moveSpeed: 2
   grid_ref: {fileID: 0}
   rhythmSystem_ref: {fileID: 0}
