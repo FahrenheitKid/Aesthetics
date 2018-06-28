@@ -5,6 +5,64 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
 
+    public struct SpawnRules
+    {
+        // % needed to be on stage currently for this item to be spawned
+
+        public float scoreMaker;
+        public float arrow;
+
+        public float locks;
+
+        public float ray;
+        public float revolver;
+
+        public float rainbowLipstick;
+
+        public float fastFoward;
+        public float sloMo;
+        public float sneakers;
+        public float floppyDisk;
+        public float compactDisk;
+
+        public float _3dGlasses;
+
+        public float maxItemCapacityUsage;
+
+        public SpawnRules (float scoreMaker,
+            float arrow,
+            float locks,
+            float ray,
+            float revolver,
+            float rainbowLipstick,
+            float fastFoward,
+            float sloMo,
+            float sneakers,
+            float floppyDisk,
+            float compactDisk,
+            float _3dGlasses,
+            float maxItemCapacityUsage)
+        {
+
+            this.scoreMaker = scoreMaker;
+            this.arrow = arrow;
+            this.locks = locks;
+            this.ray = ray;
+            this.revolver = revolver;
+            this.rainbowLipstick = rainbowLipstick;
+            this.fastFoward = fastFoward;
+            this.sloMo = sloMo;
+            this.sneakers = sneakers;
+            this.floppyDisk = floppyDisk;
+            this.compactDisk = compactDisk;
+            this._3dGlasses = _3dGlasses;
+            this.maxItemCapacityUsage = maxItemCapacityUsage;
+
+        }
+
+
+    }
+
     [SerializeField]
     protected TheGrid _grid_ref;
     public TheGrid grid_ref
@@ -47,6 +105,24 @@ public class Item : MonoBehaviour
             _x = value;
         }
     }
+
+    [Tooltip ("chance to spawn")]
+    [SerializeField, Candlelight.PropertyBackingField]
+    protected float _rarity;
+    public float rarity
+    {
+        get
+        {
+            return _rarity;
+        }
+        set
+        {
+
+            _rarity = value;
+        }
+    }
+
+    protected SpawnRules rules;
 
     [SerializeField, Candlelight.PropertyBackingField]
     protected int _y;
@@ -166,12 +242,11 @@ public class Item : MonoBehaviour
         p.item = this;
         owner = p;
 
-
         //make item stay above player s head
         transform.parent = p.transform;
-        transform.localScale = new Vector3(0.4f,0.4f,0.4f);
-        float player_height = p.gameObject.GetComponent<MeshRenderer>().bounds.max.y;
-        transform.localPosition = new Vector3(0.0f,player_height,0.0f);
+        transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
+        float player_height = p.gameObject.GetComponent<MeshRenderer> ().bounds.max.y;
+        transform.localPosition = new Vector3 (0.0f, player_height, 0.0f);
         //print ("Base item equiped");
     }
 
@@ -179,4 +254,17 @@ public class Item : MonoBehaviour
     {
 
     }
+
+        public bool ruleCheck()
+        {
+             bool result = false;
+            List<Item> currentItems = grid_ref.itemList;
+
+           // if(rules.arrow  >= )
+           
+
+
+            return true;
+
+        }
 }

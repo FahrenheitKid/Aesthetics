@@ -8,9 +8,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
+
+
+public static class ReflectiveEnumerator
+{
+    static ReflectiveEnumerator() { }
+
+    public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class, System.IComparable<T>
+    {
+        List<T> objects = new List<T>();
+        foreach (System.Type type in 
+            Assembly.GetAssembly(typeof(T)).GetTypes()
+            .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T))))
+        {
+            objects.Add((T)System.Activator.CreateInstance(type, constructorArgs));
+        }
+        objects.Sort();
+        return objects;
+    }
+}
 
 public class TheGrid : MonoBehaviour
 {
@@ -105,64 +125,22 @@ public class TheGrid : MonoBehaviour
     Countdown scoreMakerTimer;
 
     [SerializeField]
-    private bool isRandomScoreMakerSpawnTime = true;
+    Countdown itemsTimer;
 
-    // corresponds to [Range(0f, 1f)]
-    [Range (0.1f, 15.0f)]
+    [Tooltip("max amount of concurrent itens on the stage (exluding Scoremakers)")]
     [SerializeField]
-    private float ScoreMakerSpawnTimeMax;
+    int maxItens = 0;
+   [Tooltip("max amount of concurrent scoremakers on the stage")]
+    [SerializeField]
+    int maxScoreMakers = 0;
 
-    [Range (0.1f, 15.0f)]
+    [Tooltip("ratio value to spawn items. 1 = 1 each 5 seconds")]
     [SerializeField]
-    private float ScoreMakerSpawnTimeMin;
+    float itemSpawnRatio = 0;
 
+    [Tooltip("ratio value to spawn scoreMakers.  1 = 1 each 5 seconds")]
     [SerializeField]
-    private int scoreMakerCountLimit = 5;
-
-    [SerializeField]
-    Countdown lockTimer;
-
-    [SerializeField]
-    private bool isRandomLockSpawnTime = true;
-
-    // corresponds to [Range(0f, 1f)]
-    [Range (0.1f, 15.0f)]
-    [SerializeField]
-    private float lockSpawnTimeMax;
-
-    [Range (0.1f, 15.0f)]
-    [SerializeField]
-    private float lockSpawnTimeMin;
-
-    [SerializeField]
-    private int lockCountLimit = 2;
-
-    [SerializeField]
-    Countdown arrowTimer;
-
-    [SerializeField]
-    private bool isRandomArrowSpawnTime = true;
-
-    // corresponds to [Range(0f, 1f)]
-    [Range (0.1f, 15.0f)]
-    [SerializeField]
-    private float ArrowSpawnTimeMax;
-
-    [Range (0.1f, 15.0f)]
-    [SerializeField]
-    private float ArrowSpawnTimeMin;
-
-    [SerializeField]
-    private int arrowCountLimit = 4;
-
-    [SerializeField]
-    private float singleArrowRatio = 0.5f;
-
-    [SerializeField]
-    private float doubleArrowRatio = 0.35f;
-
-    [SerializeField]
-    private float quadrupleArrowRatio = 0.15f;
+    float scoreMakerSpawnRatio = 0;
 
     [SerializeField]
     private string fileNameToLoad;
@@ -205,31 +183,27 @@ public class TheGrid : MonoBehaviour
 
         itemTimersStart ();
 
+
+
+        Item t;
+        Lock l;
+        int lele;
+        print("Item" + getItemCurrentPercentage<Item>());
+        print("Lock" + getItemCurrentPercentage<Lock>());
+        print("int" + getItemCurrentPercentage<int>());
+       
     }
 
     void itemTimersAwake ()
     {
         scoreMakerTimer = gameObject.AddComponent<Countdown> ();
-        arrowTimer = gameObject.AddComponent<Countdown> ();
-        lockTimer = gameObject.AddComponent<Countdown> ();
+        itemsTimer = gameObject.AddComponent<Countdown> ();
 
     }
     void itemTimersStart ()
     {
-        if (isRandomScoreMakerSpawnTime)
-            scoreMakerTimer.startTimer (Random.Range (ScoreMakerSpawnTimeMin, ScoreMakerSpawnTimeMax));
-        else
-            scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax + ScoreMakerSpawnTimeMin) / 2);
-
-        if (isRandomArrowSpawnTime)
-            arrowTimer.startTimer (Random.Range (ArrowSpawnTimeMin, ArrowSpawnTimeMax));
-        else
-            arrowTimer.startTimer ((ArrowSpawnTimeMin + ArrowSpawnTimeMax) / 2);
-
-        if (isRandomLockSpawnTime)
-            lockTimer.startTimer (Random.Range (lockSpawnTimeMin, lockSpawnTimeMax));
-        else
-            lockTimer.startTimer ((lockSpawnTimeMin + lockSpawnTimeMax) / 2);
+        scoreMakerTimer.startTimer(scoreMakerSpawnRatio);
+        itemsTimer.startTimer(itemSpawnRatio);
 
     }
 
@@ -237,66 +211,12 @@ public class TheGrid : MonoBehaviour
     {
         if (scoreMakerTimer.stop)
         {
-            if (isRandomScoreMakerSpawnTime)
-                scoreMakerTimer.startTimer (Random.Range (ScoreMakerSpawnTimeMin, ScoreMakerSpawnTimeMax));
-            else
-                scoreMakerTimer.startTimer ((ScoreMakerSpawnTimeMax + ScoreMakerSpawnTimeMin) / 2);
-
-            // if less than 5 scoremakers in the stage
-            if (itemList.OfType<ScoreMaker> ().Count () < scoreMakerCountLimit)
-            {
-                ScoreMaker sm = SpawnScoreMaker (2.0f);
-
-            }
+           
 
         }
 
-        if (arrowTimer.stop)
-        {
-            if (isRandomLockSpawnTime)
-                lockTimer.startTimer (Random.Range (lockSpawnTimeMin, lockSpawnTimeMax));
-            else
-                lockTimer.startTimer ((lockSpawnTimeMin + lockSpawnTimeMax) / 2);
-
-            // if less than 5 scoremakers in the stage
-            if (itemList.OfType<Lock> ().Count () < lockCountLimit)
-            {
-                Lock sm = SpawnLock (2.0f);
-
-            }
-
-        }
-
-        if (arrowTimer.stop)
-        {
-            if (isRandomArrowSpawnTime)
-                arrowTimer.startTimer (Random.Range (ArrowSpawnTimeMin, ArrowSpawnTimeMax));
-            else
-                arrowTimer.startTimer ((ArrowSpawnTimeMin + ArrowSpawnTimeMax) / 2);
-
-            if (itemList.OfType<Arrow> ().Count () < arrowCountLimit)
-            {
-                float ratioTotal = singleArrowRatio + doubleArrowRatio + quadrupleArrowRatio;
-                float ar = Random.Range (0f, ratioTotal);
-                Arrow.arrowType t = Arrow.arrowType.Single;
-                if ((ar - quadrupleArrowRatio) < 0)
-                {
-                    t = Arrow.arrowType.Quadruple;
-                }
-                else if ((ar - doubleArrowRatio) < 0)
-                {
-                    t = Arrow.arrowType.Double;
-                }
-                else if ((ar - singleArrowRatio) < 0)
-                {
-                    t = Arrow.arrowType.Single;
-                }
-
-                Arrow sm = SpawnArrow (1.0f, t);
-
-            }
-
-        }
+       
+        
 
     }
     // Update is called once per frame
@@ -509,6 +429,20 @@ public class TheGrid : MonoBehaviour
         return lockPrefab.GetComponent<Lock> ();
     }
 
+    float getItemCurrentPercentage<T>()
+    {
+        
+        if(!UtilityTools.IsSameOrSubclass(typeof(Item),typeof(T)))
+            return 0;
+
+      //  continue hereeeeeee
+      return 8000f;
+    }
+
+    int getItemCurrentCount<T>()
+    {
+        return itemList.OfType<T>().Count();
+    }
     //Build the Map
     void BuildMap ()
     {

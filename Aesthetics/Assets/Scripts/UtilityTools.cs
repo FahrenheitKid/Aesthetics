@@ -32,4 +32,11 @@ public class UtilityTools
 
         return result;
     }
+
+    public  static bool IsSameOrSubclass(System.Type potentialBase, System.Type potentialDescendant)
+    {
+        return potentialDescendant.IsSubclassOf(potentialBase)
+           || potentialDescendant == potentialBase;
+    }
+
 }
