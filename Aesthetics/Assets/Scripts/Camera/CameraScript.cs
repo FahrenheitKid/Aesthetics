@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.Assertions;
 
+using Aesthetics;
 public class CameraScript : MonoBehaviour
 {
 

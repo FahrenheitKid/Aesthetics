@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Aesthetics{
+
+
+
+
 public class Item : MonoBehaviour
 {
 
@@ -25,7 +30,7 @@ public class Item : MonoBehaviour
         public float floppyDisk;
         public float compactDisk;
 
-        public float _3dGlasses;
+        public float glasses3D;
 
         public float maxItemCapacityUsage;
 
@@ -40,7 +45,7 @@ public class Item : MonoBehaviour
             float sneakers,
             float floppyDisk,
             float compactDisk,
-            float _3dGlasses,
+            float glasses3D,
             float maxItemCapacityUsage)
         {
 
@@ -55,7 +60,7 @@ public class Item : MonoBehaviour
             this.sneakers = sneakers;
             this.floppyDisk = floppyDisk;
             this.compactDisk = compactDisk;
-            this._3dGlasses = _3dGlasses;
+            this.glasses3D = glasses3D;
             this.maxItemCapacityUsage = maxItemCapacityUsage;
 
         }
@@ -257,14 +262,37 @@ public class Item : MonoBehaviour
 
         public bool ruleCheck()
         {
-             bool result = false;
-            List<Item> currentItems = grid_ref.itemList;
 
-           // if(rules.arrow  >= )
+            if(rules.arrow  <= grid_ref.getItemCurrentPercentage<Arrow>())
+                return false;
+            if(rules.locks  <= grid_ref.getItemCurrentPercentage<Lock>())
+                return false;
+            if(rules.ray  <= grid_ref.getItemCurrentPercentage<Ray>())
+                return false;
+            if(rules.revolver  <= grid_ref.getItemCurrentPercentage<Revolver>())
+                return false;
+            if(rules.rainbowLipstick  <= grid_ref.getItemCurrentPercentage<RainbowLipstick>())
+                return false;
+            if(rules.fastFoward  <= grid_ref.getItemCurrentPercentage<FastFoward>())
+                return false;
+            if(rules.sloMo  <= grid_ref.getItemCurrentPercentage<SloMo>())
+                return false;
+            if(rules.sneakers  <= grid_ref.getItemCurrentPercentage<Sneakers>())
+                return false;
+            if(rules.floppyDisk  <= grid_ref.getItemCurrentPercentage<FloppyDisk>())
+                return false;
+            if(rules.compactDisk  <= grid_ref.getItemCurrentPercentage<CompactDisk>())
+                return false;
+            if(rules.glasses3D  <= grid_ref.getItemCurrentPercentage<Glasses3D>())
+                return false;
+            
+            if(rules.maxItemCapacityUsage <= grid_ref.getItemCurrentPercentage<Item>())
+                return false;
            
 
 
             return true;
 
         }
+}
 }

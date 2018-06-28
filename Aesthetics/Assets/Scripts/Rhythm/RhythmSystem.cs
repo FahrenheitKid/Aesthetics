@@ -7,6 +7,9 @@ using SonicBloom.Koreo.Players;
 using UnityEngine;
 using UnityEngine.Events;
 
+namespace Aesthetics{
+
+
 public class RhythmSystem : MonoBehaviour
 {
 
@@ -830,4 +833,5 @@ public class RhythmSystem : MonoBehaviour
 
     #endregion
 
+}
 }

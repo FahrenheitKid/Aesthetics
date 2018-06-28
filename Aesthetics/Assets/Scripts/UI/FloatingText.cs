@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+using Aesthetics;
 public class FloatingText : MonoBehaviour
 {
     public Font TheFont;

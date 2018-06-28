@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Aesthetics;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -542,18 +543,17 @@ public class GridBlock : MonoBehaviour
     /// that is touching the trigger.
     /// </summary>
     /// <param name="other">The other Collider involved in this collision.</param>
-    void OnTriggerStay(Collider other)
+    void OnTriggerStay (Collider other)
     {
-         if (other.gameObject.CompareTag ("Player"))
+        if (other.gameObject.CompareTag ("Player"))
         {
-             Player p = other.GetComponent<Player> ();
-             
-            if(haveBlockStunned == false && isBlocked && !p.isImmune)
+            Player p = other.GetComponent<Player> ();
+
+            if (haveBlockStunned == false && isBlocked && !p.isImmune)
             {
-                p.Stun(grid_ref.blockStunDuration);
+                p.Stun (grid_ref.blockStunDuration);
                 haveBlockStunned = true;
             }
-            
 
         }
     }
@@ -762,7 +762,7 @@ public class GridBlock : MonoBehaviour
             }
             else //countdown ended
             {
-                
+
                 //adjust block_data values
                 block_data.countdown_count = 0;
                 block_data.startCountdown = false;

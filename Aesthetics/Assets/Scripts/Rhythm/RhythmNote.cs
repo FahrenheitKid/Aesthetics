@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
+using Aesthetics;
 public class RhythmNote : MonoBehaviour
 {
 

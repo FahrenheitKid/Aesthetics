@@ -5,6 +5,9 @@ using SonicBloom.Koreo;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+namespace Aesthetics {
+
+
 public class Player : MonoBehaviour
 {
 
@@ -1205,4 +1208,5 @@ public class Player : MonoBehaviour
         rhythmSystem_ref = reference;
     }
 
+}
 }
