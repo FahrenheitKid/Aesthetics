@@ -647,7 +647,7 @@ PlayerSettings:
   cloudServicesEnabled:
     UNet: 1
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 3
+  apiCompatibilityLevel: 2
   cloudProjectId: 6ebfa0e9-4ac5-49ac-ad6f-aad69e59d9a1
   projectName: Aesthetics
   organizationId: kingfahrenheit
