@@ -10,7 +10,7 @@ public class ScoreMaker : Item
     // Use this for initialization
     void Start ()
     {
-        rarity = 100;
+        //rarity = 100;
     }
 
     // Update is called once per frame
@@ -41,7 +41,10 @@ public class ScoreMaker : Item
             }
 
         }
-        Destroy (gameObject);
+
+        grid_ref.updateItemSpawnRatio();
+        base.Kill(null);
+        //Destroy (gameObject);
     }
 
 }

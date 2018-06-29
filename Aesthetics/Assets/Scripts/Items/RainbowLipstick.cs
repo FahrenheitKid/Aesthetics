@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RainbowLipstick : MonoBehaviour {
+using Aesthetics;
+public class RainbowLipstick : Item {
 
 	// Use this for initialization
 	void Start () {

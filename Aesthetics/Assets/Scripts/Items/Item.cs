@@ -7,8 +7,20 @@ namespace Aesthetics{
 
 
 
-public class Item : MonoBehaviour
+public class Item : MonoBehaviour, System.IComparable<Item>
 {
+
+     public int CompareTo(Item obj) {
+           // return Less than zero if this object 
+           // is less than the object specified by the CompareTo method.
+
+           // return Zero if this object is equal to the object 
+           // specified by the CompareTo method.
+
+           // return Greater than zero if this object is greater than 
+           // the object specified by the CompareTo method.
+           return 0;
+    }
 
     public struct SpawnRules
     {
@@ -111,23 +123,13 @@ public class Item : MonoBehaviour
         }
     }
 
-    [Tooltip ("chance to spawn")]
-    [SerializeField, Candlelight.PropertyBackingField]
-    protected float _rarity;
-    public float rarity
-    {
-        get
-        {
-            return _rarity;
-        }
-        set
-        {
+    //[Tooltip ("chance to spawn")]
+    [SerializeField]
+    public static float rarity = 0.0f;
+    [SerializeField]
+    public static float current_rarity = 0.0f;
 
-            _rarity = value;
-        }
-    }
-
-    protected SpawnRules rules;
+    public static SpawnRules rules = new SpawnRules(0,0,0,0,0,0,0,0,0,0,0,0,0);
 
     [SerializeField, Candlelight.PropertyBackingField]
     protected int _y;
@@ -221,6 +223,9 @@ public class Item : MonoBehaviour
         y = gb.Y;
         z = gb.Z;
 
+        gb.hasItem = true;
+        //grid_ref.itemList.Add(this);
+
     }
 
     //multiple time use items use Use
@@ -252,47 +257,67 @@ public class Item : MonoBehaviour
         transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
         float player_height = p.gameObject.GetComponent<MeshRenderer> ().bounds.max.y;
         transform.localPosition = new Vector3 (0.0f, player_height, 0.0f);
+
+        grid_ref.updateItemSpawnRatio();
         //print ("Base item equiped");
     }
 
     public virtual void Kill (Item current_Item)
     {
 
+            
+         if (gameObject)
+            Destroy (gameObject);
     }
 
-        public bool ruleCheck()
+        public static bool ruleCheck(TheGrid grid_ref)
         {
-
-            if(rules.arrow  <= grid_ref.getItemCurrentPercentage<Arrow>())
+            
+            if(rules.arrow  > grid_ref.getItemCurrentPercentage<Arrow>())
                 return false;
-            if(rules.locks  <= grid_ref.getItemCurrentPercentage<Lock>())
+            if(rules.locks  > grid_ref.getItemCurrentPercentage<Lock>())
                 return false;
-            if(rules.ray  <= grid_ref.getItemCurrentPercentage<Ray>())
+            if(rules.ray  > grid_ref.getItemCurrentPercentage<Ray>())
                 return false;
-            if(rules.revolver  <= grid_ref.getItemCurrentPercentage<Revolver>())
+            if(rules.revolver  > grid_ref.getItemCurrentPercentage<Revolver>())
                 return false;
-            if(rules.rainbowLipstick  <= grid_ref.getItemCurrentPercentage<RainbowLipstick>())
+            if(rules.rainbowLipstick  > grid_ref.getItemCurrentPercentage<RainbowLipstick>())
                 return false;
-            if(rules.fastFoward  <= grid_ref.getItemCurrentPercentage<FastFoward>())
+            if(rules.fastFoward  > grid_ref.getItemCurrentPercentage<FastFoward>())
                 return false;
-            if(rules.sloMo  <= grid_ref.getItemCurrentPercentage<SloMo>())
+            if(rules.sloMo  > grid_ref.getItemCurrentPercentage<SloMo>())
                 return false;
-            if(rules.sneakers  <= grid_ref.getItemCurrentPercentage<Sneakers>())
+            if(rules.sneakers  > grid_ref.getItemCurrentPercentage<Sneakers>())
                 return false;
-            if(rules.floppyDisk  <= grid_ref.getItemCurrentPercentage<FloppyDisk>())
+            if(rules.floppyDisk  > grid_ref.getItemCurrentPercentage<FloppyDisk>())
                 return false;
-            if(rules.compactDisk  <= grid_ref.getItemCurrentPercentage<CompactDisk>())
+            if(rules.compactDisk  > grid_ref.getItemCurrentPercentage<CompactDisk>())
                 return false;
-            if(rules.glasses3D  <= grid_ref.getItemCurrentPercentage<Glasses3D>())
+            if(rules.glasses3D  > grid_ref.getItemCurrentPercentage<Glasses3D>())
                 return false;
             
-            if(rules.maxItemCapacityUsage <= grid_ref.getItemCurrentPercentage<Item>())
+            if(rules.maxItemCapacityUsage > grid_ref.getItemCurrentPercentage<Item>())
                 return false;
            
 
-
+           // print("passou");
             return true;
 
+        }
+
+        public static float rarityReduction(float rarity, int currentCount)
+        {
+            float percentageToReduce = (rarity / 2) * currentCount;
+            float reductionActualValue = (percentageToReduce * 0.01f) * rarity;
+
+            if(currentCount == 1)
+            {
+              //  print("arrow need to reduce in: " + percentageToReduce + "% | " + percentageToReduce + "% is actually " + reductionActualValue + " of " + rarity);
+            }
+            if(reductionActualValue < rarity)
+            return reductionActualValue;
+            else
+            return rarity;
         }
 }
 }

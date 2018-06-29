@@ -5,6 +5,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -77,6 +78,8 @@ namespace Aesthetics
 
         [SerializeField]
         public List<Item> itemList;
+
+        public IEnumerable<Item> typesOfItemList;
 
         [SerializeField]
         public List<FloatingText> floatingTextList;
@@ -153,6 +156,14 @@ namespace Aesthetics
         [SerializeField]
         float scoreMakerCurrentSpawnRatio = 5;
 
+ [SerializeField]
+        int amountScoreMaker = 0;
+         [SerializeField]
+        int  amountItens = 5;
+        [Tooltip ("distance of players to itens to eb spawned")]
+        [SerializeField]
+        float defaultItemSpawnRange = 4;
+
         [SerializeField]
         private string fileNameToLoad;
         private int[, ] tiles;
@@ -179,6 +190,8 @@ namespace Aesthetics
             SpawnPlayers ();
 
             Application.targetFrameRate = 60;
+            typesOfItemList = ReflectiveEnumerator.GetEnumerableOfType<Item> ();
+
         }
 
         // Use this for initialization
@@ -194,6 +207,14 @@ namespace Aesthetics
 
             itemTimersStart ();
 
+            // print("ScoreMaker: " + getItemCurrentCount<ScoreMaker>() + " | " + getItemCurrentPercentage<ScoreMaker>());
+
+ 
+
+            //GambleItemToSpawn ();
+
+            // print("ScoreMaker: " + getItemCurrentCount<ScoreMaker>() + " | " + getItemCurrentPercentage<ScoreMaker>() + " max: " + maxScoreMakers);
+
         }
 
         void itemTimersAwake ()
@@ -204,8 +225,7 @@ namespace Aesthetics
         }
         void itemTimersStart ()
         {
-            scoreMakerTimer.startTimer (scoreMakerCurrentSpawnRatio);
-            itemsTimer.startTimer (itemCurrentSpawnRatio);
+            updateItemSpawnRatio();
 
         }
 
@@ -213,42 +233,370 @@ namespace Aesthetics
         {
             if (scoreMakerTimer.stop)
             {
-                
+
                 //need to fixxxxxxxx
-                if (getItemCurrentCount<ScoreMaker> () <= maxScoreMakers)
-                    SpawnScoreMaker (3);
+                if (getItemCurrentCount<ScoreMaker> () < maxScoreMakers)
+                SpawnItem<ScoreMaker>(defaultItemSpawnRange);
+
+                updateItemSpawnRatio();
+
 
             }
 
-            if (itemsTimer.stop)
+            if (itemsTimer.stop || itemsTimer.timeLeft <=0)
             {
+                print("cabou tempo");
+                if(getItemCurrentCount<Item>() < maxItens)
+                {
+                    ReGamble:
+                    
+                    if(!GambleItemToSpawn())
+                    {
+                        print("GAMBLE FAILED!");
+                        goto ReGamble;
+                    }
+                    else
+                    {
+                        print("GAMBLE win!");
+                        updateItemSpawnRatio();
+                    }
+                    
+                    
+                }
+                else
+                {
+                    print("current items = " + getItemCurrentCount<Item>() + " | max: " + maxItens);
+                }
+                
 
+                
             }
 
         }
 
-        void updateItemSpawnRatio ()
+        public void updateItemSpawnRatio ()
         {
             // need to fixxxxxxxxxxxxxxx
+            float delta = itemCurrentSpawnRatio;
+            float interpol = (float) UtilityTools.linear (getItemCurrentCount<ScoreMaker> (), 0, maxScoreMakers, scoreMakerBaseSpawnRatio, 0);
+            if(interpol == 0)
+            scoreMakerCurrentSpawnRatio = 0;
+            else
+            scoreMakerCurrentSpawnRatio =  (scoreMakerBaseSpawnRatio / 2)  / interpol * scoreMakerBaseSpawnRatio;
 
-            float newRatio;
-            if (getItemCurrentPercentage<ScoreMaker> () == 0) //make sure to not divide by 0
-                newRatio = 1;
-            else newRatio = getItemCurrentPercentage<ScoreMaker> ();
+            interpol = itemCurrentSpawnRatio = (float) UtilityTools.linear (getItemCurrentCount<Item> (), 0, maxItens, itemBaseSpawnRatio, 0);
 
-            scoreMakerCurrentSpawnRatio = newRatio * scoreMakerBaseSpawnRatio;
+             if(interpol == 0)
+            itemCurrentSpawnRatio = 0;
+            else
+            itemCurrentSpawnRatio =  (itemBaseSpawnRatio / 2) / interpol * itemBaseSpawnRatio;
 
-            if (getItemCurrentPercentage<Item> () == 0) //make sure to not divide by 0
-                newRatio = 1;
-            else newRatio = getItemCurrentPercentage<Item> ();
 
-            itemCurrentSpawnRatio = newRatio;
+            if (scoreMakerTimer.timeLeft > scoreMakerCurrentSpawnRatio || scoreMakerTimer.stop)
+                scoreMakerTimer.startTimer (scoreMakerCurrentSpawnRatio);
+
+            if ((itemsTimer.timeLeft > itemCurrentSpawnRatio) && (Mathf.Abs(delta - itemCurrentSpawnRatio) > 0) || (itemsTimer.stop && itemCurrentSpawnRatio > 0) )
+            {
+                if(itemCurrentSpawnRatio > 0)
+                {
+                    itemsTimer.stop = true;
+                    itemsTimer.startTimer (itemCurrentSpawnRatio);
+                }
+                
+            }
+                
 
         }
+
+        bool SpawnItem<T> (float range)
+        {
+            //caso não seja descendende da classe Item, ou a própria classe Item, não spawne
+            if (!UtilityTools.IsSameOrSubclass (typeof (Item), typeof (T)) || typeof (T) == typeof (Item))
+                return false;
+
+            if (typeof (T) == typeof (Lock))
+            {
+                SpawnLock(range);
+                return true;
+            }
+            else if(typeof (T) == typeof (Arrow))
+            {
+                SpawnArrow(range,null);
+                return true;
+            }
+
+            else if(typeof (T) == typeof (ScoreMaker))
+            {
+                SpawnScoreMaker(defaultItemSpawnRange);
+
+            return true;
+
+
+
+
+            }
+
+            return false;
+        }
+
+        //determines what item should we spawn given each items probabilities
+        bool GambleItemToSpawn ()
+        {
+            float chance_total = 0;
+            float arrow_currentRarity = 0;
+            float compactDisk_currentRarity = 0;
+            float fastFoward_currentRarity = 0;
+            float floppyDisk_currentRarity = 0;
+            float glases3D_currentRarity = 0;
+            float lock_currentRarity = 0;
+            float rainbow_currentRarity = 0;
+            float ray_currentRarity = 0;
+            float revolver_currentRarity = 0;
+            float slowmo_currentRarity = 0;
+            float sneakers_currentRarity = 0;
+
+            foreach (var itemtype in typesOfItemList)
+            {
+                switch (itemtype.GetType ().Name)
+                {
+                    case "Arrow":
+                        arrow_currentRarity = Arrow.rarity;
+                       arrow_currentRarity -= Arrow.rarityReduction (Arrow.rarity, getItemCurrentCount<Arrow> ());
+                        chance_total += arrow_currentRarity;
+                        break;
+
+                    case "CompactDisk":
+                        compactDisk_currentRarity = CompactDisk.rarity;
+                        compactDisk_currentRarity -= CompactDisk.rarityReduction (CompactDisk.rarity, getItemCurrentCount<CompactDisk> ());
+                        chance_total += compactDisk_currentRarity;
+                        break;
+
+                    case "FastFoward":
+                        fastFoward_currentRarity = FastFoward.rarity;
+                        fastFoward_currentRarity -= FastFoward.rarityReduction (FastFoward.rarity, getItemCurrentCount<FastFoward> ());
+                        chance_total += fastFoward_currentRarity;
+                        break;
+
+                    case "FloppyDisk":
+                        floppyDisk_currentRarity = FloppyDisk.rarity;
+                        floppyDisk_currentRarity -= FloppyDisk.rarityReduction (FloppyDisk.rarity, getItemCurrentCount<FloppyDisk> ());
+                        chance_total += floppyDisk_currentRarity;
+                        break;
+
+                    case "Glasses3D":
+                        glases3D_currentRarity = Glasses3D.rarity;
+                        glases3D_currentRarity -= Glasses3D.rarityReduction (Glasses3D.rarity, getItemCurrentCount<Glasses3D> ());
+                        chance_total += glases3D_currentRarity;
+                        break;
+
+                    case "Lock":
+                        lock_currentRarity = Lock.rarity;
+                        lock_currentRarity -= Lock.rarityReduction (Lock.rarity, getItemCurrentCount<Lock> ());
+                        chance_total += lock_currentRarity;
+                        break;
+
+                    case "RainbowLipstick":
+                        rainbow_currentRarity = RainbowLipstick.rarity;
+                        rainbow_currentRarity -= RainbowLipstick.rarityReduction (RainbowLipstick.rarity, getItemCurrentCount<RainbowLipstick> ());
+                        chance_total += rainbow_currentRarity;
+                        break;
+
+                    case "Ray":
+                        ray_currentRarity = Ray.rarity;
+                        ray_currentRarity -= Ray.rarityReduction (Ray.rarity, getItemCurrentCount<Ray> ());
+                        chance_total += ray_currentRarity;
+                        break;
+
+                    case "Revolver":
+                        revolver_currentRarity = Revolver.rarity;
+                        revolver_currentRarity -= Revolver.rarityReduction (Revolver.rarity, getItemCurrentCount<Revolver> ());
+                        chance_total += revolver_currentRarity;
+                        break;
+
+                    case "SloMo":
+                        slowmo_currentRarity = SloMo.rarity;
+                        slowmo_currentRarity -= SloMo.rarityReduction (SloMo.rarity, getItemCurrentCount<SloMo> ());
+                        chance_total += slowmo_currentRarity;
+                        break;
+
+                    case "Sneakers":
+                        sneakers_currentRarity = Sneakers.rarity;
+                        sneakers_currentRarity -= Sneakers.rarityReduction (Sneakers.rarity, getItemCurrentCount<Sneakers> ());
+                        chance_total += sneakers_currentRarity;
+                        break;
+
+                }
+
+            }
+
+            float val = UnityEngine.Random.Range (0, chance_total);
+
+         
+
+            bool exitLoop = false;
+            foreach (var itemtype in typesOfItemList)
+            {
+                switch (itemtype.GetType ().Name)
+                {
+                    case "Arrow":
+                        if (val <= arrow_currentRarity && Arrow.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            //print(Arrow.ruleCheck(this));
+                            return SpawnItem<Arrow> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= arrow_currentRarity;
+                        }
+
+                        break;
+
+                    case "CompactDisk":
+                        if (val <= compactDisk_currentRarity && CompactDisk.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<CompactDisk> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= compactDisk_currentRarity;
+                        }
+                        break;
+
+                    case "FastFoward":
+                        if (val <= fastFoward_currentRarity && FastFoward.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<FastFoward> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= fastFoward_currentRarity;
+                        }
+                        break;
+
+                    case "FloppyDisk":
+                        if (val <= floppyDisk_currentRarity && FloppyDisk.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<FloppyDisk> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= floppyDisk_currentRarity;
+                        }
+                        break;
+
+                    case "Glasses3D":
+                        if (val <= glases3D_currentRarity && Glasses3D.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<Glasses3D> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= glases3D_currentRarity;
+                        }
+                        break;
+
+                    case "Lock":
+                        if (val <= lock_currentRarity && Lock.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<Lock> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= lock_currentRarity;
+                        }
+                        break;
+
+                    case "RainbowLipstick":
+                        if (val <= rainbow_currentRarity && RainbowLipstick.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<RainbowLipstick> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= rainbow_currentRarity;
+                        }
+                        break;
+
+                    case "Ray":
+                        if (val <= ray_currentRarity && Ray.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<Ray> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= ray_currentRarity;
+                        }
+                        break;
+
+                    case "Revolver":
+                        if (val <= revolver_currentRarity && Revolver.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<Revolver> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= revolver_currentRarity;
+                        }
+                        break;
+
+                    case "SloMo":
+                        if (val <= slowmo_currentRarity && SloMo.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<SloMo> (defaultItemSpawnRange);
+                            exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= slowmo_currentRarity;
+                        }
+                        break;
+
+                    case "Sneakers":
+                        if (val <= sneakers_currentRarity && Sneakers.ruleCheck (this))
+                        {
+                            print ("Rolled" + itemtype.GetType ().Name);
+                            return SpawnItem<Sneakers> (defaultItemSpawnRange);
+                            //exitLoop = true;
+                        }
+                        else
+                        {
+                            val -= sneakers_currentRarity;
+                        }
+                        break;
+
+                }
+
+                if (exitLoop) break;
+            }
+
+            return false;
+        }
+
         // Update is called once per frame
         void Update ()
         {
 
+            amountScoreMaker = getItemCurrentCount<ScoreMaker>();
+            amountItens =  getItemCurrentCount<Item>();
             if (Input.GetKeyDown (KeyCode.Escape))
             {
                 QuitGame ();
@@ -380,7 +728,7 @@ namespace Aesthetics
             return a;
         }
 
-        private Arrow SpawnArrow (float range, Arrow.arrowType typeOfArrow)
+        private Arrow SpawnArrow (float range, Arrow.arrowType? typeOfArrow)
         {
             GridBlock gb = null;
             while (gb == null)
@@ -389,6 +737,17 @@ namespace Aesthetics
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject prefab;
+             if(typeOfArrow == null)
+             {
+                 int ran = Random.Range(0,3);
+                 if(ran == 0) typeOfArrow = Arrow.arrowType.Single;
+                 if(ran == 1) typeOfArrow = Arrow.arrowType.Double;
+                 if(ran == 2) typeOfArrow = Arrow.arrowType.Quadruple;
+                 else
+                 typeOfArrow = Arrow.arrowType.Single;
+
+             }
+
             switch (typeOfArrow)
             {
                 case Arrow.arrowType.Quadruple:
@@ -405,11 +764,13 @@ namespace Aesthetics
                     break;
 
             }
+
+
             GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
             Arrow a = arrowPrefab.GetComponent<Arrow> ();
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
-            a.arrow_type = typeOfArrow;
+            a.arrow_type = (Arrow.arrowType)typeOfArrow;
             a.gridBlockOwner = gb;
 
             rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
@@ -455,6 +816,46 @@ namespace Aesthetics
             return lockPrefab.GetComponent<Lock> ();
         }
 
+        public GameObject getPrefabOfType<T> (Arrow.arrowType? typeOfArrow)
+        {
+            if (typeof (T) == typeof (Lock))
+                return lock_prefab;
+
+            if (typeof (T) == typeof (Arrow))
+            {
+                if (typeOfArrow != null)
+                {
+                    GameObject prefab;
+                    switch (typeOfArrow)
+                    {
+                        case Arrow.arrowType.Quadruple:
+                            prefab = arrows_prefabs[2];
+                            break;
+
+                        case Arrow.arrowType.Double:
+                            prefab = arrows_prefabs[1];
+                            break;
+
+                        case Arrow.arrowType.Single:
+                        default:
+                            prefab = arrows_prefabs[0];
+                            break;
+
+                    }
+                    return prefab;
+                }
+                else
+                {
+                    return arrows_prefabs[Random.Range (0, arrows_prefabs.Count ())];
+                }
+            }
+
+            if (typeof (T) == typeof (ScoreMaker))
+                return scoreMaker_prefab;
+
+            return null;
+        }
+
         public float getItemCurrentPercentage<T> ()
         {
 
@@ -464,20 +865,27 @@ namespace Aesthetics
             if (typeof (T) == typeof (ScoreMaker))
             {
                 if (getItemCurrentCount<T> () != 0)
-                    return (getItemCurrentCount<T> () * maxScoreMakers) * 100;
+                {
+                    //print("" + (getItemCurrentCount<T> () + " / " + maxScoreMakers + " x 100 = " + (getItemCurrentCount<T> () / maxScoreMakers) * 100) );
+                    return ((float) getItemCurrentCount<T> () / (float) maxScoreMakers) * 100;
+                }
                 else return 0;
 
             }
-
             else
             {
 
                 if (getItemCurrentCount<T> () != 0)
-                    return (getItemCurrentCount<T> () * maxItens) * 100;
+                    return ((float) getItemCurrentCount<T> () / (float) maxItens) * 100;
                 else return 0;
 
             }
 
+        }
+
+        public int getItemCurrentCountHelper<T> (T obj)
+        {
+            return getItemCurrentCount<T> ();
         }
 
         public int getItemCurrentCount<T> ()
@@ -486,10 +894,11 @@ namespace Aesthetics
                 return itemList.OfType<T> ().Count ();
             else // if we want to get the count of the Itens, we need to exlude ScoreMaker since it is a "special" item.
             {
+                //print("nao sou item");
                 int count = 0;
                 foreach (var item in itemList)
                 {
-                    if (item.GetType () == typeof (Item)) continue;
+                    if (item.GetType () == typeof (ScoreMaker)) continue;
 
                     count++;
                 }
@@ -498,6 +907,7 @@ namespace Aesthetics
             }
 
         }
+
         //Build the Map
         void BuildMap ()
         {

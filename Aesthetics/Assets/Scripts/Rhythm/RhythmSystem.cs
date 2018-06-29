@@ -200,7 +200,9 @@ public class RhythmSystem : MonoBehaviour
 
     private void Awake ()
     {
-
+        if (onNoteReturnedToPool == null)
+            onNoteReturnedToPool = new UnityEvent ();
+            
         UnityEngine.Random.InitState (System.Environment.TickCount);
 
         if (!grid_ref)
