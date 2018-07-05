@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Aesthetics;
 using DG.Tweening;
 using TMPro;
+using SonicBloom.Koreo;
 using UnityEngine;
 
 public class GridBlock : MonoBehaviour
@@ -453,6 +454,9 @@ public class GridBlock : MonoBehaviour
             _isRespawning = value;
         }
     }
+    
+    [SerializeField]
+    public Countdown respawnTimer;
 
     public void init (int x, int y, int z, TheGrid gr, RhythmSystem rs)
     {
@@ -467,13 +471,14 @@ public class GridBlock : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-
+        respawnTimer = gameObject.AddComponent<Countdown> ();
     }
 
     // Update is called once per frame
     void Update ()
     {
-
+        if(respawnTimer.stop)
+            isRespawning = false;
     }
 
     private void OnCollisionEnter (Collision other)
@@ -567,6 +572,7 @@ public class GridBlock : MonoBehaviour
 
         fall_data.pattern = pattern;
         fall_data.countdown = countdown;
+        fall_data.countdown--; // need to descrease 1 otherwise it will run one additinoal time
         fall_data.duration = duration;
         fall_data.countdown_count = 0;
         fall_data.duration_count = 0;
@@ -579,10 +585,14 @@ public class GridBlock : MonoBehaviour
         pos.y += 0.2f;
 
         if (fall_data.countdown > 0)
-            SpawnCountdownText (pos, fall_data.countdown.ToString (), Color.green);
+        {
+            int show = fall_data.countdown + 1; // never show 0
+             SpawnCountdownText (pos, show.ToString (), Color.green);
+        }
+           
         // textMesh.text =    fall_data.countdown.ToString();
 
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (FallIncrement);
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, FallIncrement);
 
     }
 
@@ -593,6 +603,7 @@ public class GridBlock : MonoBehaviour
 
         block_data.pattern = pattern;
         block_data.countdown = countdown;
+        block_data.countdown--; // need to descrease 1 otherwise it will run one additinoal time
         block_data.duration = duration;
         block_data.countdown_count = 0;
         block_data.duration_count = 0;
@@ -600,6 +611,8 @@ public class GridBlock : MonoBehaviour
         block_data.startDuration = false;
         isPreBlocked = true;
 
+         //rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (BlockIncrement);
+         
         Vector3 pos = startTransform.position;
         //pos.y += this.GetComponent<Renderer> ().bounds.size.y + 0.2f;
         pos.y += 0.2f;
@@ -607,12 +620,13 @@ public class GridBlock : MonoBehaviour
         //Color c(0,0,0);
         if (block_data.countdown > 0)
         {
-
-            SpawnCountdownText (pos, block_data.countdown.ToString (), Color.green);
+            int show = block_data.countdown + 1; // never show 0
+            SpawnCountdownText (pos, show.ToString (), Color.green);
         }
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, BlockIncrement);
         // textMesh.text =    fall_data.countdown.ToString();
 
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (BlockIncrement);
+       
     }
 
     public void SpawnCountdownText (Vector3 pos, string tex, Color texCol) //spawn text above the gridblock
@@ -633,7 +647,7 @@ public class GridBlock : MonoBehaviour
     }
 
     //increase fall variables
-    public void FallIncrement ()
+    public void FallIncrement (KoreographyEvent evt)
     {
         //print (fall_data.pattern + " " + fall_data.countdown + " " + fall_data.duration);
 
@@ -641,8 +655,8 @@ public class GridBlock : MonoBehaviour
         {
             if (fall_data.countdown_count < fall_data.countdown) //if countdown still going
             {
-
-                int result = fall_data.countdown - fall_data.countdown_count; // never show 0
+                fall_data.countdown_count++;
+                int result = fall_data.countdown - fall_data.countdown_count + 1; // never show 0
                 int crossResult = (100 * result) / fall_data.countdown;
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().text = (result).ToString ();
@@ -669,7 +683,7 @@ public class GridBlock : MonoBehaviour
                 }
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().color = col;
-                fall_data.countdown_count++;
+                
             }
             else //countdown ended
             {
@@ -713,7 +727,8 @@ public class GridBlock : MonoBehaviour
 
                 //startCount = false;
                 transform.DOScale (new Vector3 (1, 1, 1), rhythmSystem_ref.rhythmTarget_Ref.duration / 2);
-                rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (FallIncrement);
+                Koreographer.Instance.UnregisterForEvents (rhythmSystem_ref.mainBeatID, FallIncrement);
+               
                 //Kill (null);
             }
 
@@ -722,7 +737,7 @@ public class GridBlock : MonoBehaviour
     }
 
     //handles block countdown
-    public void BlockIncrement ()
+    public void BlockIncrement (KoreographyEvent evt)
     {
         //print (fall_data.pattern + " " + fall_data.countdown + " " + fall_data.duration);
 
@@ -730,8 +745,9 @@ public class GridBlock : MonoBehaviour
         {
             if (block_data.countdown_count < block_data.countdown) //if countdown still going
             {
-
-                int result = block_data.countdown - block_data.countdown_count; // never show 0
+              
+                block_data.countdown_count++;
+                int result = block_data.countdown - block_data.countdown_count + 1; // never show 0
                 int crossResult = (100 * result) / block_data.countdown;
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().text = (result).ToString ();
@@ -758,7 +774,7 @@ public class GridBlock : MonoBehaviour
                 }
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().color = col;
-                block_data.countdown_count++;
+                
             }
             else //countdown ended
             {
@@ -803,7 +819,8 @@ public class GridBlock : MonoBehaviour
 
                 //startCount = false;
                 transform.DOScale (new Vector3 (1, 1, 1), rhythmSystem_ref.rhythmTarget_Ref.duration / 2);
-                rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (BlockIncrement);
+                //rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (BlockIncrement);
+                Koreographer.Instance.UnregisterForEvents (rhythmSystem_ref.mainBeatID, BlockIncrement);
                 //Kill (null);
             }
 

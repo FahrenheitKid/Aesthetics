@@ -42,7 +42,7 @@ public class ScoreMaker : Item
 
         }
 
-        grid_ref.updateItemSpawnRatio();
+        grid_ref.updateScoreMakerSpawnRatio();
         base.Kill(null);
         //Destroy (gameObject);
     }

@@ -553,6 +553,11 @@ Prefab:
       value: 
       objectReference: {fileID: 1713445076453964, guid: 5e3a7775b35b7644abd4c3bfa7cc50d1,
         type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: maxItens
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
   m_IsPrefabParent: 0
@@ -2413,7 +2418,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.426
   m_Pitch: 1
   Loop: 0
   Mute: 0

@@ -156,10 +156,10 @@ namespace Aesthetics
         [SerializeField]
         float scoreMakerCurrentSpawnRatio = 5;
 
- [SerializeField]
+        [SerializeField]
         int amountScoreMaker = 0;
-         [SerializeField]
-        int  amountItens = 5;
+        [SerializeField]
+        int amountItens = 5;
         [Tooltip ("distance of players to itens to eb spawned")]
         [SerializeField]
         float defaultItemSpawnRange = 4;
@@ -209,8 +209,6 @@ namespace Aesthetics
 
             // print("ScoreMaker: " + getItemCurrentCount<ScoreMaker>() + " | " + getItemCurrentPercentage<ScoreMaker>());
 
- 
-
             //GambleItemToSpawn ();
 
             // print("ScoreMaker: " + getItemCurrentCount<ScoreMaker>() + " | " + getItemCurrentPercentage<ScoreMaker>() + " max: " + maxScoreMakers);
@@ -225,7 +223,24 @@ namespace Aesthetics
         }
         void itemTimersStart ()
         {
-            updateItemSpawnRatio();
+            // updateItemSpawnRatio();
+
+            float delta = itemCurrentSpawnRatio;
+            float interpol = (float) UtilityTools.linear (getItemCurrentCount<ScoreMaker> (), 0, maxScoreMakers, scoreMakerBaseSpawnRatio, 0);
+            if (interpol == 0)
+                scoreMakerCurrentSpawnRatio = 0;
+            else
+                scoreMakerCurrentSpawnRatio = (scoreMakerBaseSpawnRatio / 2) / interpol * scoreMakerBaseSpawnRatio;
+
+            interpol = itemCurrentSpawnRatio = (float) UtilityTools.linear (getItemCurrentCount<Item> (), 0, maxItens, itemBaseSpawnRatio, 0);
+
+            if (interpol == 0)
+                itemCurrentSpawnRatio = 0;
+            else
+                itemCurrentSpawnRatio = (itemBaseSpawnRatio / 2) / interpol * itemBaseSpawnRatio;
+
+            scoreMakerTimer.startTimer (scoreMakerCurrentSpawnRatio);
+            itemsTimer.startTimer (itemCurrentSpawnRatio);
 
         }
 
@@ -236,75 +251,79 @@ namespace Aesthetics
 
                 //need to fixxxxxxxx
                 if (getItemCurrentCount<ScoreMaker> () < maxScoreMakers)
-                SpawnItem<ScoreMaker>(defaultItemSpawnRange);
+                    SpawnItem<ScoreMaker> (defaultItemSpawnRange);
 
-                updateItemSpawnRatio();
-
+                updateScoreMakerSpawnRatio ();
 
             }
 
-            if (itemsTimer.stop || itemsTimer.timeLeft <=0)
+            if (itemsTimer.stop)
             {
-                print("cabou tempo");
-                if(getItemCurrentCount<Item>() < maxItens)
+                print ("cabou tempo");
+                if (getItemCurrentCount<Item> () < maxItens)
                 {
                     ReGamble:
-                    
-                    if(!GambleItemToSpawn())
-                    {
-                        print("GAMBLE FAILED!");
-                        goto ReGamble;
-                    }
+
+                        if (!GambleItemToSpawn ())
+                        {
+                            print ("GAMBLE FAILED!");
+                            goto ReGamble;
+                        }
                     else
                     {
-                        print("GAMBLE win!");
-                        updateItemSpawnRatio();
+                        // print("GAMBLE win!");
+                        updateItemSpawnRatio ();
                     }
-                    
-                    
+
                 }
                 else
                 {
-                    print("current items = " + getItemCurrentCount<Item>() + " | max: " + maxItens);
+                    print ("current items = " + getItemCurrentCount<Item> () + " | max: " + maxItens);
                 }
-                
 
-                
             }
 
         }
 
         public void updateItemSpawnRatio ()
         {
-            // need to fixxxxxxxxxxxxxxx
+
             float delta = itemCurrentSpawnRatio;
+            float interpol = itemCurrentSpawnRatio = (float) UtilityTools.linear (getItemCurrentCount<Item> (), 0, maxItens, itemBaseSpawnRatio, 0);
+
+            if (interpol == 0)
+                itemCurrentSpawnRatio = 0;
+            else
+                itemCurrentSpawnRatio = (itemBaseSpawnRatio / 2) / interpol * itemBaseSpawnRatio;
+
+            if (((itemsTimer.timeLeft > itemCurrentSpawnRatio) && (Mathf.Abs (delta - itemCurrentSpawnRatio) > 0)) || (itemsTimer.stop && itemCurrentSpawnRatio > 0))
+            {
+
+                if (itemCurrentSpawnRatio > 0)
+                {
+                    // print("reestartei timer" + itemCurrentSpawnRatio);
+                    //itemsTimer.stop = true;
+                    itemsTimer.startTimer (itemCurrentSpawnRatio);
+                }
+                else
+                {
+                    //   print("tinha que reestartar");
+                }
+
+            }
+
+        }
+
+        public void updateScoreMakerSpawnRatio ()
+        {
             float interpol = (float) UtilityTools.linear (getItemCurrentCount<ScoreMaker> (), 0, maxScoreMakers, scoreMakerBaseSpawnRatio, 0);
-            if(interpol == 0)
-            scoreMakerCurrentSpawnRatio = 0;
+            if (interpol == 0)
+                scoreMakerCurrentSpawnRatio = 0;
             else
-            scoreMakerCurrentSpawnRatio =  (scoreMakerBaseSpawnRatio / 2)  / interpol * scoreMakerBaseSpawnRatio;
-
-            interpol = itemCurrentSpawnRatio = (float) UtilityTools.linear (getItemCurrentCount<Item> (), 0, maxItens, itemBaseSpawnRatio, 0);
-
-             if(interpol == 0)
-            itemCurrentSpawnRatio = 0;
-            else
-            itemCurrentSpawnRatio =  (itemBaseSpawnRatio / 2) / interpol * itemBaseSpawnRatio;
-
+                scoreMakerCurrentSpawnRatio = (scoreMakerBaseSpawnRatio / 2) / interpol * scoreMakerBaseSpawnRatio;
 
             if (scoreMakerTimer.timeLeft > scoreMakerCurrentSpawnRatio || scoreMakerTimer.stop)
                 scoreMakerTimer.startTimer (scoreMakerCurrentSpawnRatio);
-
-            if ((itemsTimer.timeLeft > itemCurrentSpawnRatio) && (Mathf.Abs(delta - itemCurrentSpawnRatio) > 0) || (itemsTimer.stop && itemCurrentSpawnRatio > 0) )
-            {
-                if(itemCurrentSpawnRatio > 0)
-                {
-                    itemsTimer.stop = true;
-                    itemsTimer.startTimer (itemCurrentSpawnRatio);
-                }
-                
-            }
-                
 
         }
 
@@ -316,23 +335,20 @@ namespace Aesthetics
 
             if (typeof (T) == typeof (Lock))
             {
-                SpawnLock(range);
+                SpawnLock (range);
                 return true;
             }
-            else if(typeof (T) == typeof (Arrow))
+            else if (typeof (T) == typeof (Arrow))
             {
-                SpawnArrow(range,null);
+                SpawnArrow (range, null);
                 return true;
             }
 
-            else if(typeof (T) == typeof (ScoreMaker))
+            else if (typeof (T) == typeof (ScoreMaker))
             {
-                SpawnScoreMaker(defaultItemSpawnRange);
+                SpawnScoreMaker (defaultItemSpawnRange);
 
-            return true;
-
-
-
+                return true;
 
             }
 
@@ -361,7 +377,7 @@ namespace Aesthetics
                 {
                     case "Arrow":
                         arrow_currentRarity = Arrow.rarity;
-                       arrow_currentRarity -= Arrow.rarityReduction (Arrow.rarity, getItemCurrentCount<Arrow> ());
+                        arrow_currentRarity -= Arrow.rarityReduction (Arrow.rarity, getItemCurrentCount<Arrow> ());
                         chance_total += arrow_currentRarity;
                         break;
 
@@ -430,8 +446,6 @@ namespace Aesthetics
             }
 
             float val = UnityEngine.Random.Range (0, chance_total);
-
-         
 
             bool exitLoop = false;
             foreach (var itemtype in typesOfItemList)
@@ -595,8 +609,8 @@ namespace Aesthetics
         void Update ()
         {
 
-            amountScoreMaker = getItemCurrentCount<ScoreMaker>();
-            amountItens =  getItemCurrentCount<Item>();
+            amountScoreMaker = getItemCurrentCount<ScoreMaker> ();
+            amountItens = getItemCurrentCount<Item> ();
             if (Input.GetKeyDown (KeyCode.Escape))
             {
                 QuitGame ();
@@ -737,16 +751,16 @@ namespace Aesthetics
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject prefab;
-             if(typeOfArrow == null)
-             {
-                 int ran = Random.Range(0,3);
-                 if(ran == 0) typeOfArrow = Arrow.arrowType.Single;
-                 if(ran == 1) typeOfArrow = Arrow.arrowType.Double;
-                 if(ran == 2) typeOfArrow = Arrow.arrowType.Quadruple;
-                 else
-                 typeOfArrow = Arrow.arrowType.Single;
+            if (typeOfArrow == null)
+            {
+                int ran = Random.Range (0, 3);
+                if (ran == 0) typeOfArrow = Arrow.arrowType.Single;
+                if (ran == 1) typeOfArrow = Arrow.arrowType.Double;
+                if (ran == 2) typeOfArrow = Arrow.arrowType.Quadruple;
+                else
+                    typeOfArrow = Arrow.arrowType.Single;
 
-             }
+            }
 
             switch (typeOfArrow)
             {
@@ -765,12 +779,11 @@ namespace Aesthetics
 
             }
 
-
             GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
             Arrow a = arrowPrefab.GetComponent<Arrow> ();
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
-            a.arrow_type = (Arrow.arrowType)typeOfArrow;
+            a.arrow_type = (Arrow.arrowType) typeOfArrow;
             a.gridBlockOwner = gb;
 
             rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
