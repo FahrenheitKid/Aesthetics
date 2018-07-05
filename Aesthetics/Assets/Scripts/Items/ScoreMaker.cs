@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+using Aesthetics;
 public class ScoreMaker : Item
 {
 
     // Use this for initialization
     void Start ()
     {
-
+        //rarity = 100;
     }
 
     // Update is called once per frame
@@ -40,7 +41,10 @@ public class ScoreMaker : Item
             }
 
         }
-        Destroy (gameObject);
+
+        grid_ref.updateScoreMakerSpawnRatio();
+        base.Kill(null);
+        //Destroy (gameObject);
     }
 
 }

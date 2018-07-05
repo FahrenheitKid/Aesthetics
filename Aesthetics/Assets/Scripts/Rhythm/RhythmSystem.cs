@@ -7,6 +7,9 @@ using SonicBloom.Koreo.Players;
 using UnityEngine;
 using UnityEngine.Events;
 
+namespace Aesthetics{
+
+
 public class RhythmSystem : MonoBehaviour
 {
 
@@ -197,7 +200,9 @@ public class RhythmSystem : MonoBehaviour
 
     private void Awake ()
     {
-
+        if (onNoteReturnedToPool == null)
+            onNoteReturnedToPool = new UnityEvent ();
+            
         UnityEngine.Random.InitState (System.Environment.TickCount);
 
         if (!grid_ref)
@@ -830,4 +835,5 @@ public class RhythmSystem : MonoBehaviour
 
     #endregion
 
+}
 }

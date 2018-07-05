@@ -5,6 +5,9 @@ using SonicBloom.Koreo;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+namespace Aesthetics {
+
+
 public class Player : MonoBehaviour
 {
 
@@ -517,8 +520,9 @@ public class Player : MonoBehaviour
             if (other.GetComponent<GridBlock> ().isFallen && !isImmune && !isShielded && !isFallen) //if stepped on fallen gridblock
             {
                 //make player fall down on the next beat
+                disableInput = true;
                 fall_gridBlock_Ref = other.GetComponent<GridBlock> ();
-                rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (Fall);
+                 Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, Fall);
             }
 
         }
@@ -534,8 +538,9 @@ public class Player : MonoBehaviour
             if (other.GetComponent<GridBlock> ().isFallen && !isImmune && !isShielded && !isFallen) //if stepped on fallen gridblock
             {
                 //make player fall down on the next beat
+                disableInput = true;
                 fall_gridBlock_Ref = other.GetComponent<GridBlock> ();
-                rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (Fall);
+                Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, Fall);
             }
 
         }
@@ -662,7 +667,7 @@ public class Player : MonoBehaviour
         isMoving = value;
     }
 
-    void Fall ()
+    void Fall (KoreographyEvent evt)
     {
         isFallen = true;
         disableInput = true;
@@ -672,11 +677,14 @@ public class Player : MonoBehaviour
             item.Kill (null);
 
         Vector3 startPos = transform.position;
-        startPos.y -= 20;
+        startPos.y -= 15;
 
-        transform.DOMove (startPos, rhythmSystem_ref.rhythmTarget_Ref.duration / 2);
+        
+        //transform.DOMove (startPos, rhythmSystem_ref.rhythmTarget_Ref.duration * 2);
+          //transform.DOMoveY (startPos.y, respawn_duration);
+        transform.DOMoveY (startPos.y, fall_duration / 1.5f).SetEase(Ease.InOutCubic);
 
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (Fall);
+        Koreographer.Instance.UnregisterForEvents (rhythmSystem_ref.mainBeatID, Fall);
 
         fallenTimer.startTimer (fall_duration);
 
@@ -726,6 +734,8 @@ public class Player : MonoBehaviour
         //start moving player down from above and start respawn timer
         transform.DOMoveY (initY, respawn_duration);
         respawnTimer.startTimer (respawn_duration);
+        respawnBlock.respawnTimer.startTimer(respawn_duration);
+        
 
     }
     public void Stun (float duration)
@@ -1205,4 +1215,5 @@ public class Player : MonoBehaviour
         rhythmSystem_ref = reference;
     }
 
+}
 }

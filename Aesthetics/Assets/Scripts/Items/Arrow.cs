@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
+using Aesthetics;
 public class Arrow : Item
 {
 
@@ -16,6 +17,9 @@ public class Arrow : Item
         Quadruple
     }
 
+
+
+    public static new float rarity = 90.0f;
     private int count = 0;
     public int beatsPerRotation = 4;
     [SerializeField]
@@ -28,6 +32,13 @@ public class Arrow : Item
     {
         orientation = CameraScript.windRose.South;
         //rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (IncreaseCount);
+
+    }
+
+        public override void Setup (TheGrid grid, RhythmSystem rhythm, GridBlock gb)
+    {
+        base.Setup (grid, rhythm, gb);
+       // rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (IncreaseCount);
 
     }
 
@@ -114,7 +125,7 @@ public class Arrow : Item
 
     public override void Equip (Player p)
     {
-
+        grid_ref.updateItemSpawnRatio();
     }
     public override void Activate ()
     {
@@ -303,7 +314,8 @@ public class Arrow : Item
         gridBlockOwner.hasItem = false;
 
         rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (IncreaseCount);
-        Destroy (gameObject);
+        base.Kill(null);
+        //Destroy (gameObject);
     }
 
 }

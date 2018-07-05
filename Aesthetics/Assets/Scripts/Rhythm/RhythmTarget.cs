@@ -4,6 +4,7 @@ using DG.Tweening;
 using SonicBloom.Koreo;
 using UnityEngine;
 
+using Aesthetics;
 public class RhythmTarget : MonoBehaviour
 {
 
