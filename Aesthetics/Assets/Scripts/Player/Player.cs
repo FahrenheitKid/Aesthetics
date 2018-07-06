@@ -645,6 +645,7 @@ public class Player : MonoBehaviour
 
     void handleInput ()
     {
+        //int numPressed = 0;
         HandleAxisState (ref horizontalAxisState, "Horizontal" + ID);
         HandleAxisState (ref verticalAxisState, "Vertical" + ID);
 
@@ -670,6 +671,7 @@ public class Player : MonoBehaviour
 
             if (input != Vector2.zero && !_isStunned)
             {
+                
                 //only compute durinf pressed Down, not on hold
                 if ((input.y != 0 && verticalAxisState == AxisState.Down) !=
                     (input.x != 0 && horizontalAxisState == AxisState.Down))
@@ -706,10 +708,16 @@ public class Player : MonoBehaviour
                 //StartCoroutine (move (transform));
 
             }
+            else
 
-            if(Input.GetButtonDown("ActionA" + ID))
+            if(Input.GetButtonDown("ActionA" + ID) &&
+            ((verticalAxisState == AxisState.Idle) &&
+            (horizontalAxisState == AxisState.Idle)))
             {
-                if(hasItem && item && item.GetType() != typeof(FloppyDisk))
+                
+                            //not allow action with movement
+               
+                    if(hasItem && item && item.GetType() != typeof(FloppyDisk))
                 {
                    
                       //if Pressed on the beat
@@ -731,6 +739,9 @@ public class Player : MonoBehaviour
                         combo = 0;
                     }
                 }
+
+                
+                
                
             }
         }

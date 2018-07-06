@@ -161,14 +161,12 @@ public class CameraScript : MonoBehaviour
         // Rotation method
         if (Input.GetKeyDown (KeyCode.Q))
         {
-            targetAngle -= 90.0f;
-            turnOrientation (false);
+            Rotate(false);
             print (orientation);
         }
         if (Input.GetKeyDown (KeyCode.E))
         {
-            targetAngle += 90.0f;
-            turnOrientation (true);
+           Rotate(true);
             print (orientation);
         }
 
@@ -179,7 +177,7 @@ public class CameraScript : MonoBehaviour
 
         if (targetAngle != 0)
         {
-            Rotate ();
+            Rotatation ();
         }
         else
         {
@@ -193,7 +191,7 @@ public class CameraScript : MonoBehaviour
         transform.LookAt (go.transform);
     }
 
-    protected void Rotate ()
+    protected void Rotatation ()
     {
 
         if (targetAngle > 0)
@@ -207,6 +205,20 @@ public class CameraScript : MonoBehaviour
             targetAngle += rotationAmount;
         }
 
+    }
+
+     public void Rotate (bool right)
+    {
+        if(right)
+        {
+             targetAngle += 90.0f;
+            turnOrientation (true);
+        }
+        else
+        {
+            targetAngle -= 90.0f;
+            turnOrientation (false);
+        }
     }
 
     public void turnOrientation (bool clockwise)
