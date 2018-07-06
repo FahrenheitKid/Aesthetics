@@ -234,7 +234,8 @@ public class Item : MonoBehaviour, System.IComparable<Item>
             //activate in case it is not an equippable item
             
             
-
+            gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
+            
             if(!Activate ())
             Equip (owner);
             else grid_ref.updateItemSpawnRatio();
@@ -303,10 +304,10 @@ public class Item : MonoBehaviour, System.IComparable<Item>
         owner = p;
 
         //make item stay above player s head
-        transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
+        gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
         transform.parent = p.transform;
         if(transform.localScale != new Vector3 (0.4f, 0.4f, 0.4f))
-        transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
+        gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
 
         //print("new local scale: " + transform.localScale);
         float player_height = p.gameObject.GetComponent<MeshRenderer> ().bounds.max.y;

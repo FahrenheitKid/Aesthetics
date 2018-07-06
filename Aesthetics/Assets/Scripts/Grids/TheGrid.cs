@@ -394,6 +394,11 @@ namespace Aesthetics
                 SpawnFloppyDisk (range);
                 return true;
             }
+            else if (typeof (T) == typeof (CompactDisk))
+            {
+                SpawnCompactDisk (range);
+                return true;
+            }
 
             else if (typeof (T) == typeof (ScoreMaker))
             {
@@ -935,6 +940,25 @@ namespace Aesthetics
 
             return smPrefab.GetComponent<FloppyDisk> ();
         }
+
+         private CompactDisk SpawnCompactDisk (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            smPrefab.GetComponent<CompactDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (smPrefab.GetComponent<CompactDisk> ());
+
+            return smPrefab.GetComponent<CompactDisk> ();
+        }
+
+        
 
         public GameObject getPrefabOfType<T> (Arrow.arrowType? typeOfArrow)
         {

@@ -146,12 +146,15 @@ public class Lock : Item
         startCount = true;
         timer.startTimer(duration);
         count = 0;
+        gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
          return base.Activate ();
 
     }
     public override void Equip (Player p)
     {
+        gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
         base.Equip (p);
+        gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
 
     }
 

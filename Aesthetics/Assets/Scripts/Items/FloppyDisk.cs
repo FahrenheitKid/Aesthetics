@@ -6,7 +6,7 @@ using UnityEngine;
 using Aesthetics;
 public class FloppyDisk : Item {
 
-	public static new float rarity = 90.0f;
+	public static new float rarity = 30.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -26,7 +26,7 @@ public class FloppyDisk : Item {
 
 		//rhythmSystem_ref.ChangePitch(false);
 		 owner.isShielded = true;
-		
+		gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
 		return  base.Activate ();
 
 	}
@@ -39,7 +39,8 @@ public class FloppyDisk : Item {
 		base.Equip(p);
 		if(!owner.isShielded)
 		 owner.isShielded = true;
-		
+		 
+		gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
 		
 
 	}

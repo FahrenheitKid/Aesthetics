@@ -650,7 +650,7 @@ public class Player : MonoBehaviour
 
         if (isStunned)
         {
-
+            return;
         }
 
         if (!isMoving)
@@ -706,6 +706,33 @@ public class Player : MonoBehaviour
                 //StartCoroutine (move (transform));
 
             }
+
+            if(Input.GetButtonDown("ActionA" + ID))
+            {
+                if(hasItem && item && item.GetType() != typeof(FloppyDisk))
+                {
+                   
+                      //if Pressed on the beat
+                    if (rhythmSystem_ref.WasNoteHit ())
+                    {
+                        //print ("Player" + ID.ToString () + " Hit it!");
+                        item.Use();
+                        
+
+                    }
+                    else
+                    {
+                        //lose combo
+
+                        Vector3 pos = transform.position;
+                        pos.y += GetComponent<Renderer> ().bounds.size.y + 0.0f;
+                        grid_ref.SpawnMissFloatingText (pos);
+
+                        combo = 0;
+                    }
+                }
+               
+            }
         }
 
     }
@@ -717,8 +744,9 @@ public class Player : MonoBehaviour
     public void Immune (float duration)
     {
         print("imune duratino: " + duration + " | timeleft: " + immunityTimer.timeLeft);
+        if(duration == 0) return;
         if(immunityTimer.timeLeft >= duration && !immunityTimer.stop) return;
-        print("imunityTrue");
+        print("imunityTrue applied");
         isImmune = true;
         immunityTimer.startTimer(duration);
     }
@@ -734,7 +762,9 @@ public class Player : MonoBehaviour
         Vector3 startPos = transform.position;
         startPos.y -= 15;
 
-        
+        combo = 0;
+        multiplierCombo = 0;
+        multiplier = 0;
         //transform.DOMove (startPos, rhythmSystem_ref.rhythmTarget_Ref.duration * 2);
           //transform.DOMoveY (startPos.y, respawn_duration);
         transform.DOMoveY (startPos.y, fall_duration / 1.5f).SetEase(Ease.InOutCubic);
