@@ -558,6 +558,12 @@ Prefab:
       propertyPath: maxItens
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: fastFoward_prefab
+      value: 
+      objectReference: {fileID: 1612184311205678, guid: b629bf1d11fba844aac0b99bf3205015,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
   m_IsPrefabParent: 0
@@ -3422,6 +3428,11 @@ Prefab:
       value: 
       objectReference: {fileID: 11400000, guid: 9e7bfd2cfb0fc7640b6b0ebf34461448,
         type: 2}
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: pitchTweenDuration
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 508dfb674d99c3143847fb9287641d89, type: 2}
   m_IsPrefabParent: 0

@@ -120,14 +120,14 @@ public class Lock : Item
 
         rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (IncreaseCount);
 
-        if (gameObject)
-            Destroy (gameObject);
-    }
-    public override void Activate ()
-    {
-        base.Activate ();
+        base.Kill(null);
 
-        gridBlockOwner.hasItem = false;
+    }
+    public override bool Activate ()
+    {
+       
+
+       // gridBlockOwner.hasItem = false;
         //gameObject.GetComponent<MeshRenderer> ().enabled = false;
         gameObject.GetComponent<BoxCollider> ().enabled = false;
 
@@ -146,6 +146,7 @@ public class Lock : Item
         startCount = true;
         timer.startTimer(duration);
         count = 0;
+         return base.Activate ();
 
     }
     public override void Equip (Player p)
