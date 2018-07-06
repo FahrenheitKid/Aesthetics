@@ -14,7 +14,7 @@ public class Ray : Item {
 	}
 
 
-	public static new float rarity = 90.0f;
+	public static new float rarity = 70.0f;
 	public rayType ray_type;
 	Countdown rayRenderTimer;
 	public float rayTimeDuration = 0.35f;

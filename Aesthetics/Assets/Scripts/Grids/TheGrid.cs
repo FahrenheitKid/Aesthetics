@@ -126,6 +126,8 @@ namespace Aesthetics
         [SerializeField]
         private CameraScript cameraScript;
 
+        public CameraScript GetCameraScript()  {  return cameraScript;  }
+
         [SerializeField, Candlelight.PropertyBackingField]
         private int _mapWidth = 0;
         public int mapWidth
@@ -400,6 +402,13 @@ namespace Aesthetics
                 SpawnFloppyDisk (range);
                 return true;
             }
+
+            else if (typeof (T) == typeof (Glasses3D))
+            {
+                SpawnGlasses3D (range);
+                return true;
+            }
+
             else if (typeof (T) == typeof (CompactDisk))
             {
                 SpawnCompactDisk (range);
@@ -989,7 +998,22 @@ namespace Aesthetics
         }
 
         
+          private CompactDisk SpawnCompactDisk (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            smPrefab.GetComponent<CompactDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (smPrefab.GetComponent<CompactDisk> ());
+
+            return smPrefab.GetComponent<CompactDisk> ();
+        }
         private FloppyDisk SpawnFloppyDisk (float range)
         {
             GridBlock gb = null;
@@ -1007,7 +1031,7 @@ namespace Aesthetics
             return smPrefab.GetComponent<FloppyDisk> ();
         }
 
-         private CompactDisk SpawnCompactDisk (float range)
+         private Glasses3D SpawnGlasses3D (float range)
         {
             GridBlock gb = null;
             while (gb == null)
@@ -1015,14 +1039,16 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
-            smPrefab.GetComponent<CompactDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+            GameObject spPrefab = Instantiate (glasses3D_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            spPrefab.GetComponent<Glasses3D> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
-            itemList.Add (smPrefab.GetComponent<CompactDisk> ());
+            itemList.Add (spPrefab.GetComponent<Glasses3D> ());
 
-            return smPrefab.GetComponent<CompactDisk> ();
+            return spPrefab.GetComponent<Glasses3D> ();
         }
+
+       
 
         
 
