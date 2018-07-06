@@ -52,22 +52,27 @@ namespace Aesthetics
 
         [SerializeField]
         private GameObject fastFoward_prefab;
+        [SerializeField]
+        private GameObject sloMo_prefab;
         
 
-        [SerializeField]
-        private GameObject scoreFloatingText_prefab;
-
-        [SerializeField]
-        private GameObject missFloatingText_prefab;
-
-        [SerializeField]
+                [SerializeField]
         private GameObject[] arrows_prefabs = new GameObject[3];
+
+
+
 
         [SerializeField]
         private RhythmSystem rhythmSystem_ref;
 
         [SerializeField]
         private List<GameObject> playerPrefabList = new List<GameObject> (2);
+
+                [SerializeField]
+        private GameObject scoreFloatingText_prefab;
+
+        [SerializeField]
+        private GameObject missFloatingText_prefab;
 
         [SerializeField]
         private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
@@ -351,6 +356,12 @@ namespace Aesthetics
             else if (typeof (T) == typeof (FastFoward))
             {
                 SpawnFastFoward (range);
+                return true;
+            }
+
+            else if (typeof (T) == typeof (SloMo))
+            {
+                SpawnSloMo (range);
                 return true;
             }
 
@@ -857,6 +868,23 @@ namespace Aesthetics
             itemList.Add (ffPrefab.GetComponent<FastFoward> ());
 
             return ffPrefab.GetComponent<FastFoward> ();
+        }
+
+        private SloMo SpawnSloMo (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject smPrefab = Instantiate (sloMo_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            smPrefab.GetComponent<SloMo> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (smPrefab.GetComponent<SloMo> ());
+
+            return smPrefab.GetComponent<SloMo> ();
         }
 
         public GameObject getPrefabOfType<T> (Arrow.arrowType? typeOfArrow)

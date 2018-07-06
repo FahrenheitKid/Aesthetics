@@ -609,7 +609,20 @@ public class RhythmSystem : MonoBehaviour
             {
                 //tween up;
                 //pitchTweener.Complete();
-                pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, pitch + pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                if(pitchTweener == null)
+                {
+                    pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch + pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                }
+                else
+                if(!pitchTweener.IsActive() && pitchTweener != null)
+                {
+                    pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch + pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                }
+                else
+                {
+                    pitchTweener.ChangeEndValue(DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch + pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad));
+                }
+                
                 pitchTimer.startTimer(pitchDuration + pitchTweenDuration);
             }
             else
@@ -625,7 +638,21 @@ public class RhythmSystem : MonoBehaviour
             {
                 //tween down;
                 //pitchTweener.Complete();
-                pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, pitch - pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                print("NewPitch");
+                 if(pitchTweener == null)
+                {
+                    pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch - pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                }
+                else
+                if(!pitchTweener.IsActive() && pitchTweener != null)
+                {
+                    pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch - pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                }
+                else
+                {
+                    pitchTweener.ChangeEndValue(DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch - pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad));
+                }
+
                 pitchTimer.startTimer(pitchDuration + pitchTweenDuration);
                 
             }
