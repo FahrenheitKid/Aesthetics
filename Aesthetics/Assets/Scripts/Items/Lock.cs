@@ -11,7 +11,7 @@ public class Lock : Item
     [SerializeField]
     Countdown timer;
 
-    public static new float rarity = 30.0f;
+    public static new float rarity = 10.0f;
 
     [SerializeField]
     private int count = 0;

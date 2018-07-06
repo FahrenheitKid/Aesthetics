@@ -6,7 +6,7 @@ using UnityEngine;
 using Aesthetics;
 public class CompactDisk : Item {
 
-	public static new float rarity = 90.0f;
+	public static new float rarity = 40.0f;
 
 	public float immunity_multiplier = 6.0f;
 
