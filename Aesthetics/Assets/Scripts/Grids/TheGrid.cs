@@ -10,11 +10,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Aesthetics;
+
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
+using Aesthetics;
 public static class ReflectiveEnumerator
 {
     static ReflectiveEnumerator () { }
@@ -108,6 +109,11 @@ namespace Aesthetics
 
         [SerializeField]
         private List<Player> playerList = new List<Player> (2);
+
+        public List<Player> GetPlayerList ()
+        {
+            return playerList;
+        }
 
         [SerializeField]
         public List<Item> itemList;
@@ -397,6 +403,11 @@ namespace Aesthetics
             else if (typeof (T) == typeof (CompactDisk))
             {
                 SpawnCompactDisk (range);
+                return true;
+            }
+            else if (typeof (T) == typeof (Ray))
+            {
+                SpawnRay (range, null);
                 return true;
             }
 
@@ -842,6 +853,61 @@ namespace Aesthetics
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
             a.arrow_type = (Arrow.arrowType) typeOfArrow;
+            a.gridBlockOwner = gb;
+
+            a.x = gb.X;
+            a.y = gb.Y;
+            a.z = gb.Z;
+
+             a.Setup(this,rhythmSystem_ref,gb);
+
+            gb.hasItem = true;
+            itemList.Add (a);
+
+            return a;
+        }
+
+      
+
+        private Ray SpawnRay (float range, Ray.rayType? typeOfRay)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject prefab;
+            if (typeOfRay == null)
+            {
+                int ran = Random.Range (0, 2);
+                if (ran == 0) typeOfRay = Ray.rayType.HRay;
+                if (ran == 1) typeOfRay = Ray.rayType.Vray;
+                else
+                    typeOfRay = Ray.rayType.HRay;
+
+            }
+
+            switch (typeOfRay)
+            {
+
+
+                case Ray.rayType.Vray:
+                    prefab = vRay_prefab;
+                    break;
+
+                case Ray.rayType.HRay:
+                default:
+                    prefab = hRay_prefab;
+                    break;
+
+            }
+
+            GameObject rayPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            Ray a = rayPrefab.GetComponent<Ray> ();
+            a.grid_ref = GetComponent<TheGrid> ();
+            a.rhythmSystem_ref = rhythmSystem_ref;
+            a.ray_type = (Ray.rayType) typeOfRay;
             a.gridBlockOwner = gb;
 
             a.x = gb.X;
