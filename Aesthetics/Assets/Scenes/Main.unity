@@ -570,6 +570,48 @@ Prefab:
       value: 
       objectReference: {fileID: 1564832707126770, guid: d010877623836654bbcc6ba63e49c2e4,
         type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: floppyDisk_prefab
+      value: 
+      objectReference: {fileID: 1887863184036410, guid: 74ba50fe3985b7e45b87aa9261dbe6ad,
+        type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: compactDisk_prefab
+      value: 
+      objectReference: {fileID: 1058507777149470, guid: 3a84c080a425c1f4cbf58935ef5b75bc,
+        type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: glasses3D_prefab
+      value: 
+      objectReference: {fileID: 1203775724110476, guid: 3a7c86ae84455784ebcb6735f4d17e8c,
+        type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: hRay_prefab
+      value: 
+      objectReference: {fileID: 1287877876412066, guid: ab2bca2a18ea11449abde82542fd6b6a,
+        type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: vRay_prefab
+      value: 
+      objectReference: {fileID: 1225452688271074, guid: 25403fb1741e54f438cd03638461e02b,
+        type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: revolver_prefab
+      value: 
+      objectReference: {fileID: 1625579294412126, guid: f63e68dc0839ec0448e81cce3dac29cc,
+        type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: sneakers_prefab
+      value: 
+      objectReference: {fileID: 1886358085423990, guid: 9f4f923698c37a442950f0f333a1e0af,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
   m_IsPrefabParent: 0
@@ -2430,7 +2472,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.426
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3712,6 +3754,7 @@ MonoBehaviour:
   fall_duration: 3
   respawn_duration: 1.5
   respawnImmunity_duration: 2
+  shieldImmunity_duration: 3
   fall_gridBlock_Ref: {fileID: 0}
   _isRespawning: 0
   _isImmune: 0

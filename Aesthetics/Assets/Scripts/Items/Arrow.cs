@@ -20,7 +20,7 @@ public class Arrow : Item
 
 
 
-    public static new float rarity = 30.0f;
+    public static new float rarity = 20.0f;
     private int count = 0;
     public int beatsPerRotation = 4;
     [SerializeField]

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 4e01a5576560f8944a8497fd281687d3
-timeCreated: 1530069813
+guid: f53ea27bc32af934b9b6c3d4f7861688
+timeCreated: 1530855956
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -13,7 +13,12 @@ ModelImporter:
     2300000: CompactDisk
     3300000: CompactDisk
     4300000: CompactDisk
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette
+    second: {fileID: 2100000, guid: a266f562f0516ce49869ff3765169083, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -43,7 +48,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.065
     meshCompression: 0
     addColliders: 0
     importVisibility: 1

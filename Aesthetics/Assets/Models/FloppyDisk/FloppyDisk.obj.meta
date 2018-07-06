@@ -13,7 +13,12 @@ ModelImporter:
     2300000: FloppyDisk
     3300000: FloppyDisk
     4300000: FloppyDisk
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette
+    second: {fileID: 2100000, guid: f0c84928d62864f4c8436104d0d097af, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -43,7 +48,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.065
     meshCompression: 0
     addColliders: 0
     importVisibility: 1

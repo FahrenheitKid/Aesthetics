@@ -54,6 +54,30 @@ namespace Aesthetics
         private GameObject fastFoward_prefab;
         [SerializeField]
         private GameObject sloMo_prefab;
+
+        [SerializeField]
+        private GameObject floppyDisk_prefab;
+
+        [SerializeField]
+        private GameObject compactDisk_prefab;
+
+        [SerializeField]
+        private GameObject glasses3D_prefab;
+
+        [SerializeField]
+        private GameObject rainbowLipstick_prefab;
+
+        [SerializeField]
+        private GameObject hRay_prefab;
+
+        [SerializeField]
+        private GameObject vRay_prefab;
+
+        [SerializeField]
+        private GameObject revolver_prefab;
+
+        [SerializeField]
+        private GameObject sneakers_prefab;
         
 
                 [SerializeField]
@@ -362,6 +386,17 @@ namespace Aesthetics
             else if (typeof (T) == typeof (SloMo))
             {
                 SpawnSloMo (range);
+                return true;
+            }
+
+            else if (typeof (T) == typeof (FloppyDisk))
+            {
+                SpawnFloppyDisk (range);
+                return true;
+            }
+            else if (typeof (T) == typeof (CompactDisk))
+            {
+                SpawnCompactDisk (range);
                 return true;
             }
 
@@ -886,6 +921,44 @@ namespace Aesthetics
 
             return smPrefab.GetComponent<SloMo> ();
         }
+
+        
+
+        private FloppyDisk SpawnFloppyDisk (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject smPrefab = Instantiate (floppyDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            smPrefab.GetComponent<FloppyDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (smPrefab.GetComponent<FloppyDisk> ());
+
+            return smPrefab.GetComponent<FloppyDisk> ();
+        }
+
+         private CompactDisk SpawnCompactDisk (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            smPrefab.GetComponent<CompactDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (smPrefab.GetComponent<CompactDisk> ());
+
+            return smPrefab.GetComponent<CompactDisk> ();
+        }
+
+        
 
         public GameObject getPrefabOfType<T> (Arrow.arrowType? typeOfArrow)
         {

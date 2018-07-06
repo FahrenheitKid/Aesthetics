@@ -234,9 +234,11 @@ public class Item : MonoBehaviour, System.IComparable<Item>
             //activate in case it is not an equippable item
             
             
-
+            gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
+            
             if(!Activate ())
             Equip (owner);
+            else grid_ref.updateItemSpawnRatio();
         }
 
     }
@@ -266,6 +268,11 @@ public class Item : MonoBehaviour, System.IComparable<Item>
     //one time use only itens use activate. All itens use Activate upon getting  picked up
     public virtual bool Activate ()
     {
+
+        gameObject.GetComponent<BoxCollider> ().enabled = false;
+        gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
+
+
         bool gonnaDie = false;
             // print ("Base item activated");
         gridBlockOwner.hasItem = false;
@@ -286,7 +293,10 @@ public class Item : MonoBehaviour, System.IComparable<Item>
         if (p.hasItem)
         {
             if (p.item)
+            {
                 p.item.Kill (this);
+            }
+                
         }
 
         p.hasItem = true;
@@ -294,8 +304,12 @@ public class Item : MonoBehaviour, System.IComparable<Item>
         owner = p;
 
         //make item stay above player s head
+        gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
         transform.parent = p.transform;
-        transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
+        if(transform.localScale != new Vector3 (0.4f, 0.4f, 0.4f))
+        gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
+
+        //print("new local scale: " + transform.localScale);
         float player_height = p.gameObject.GetComponent<MeshRenderer> ().bounds.max.y;
         transform.localPosition = new Vector3 (0.0f, player_height, 0.0f);
 

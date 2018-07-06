@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 96ded44490d794549aad217fe2300626
-timeCreated: 1530069813
+guid: 0eae58c4f12b692479120b08280c8d5d
+timeCreated: 1530860367
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -13,7 +13,12 @@ ModelImporter:
     2300000: 3DGlasses
     3300000: 3DGlasses
     4300000: 3DGlasses
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette
+    second: {fileID: 2100000, guid: 883eb25c7ef18e6418a8c71f9bc44c68, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -43,7 +48,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.065
     meshCompression: 0
     addColliders: 0
     importVisibility: 1
