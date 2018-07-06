@@ -11,7 +11,7 @@ public class Lock : Item
     [SerializeField]
     Countdown timer;
 
-    public static new float rarity = 50.0f;
+    public static new float rarity = 30.0f;
 
     [SerializeField]
     private int count = 0;
@@ -84,7 +84,7 @@ public class Lock : Item
         {
             if (current_Item.GetType () != typeof (Lock))
             {
-                print ("KILL DIFERENTE");
+                //print ("KILL DIFERENTE");
                 foreach (GridBlock gb in grid_ref.GetGridBlockList ())
                 {
                     if (gb.owner == owner || gb.mainColor == owner.blackGridColor)
@@ -112,7 +112,7 @@ public class Lock : Item
                 }
             }
 
-            print ("KILL null");
+           // print ("KILL null");
         }
 
         owner.hasItem = false;

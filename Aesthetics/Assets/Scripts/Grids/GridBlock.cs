@@ -554,10 +554,10 @@ public class GridBlock : MonoBehaviour
         {
             Player p = other.GetComponent<Player> ();
 
-            if (haveBlockStunned == false && isBlocked && !p.isImmune)
+            if (haveBlockStunned == false && isBlocked)
             {
-                p.Stun (grid_ref.blockStunDuration);
-                haveBlockStunned = true;
+                haveBlockStunned = p.Stun (grid_ref.blockStunDuration);
+                //haveBlockStunned = true;
             }
 
         }

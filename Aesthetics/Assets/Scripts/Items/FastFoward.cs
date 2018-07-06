@@ -7,7 +7,7 @@ using Aesthetics;
 public class FastFoward : Item {
 
 
-	public static new float rarity = 90.0f;
+	public static new float rarity = 00.0f;
 
 	// Use this for initialization
 	void Start () {

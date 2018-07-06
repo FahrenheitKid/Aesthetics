@@ -156,6 +156,9 @@ public class Player : MonoBehaviour
     [Tooltip ("respawn Immunity duration?")]
     [SerializeField, ]
     public float respawnImmunity_duration = 2f;
+    [Tooltip ("shield Immunity duration?")]
+    [SerializeField, ]
+    public float shieldImmunity_duration = 3f;
 
     [Tooltip ("the block where the player fell?")]
     [SerializeField, ]
@@ -517,13 +520,37 @@ public class Player : MonoBehaviour
             x = gb.X;
             z = gb.Z;
 
-            if (other.GetComponent<GridBlock> ().isFallen && !isImmune && !isShielded && !isFallen) //if stepped on fallen gridblock
+            if (other.GetComponent<GridBlock> ().isFallen) //if stepped on fallen gridblock
             {
-                //make player fall down on the next beat
+                if(!isImmune && !isShielded && !isFallen)
+                {
+                      //make player fall down on the next beat
                 disableInput = true;
                 fall_gridBlock_Ref = other.GetComponent<GridBlock> ();
                  Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, Fall);
+                }
+
+                if(isShielded)
+                {
+                    if(item)
+                    {
+                        if(item.GetType() == typeof(FloppyDisk))
+                        {
+                            
+                            isShielded = false;
+
+                            Immune(shieldImmunity_duration);
+                            item.Kill(null);
+                            hasItem = false;
+                            item = null;
+                        }
+                    }
+                    
+                    
+                }
+              
             }
+           
 
         }
 
@@ -535,12 +562,32 @@ public class Player : MonoBehaviour
         if (other.gameObject.CompareTag ("GridBlock"))
         {
 
-            if (other.GetComponent<GridBlock> ().isFallen && !isImmune && !isShielded && !isFallen) //if stepped on fallen gridblock
+            if (other.GetComponent<GridBlock> ().isFallen) //if stepped on fallen gridblock
             {
-                //make player fall down on the next beat
+                if(!isImmune && !isShielded && !isFallen)
+                {
+                      //make player fall down on the next beat
                 disableInput = true;
                 fall_gridBlock_Ref = other.GetComponent<GridBlock> ();
-                Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, Fall);
+                 Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, Fall);
+                }
+
+                if(isShielded)
+                {
+                    if(item)
+                    {
+                        if(item.GetType() == typeof(FloppyDisk))
+                        {
+                            Immune(shieldImmunity_duration);
+                            item.Kill(null);
+                            hasItem = false;
+                            item = null;
+                        }
+                    }
+                    isShielded = false;
+
+                }
+                 
             }
 
         }
@@ -571,8 +618,8 @@ public class Player : MonoBehaviour
                 disableInput = false;
                 fall_gridBlock_Ref = null;
 
-                immunityTimer.startTimer (respawnImmunity_duration); // make player imune for a few more seconds
-
+                Immune(respawnImmunity_duration); // make player imune for a few more seconds
+                //immunityTimer.startTimer (respawnImmunity_duration); 
             }
         }
 
@@ -667,6 +714,14 @@ public class Player : MonoBehaviour
         isMoving = value;
     }
 
+    public void Immune (float duration)
+    {
+        print("imune duratino: " + duration + " | timeleft: " + immunityTimer.timeLeft);
+        if(immunityTimer.timeLeft >= duration && !immunityTimer.stop) return;
+        print("imunityTrue");
+        isImmune = true;
+        immunityTimer.startTimer(duration);
+    }
     void Fall (KoreographyEvent evt)
     {
         isFallen = true;
@@ -738,13 +793,28 @@ public class Player : MonoBehaviour
         
 
     }
-    public void Stun (float duration)
+    public bool Stun (float duration)
     {
-            if(isImmune) return;
+            if(isImmune) return false;
+            if(isShielded)
+            {
+                 if(item)
+                    {
+                        if(item.GetType() == typeof(FloppyDisk))
+                        {
+                            item.Kill(null);
+                        }
+                    }
+
+                    Immune(shieldImmunity_duration);
+                    isShielded = false;
+                    return false;
+            }
 
 
             stunTimer.startTimer(duration);
             isStunned = true;
+            return true;
             
     }
     public bool Move ()
