@@ -51,19 +51,28 @@ namespace Aesthetics
         private GameObject lock_prefab;
 
         [SerializeField]
-        private GameObject scoreFloatingText_prefab;
-
+        private GameObject fastFoward_prefab;
         [SerializeField]
-        private GameObject missFloatingText_prefab;
+        private GameObject sloMo_prefab;
+        
 
-        [SerializeField]
+                [SerializeField]
         private GameObject[] arrows_prefabs = new GameObject[3];
+
+
+
 
         [SerializeField]
         private RhythmSystem rhythmSystem_ref;
 
         [SerializeField]
         private List<GameObject> playerPrefabList = new List<GameObject> (2);
+
+                [SerializeField]
+        private GameObject scoreFloatingText_prefab;
+
+        [SerializeField]
+        private GameObject missFloatingText_prefab;
 
         [SerializeField]
         private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
@@ -259,7 +268,7 @@ namespace Aesthetics
 
             if (itemsTimer.stop)
             {
-                print ("cabou tempo");
+                //print ("cabou tempo");
                 if (getItemCurrentCount<Item> () < maxItens)
                 {
                     ReGamble:
@@ -344,6 +353,18 @@ namespace Aesthetics
                 return true;
             }
 
+            else if (typeof (T) == typeof (FastFoward))
+            {
+                SpawnFastFoward (range);
+                return true;
+            }
+
+            else if (typeof (T) == typeof (SloMo))
+            {
+                SpawnSloMo (range);
+                return true;
+            }
+
             else if (typeof (T) == typeof (ScoreMaker))
             {
                 SpawnScoreMaker (defaultItemSpawnRange);
@@ -351,6 +372,8 @@ namespace Aesthetics
                 return true;
 
             }
+
+            
 
             return false;
         }
@@ -455,7 +478,7 @@ namespace Aesthetics
                     case "Arrow":
                         if (val <= arrow_currentRarity && Arrow.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                            //print ("Rolled" + itemtype.GetType ().Name);
                             //print(Arrow.ruleCheck(this));
                             return SpawnItem<Arrow> (defaultItemSpawnRange);
                             exitLoop = true;
@@ -483,7 +506,7 @@ namespace Aesthetics
                     case "FastFoward":
                         if (val <= fastFoward_currentRarity && FastFoward.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                            //print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<FastFoward> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -522,7 +545,7 @@ namespace Aesthetics
                     case "Lock":
                         if (val <= lock_currentRarity && Lock.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                            //print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<Lock> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -731,11 +754,11 @@ namespace Aesthetics
             a.rhythmSystem_ref = rhythmSystem_ref;
             a.gridBlockOwner = gb;
             a.arrow_type = typeOfArrow;
-            rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
+           
             a.x = gb.X;
             a.y = gb.Y;
             a.z = gb.Z;
-
+             a.Setup(this,rhythmSystem_ref,gb);
             gb.hasItem = true;
             itemList.Add (a);
 
@@ -786,10 +809,11 @@ namespace Aesthetics
             a.arrow_type = (Arrow.arrowType) typeOfArrow;
             a.gridBlockOwner = gb;
 
-            rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (a.IncreaseCount);
             a.x = gb.X;
             a.y = gb.Y;
             a.z = gb.Z;
+
+             a.Setup(this,rhythmSystem_ref,gb);
 
             gb.hasItem = true;
             itemList.Add (a);
@@ -827,6 +851,40 @@ namespace Aesthetics
             itemList.Add (lockPrefab.GetComponent<Lock> ());
 
             return lockPrefab.GetComponent<Lock> ();
+        }
+
+       private FastFoward SpawnFastFoward (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject ffPrefab = Instantiate (fastFoward_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            ffPrefab.GetComponent<FastFoward> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (ffPrefab.GetComponent<FastFoward> ());
+
+            return ffPrefab.GetComponent<FastFoward> ();
+        }
+
+        private SloMo SpawnSloMo (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject smPrefab = Instantiate (sloMo_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            smPrefab.GetComponent<SloMo> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (smPrefab.GetComponent<SloMo> ());
+
+            return smPrefab.GetComponent<SloMo> ();
         }
 
         public GameObject getPrefabOfType<T> (Arrow.arrowType? typeOfArrow)

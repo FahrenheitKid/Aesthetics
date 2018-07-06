@@ -19,20 +19,27 @@ public class ScoreMaker : Item
 
     }
 
-    public override void Equip (Player p)
-    {
 
-    }
 
-    public override void Activate ()
+    public override bool Activate ()
     {
         base.Activate ();
         //GameObject.FindGameObjectWithTag ("Grid").GetComponent<TheGrid> ().Score (owner);
         grid_ref.Score (owner);
         //owner.hasItem = false;
-        gridBlockOwner.hasItem = false;
+        grid_ref.updateScoreMakerSpawnRatio();
 
-        foreach (var item in grid_ref.itemList.OfType<ScoreMaker> ())
+        bool gonnaDie = true;
+		
+        Kill(null);
+
+        return gonnaDie;
+        //Destroy (gameObject);
+    }
+
+    public override void Kill(Item current_Item){
+
+         foreach (var item in grid_ref.itemList.OfType<ScoreMaker> ())
         {
             if (item == this)
             {
@@ -42,9 +49,9 @@ public class ScoreMaker : Item
 
         }
 
-        grid_ref.updateScoreMakerSpawnRatio();
-        base.Kill(null);
-        //Destroy (gameObject);
+       
+
+        base.Kill(current_Item);
     }
 
 }

@@ -6,6 +6,7 @@ using SonicBloom.Koreo;
 using SonicBloom.Koreo.Players;
 using UnityEngine;
 using UnityEngine.Events;
+using DG.Tweening;
 
 namespace Aesthetics{
 
@@ -58,9 +59,23 @@ public class RhythmSystem : MonoBehaviour
     [Tooltip ("The Audio Source through which the Koreographed audio will be played.  Be sure to disable 'Auto Play On Awake' in the Music Player.")]
     public AudioSource audioCom;
 
+    Countdown pitchTimer;
+    Tweener pitchTweener;
+
+    public bool isResettingPitch = false;
+    [SerializeField]
+    private float pitchTweenDuration = 4f;
+    [Range (0.1f, 2f)]
+    [SerializeField]
+    private float initial_pitch = 1f;
     [Range (0.1f, 2f)]
     [SerializeField]
     private float pitch;
+    [SerializeField]
+    private float pitch_sizeChange = 0.2f;
+    [SerializeField]
+    private float pitchDuration = 8f;
+    
 
     [Tooltip ("The Color of Note Objects and Buttons in this Lane.")]
     public Color color = Color.magenta;
@@ -213,13 +228,16 @@ public class RhythmSystem : MonoBehaviour
     }
     void Start ()
     {
-
+        pitchTimer = gameObject.AddComponent<Countdown> ();
+        pitch = initial_pitch;
+        
         InitializeLeadIn ();
 
         //load random or specific Koreo by name
         LoadKoreography (koreographyList.Find (element => element.name == "MainKoreo"), 0, true);
 
         InitKoreography ();
+        audioCom.pitch = pitch;
 
     }
 
@@ -270,7 +288,7 @@ public class RhythmSystem : MonoBehaviour
             onNoteReturnedToPool = new UnityEvent ();
 
         // Ensure the slider and the readout are properly in sync with the AudioSource on Start!
-        pitch = audioCom.pitch;
+        //pitch = audioCom.pitch;
 
         targetVisuals = rhythmTarget_Ref.GetComponent<SpriteRenderer> ();
 
@@ -299,7 +317,7 @@ public class RhythmSystem : MonoBehaviour
     void Update ()
     {
 
-        audioCom.pitch = pitch;
+        
         // Clear out invalid entries.
         while (trackedNotes.Count > 0 && trackedNotes[0].IsNoteMissed ())
         {
@@ -353,6 +371,8 @@ public class RhythmSystem : MonoBehaviour
         {
             //SetScaleDefault();
         }
+
+        PitchTimerUpdate();
 
     }
 
@@ -576,6 +596,100 @@ public class RhythmSystem : MonoBehaviour
 
         mirrorDespawnPosition = rhythmTarget_Ref.transform.position;
         mirrorDespawnPosition.x += 0.1f;
+    }
+
+
+    public void ChangePitch(bool up)
+    {
+        pitch = audioCom.pitch;
+        isResettingPitch = false;
+        if(up)
+        {
+            if((pitch + pitch_sizeChange) <= initial_pitch + pitch_sizeChange)
+            {
+                //tween up;
+                //pitchTweener.Complete();
+                if(pitchTweener == null)
+                {
+                    pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch + pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                }
+                else
+                if(!pitchTweener.IsActive() && pitchTweener != null)
+                {
+                    pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch + pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                }
+                else
+                {
+                    pitchTweener.ChangeEndValue(DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch + pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad));
+                }
+                
+                pitchTimer.startTimer(pitchDuration + pitchTweenDuration);
+            }
+            else
+            {
+                //already too sped up
+                if(pitchDuration > pitchTimer.timeLeft )
+                pitchTimer.startTimer(pitchDuration);
+            }
+        }
+        else
+        {
+            if((pitch - pitch_sizeChange) <= initial_pitch - pitch_sizeChange)
+            {
+                //tween down;
+                //pitchTweener.Complete();
+                print("NewPitch");
+                 if(pitchTweener == null)
+                {
+                    pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch - pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                }
+                else
+                if(!pitchTweener.IsActive() && pitchTweener != null)
+                {
+                    pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch - pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad);
+                }
+                else
+                {
+                    pitchTweener.ChangeEndValue(DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch - pitch_sizeChange, pitchTweenDuration).SetEase(Ease.InQuad));
+                }
+
+                pitchTimer.startTimer(pitchDuration + pitchTweenDuration);
+                
+            }
+            else
+            {
+                //already too sped up
+                if(pitchDuration > pitchTimer.timeLeft )
+                pitchTimer.startTimer(pitchDuration);
+            }
+
+        }
+
+        pitch = audioCom.pitch;
+
+    }
+
+    void PitchTimerUpdate()
+    {
+        pitch = audioCom.pitch;
+        if(pitchTimer.stop && !isResettingPitch)
+        {
+            if(pitch != initial_pitch )
+            {
+                print("resetei");
+                //pitchTweener.Complete();
+                pitchTweener = DOTween.To(() => audioCom.pitch, x => audioCom.pitch = x, initial_pitch, pitchTweenDuration).SetEase(Ease.InQuad);
+                isResettingPitch = true;
+            }
+        }
+        
+        if(isResettingPitch)
+        {
+            if(pitch == initial_pitch ) isResettingPitch = false;
+        }
+
+        pitch = audioCom.pitch;
+
     }
 
     public UnityEvent getRhythmNoteToPoolEvent ()

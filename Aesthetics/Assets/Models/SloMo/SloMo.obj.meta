@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 9dbec7500d53c9a4fbb2a3ff696d84df
-timeCreated: 1530069813
+guid: 3f13924541d034845823709f25f00b1e
+timeCreated: 1530849807
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -13,7 +13,12 @@ ModelImporter:
     2300000: SloMo
     3300000: SloMo
     4300000: SloMo
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette
+    second: {fileID: 2100000, guid: 792cc10012579594fb383a8e161179be, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -43,7 +48,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.065
     meshCompression: 0
     addColliders: 0
     importVisibility: 1

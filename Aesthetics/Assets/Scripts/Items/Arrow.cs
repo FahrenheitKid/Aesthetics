@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using SonicBloom.Koreo;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,7 +20,7 @@ public class Arrow : Item
 
 
 
-    public static new float rarity = 90.0f;
+    public static new float rarity = 30.0f;
     private int count = 0;
     public int beatsPerRotation = 4;
     [SerializeField]
@@ -38,11 +39,11 @@ public class Arrow : Item
         public override void Setup (TheGrid grid, RhythmSystem rhythm, GridBlock gb)
     {
         base.Setup (grid, rhythm, gb);
-       // rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (IncreaseCount);
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID,IncreaseCount);
 
     }
 
-    public void IncreaseCount ()
+    public void IncreaseCount (KoreographyEvent evt)
     {
 
         if (count < beatsPerRotation)
@@ -123,13 +124,10 @@ public class Arrow : Item
         }
     }
 
-    public override void Equip (Player p)
+
+    public override bool Activate ()
     {
-        grid_ref.updateItemSpawnRatio();
-    }
-    public override void Activate ()
-    {
-        base.Activate ();
+       
 
         bool doNorth = false;
         bool doEast = false;
@@ -301,7 +299,20 @@ public class Arrow : Item
             }
         }
 
-        foreach (var item in grid_ref.itemList.OfType<Arrow> ())
+       
+
+       
+        base.Activate();
+        Kill(null);
+
+        bool gonnaDie = true;
+		return gonnaDie;
+        //Destroy (gameObject);
+    }
+
+    public override void Kill(Item current_Item){
+
+         foreach (var item in grid_ref.itemList.OfType<Arrow> ())
         {
             if (item == this)
             {
@@ -311,11 +322,10 @@ public class Arrow : Item
 
         }
 
-        gridBlockOwner.hasItem = false;
+        Koreographer.Instance.UnregisterForEvents (rhythmSystem_ref.mainBeatID,IncreaseCount);
+        
 
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (IncreaseCount);
-        base.Kill(null);
-        //Destroy (gameObject);
+        base.Kill(current_Item);
     }
 
 }

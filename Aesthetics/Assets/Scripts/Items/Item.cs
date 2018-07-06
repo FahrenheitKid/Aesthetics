@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SonicBloom.Koreo;
+using DG.Tweening;
 
 namespace Aesthetics{
 
@@ -45,6 +47,8 @@ public class Item : MonoBehaviour, System.IComparable<Item>
         public float glasses3D;
 
         public float maxItemCapacityUsage;
+
+  
 
         public SpawnRules (float scoreMaker,
             float arrow,
@@ -187,6 +191,27 @@ public class Item : MonoBehaviour, System.IComparable<Item>
         }
     }
 
+
+      [Tooltip (" How much scaling of the Punch Scale done in the main beat")]
+    [Range (0, 2)]
+    [SerializeField]
+    protected float beatPunchScale = 0.05f;
+
+    [Tooltip ("How much the players vibrates with the scaling")]
+    [Range (0, 500)]
+    [SerializeField]
+    protected int vibrato = 0;
+
+    [Tooltip ("PunchScale elasticity")]
+    [Range (0, 1)]
+    [SerializeField]
+    protected float elasticity = 0.0f;
+
+    //[Range(0,1)]s
+    [SerializeField]
+    protected float beat_duration = 0.5f;
+
+
     // Use this for initialization
     void Start ()
     {
@@ -207,8 +232,10 @@ public class Item : MonoBehaviour, System.IComparable<Item>
             owner = other.gameObject.GetComponent<Player> ();
 
             //activate in case it is not an equippable item
-            Activate ();
+            
+            
 
+            if(!Activate ())
             Equip (owner);
         }
 
@@ -226,6 +253,8 @@ public class Item : MonoBehaviour, System.IComparable<Item>
         gb.hasItem = true;
         //grid_ref.itemList.Add(this);
 
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, OnMainBeat);
+
     }
 
     //multiple time use items use Use
@@ -235,9 +264,21 @@ public class Item : MonoBehaviour, System.IComparable<Item>
     }
 
     //one time use only itens use activate. All itens use Activate upon getting  picked up
-    public virtual void Activate ()
+    public virtual bool Activate ()
     {
-        // print ("Base item activated");
+        bool gonnaDie = false;
+            // print ("Base item activated");
+        gridBlockOwner.hasItem = false;
+        if(owner.item && owner != null)
+        {
+
+        }
+        else
+        {
+            owner.hasItem = false;
+        }
+
+        return gonnaDie;
     }
 
     public virtual void Equip (Player p)
@@ -265,6 +306,7 @@ public class Item : MonoBehaviour, System.IComparable<Item>
     public virtual void Kill (Item current_Item)
     {
 
+            Koreographer.Instance.UnregisterForEvents (rhythmSystem_ref.mainBeatID, OnMainBeat);
             
          if (gameObject)
             Destroy (gameObject);
@@ -319,5 +361,12 @@ public class Item : MonoBehaviour, System.IComparable<Item>
             else
             return rarity;
         }
+
+         public virtual void OnMainBeat (KoreographyEvent evt)
+    {
+        //Ounch sacle player to the beat
+        transform.DOPunchScale (transform.localScale * beatPunchScale, beat_duration, vibrato, elasticity);
+
+    }
 }
 }
