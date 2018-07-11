@@ -1,9 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-
 using Aesthetics;
+using UnityEngine;
 
 public class Sneakers : Item
 {
@@ -11,7 +10,7 @@ public class Sneakers : Item
     [SerializeField]
     Countdown timer;
 
-    public static new float rarity = 100.0f;
+    public static new float rarity = 30.03f;
 
     [SerializeField]
     private int count = 0;
@@ -39,9 +38,9 @@ public class Sneakers : Item
     // Update is called once per frame
     void Update ()
     {
-        if(timer.stop && startCount)
+        if (timer.stop && startCount)
         {
-            Kill(null);
+            Kill (null);
         }
     }
 
@@ -70,7 +69,7 @@ public class Sneakers : Item
 
     public override void Kill (Item current_Item)
     {
-        foreach (var item in grid_ref.itemList.OfType<Lock> ())
+      foreach (var item in grid_ref.itemList.OfType<Sneakers> ())
         {
             if (item == this)
             {
@@ -80,57 +79,30 @@ public class Sneakers : Item
 
         }
 
-        if (current_Item != null)
-        {
-            if (current_Item.GetType () != typeof (Lock))
-            {
-                //print ("KILL DIFERENTE");
-                foreach (GridBlock gb in grid_ref.GetGridBlockList ())
-                {
-                    if (gb.owner == owner || gb.mainColor == owner.blackGridColor)
-                    {
-                        gb.changeColor (owner.gridColor);
-                        if (gb.isLocked)
-                            gb.isLocked = false;
-
-                    }
-                }
-
-            }
-        }
-        else
+        if (owner)
         {
 
-            foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+            if (owner.hasItem)
             {
-                if (gb.owner == owner || gb.mainColor == owner.blackGridColor)
+                if (owner.item == this)
                 {
-                    gb.changeColor (owner.gridColor);
-                    if (gb.isLocked)
-                        gb.isLocked = false;
-
+                    owner.item = null;
+                    owner.hasItem = false;
                 }
             }
 
-           // print ("KILL null");
         }
-
-        owner.hasItem = false;
-        owner.item = null;
-
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (IncreaseCount);
 
         base.Kill(null);
-
     }
     public override bool Activate ()
     {
 
         startCount = true;
-        timer.startTimer(duration);
+        timer.startTimer (duration);
         count = 0;
         gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
-         return base.Activate ();
+        return base.Activate ();
 
     }
     public override void Equip (Player p)

@@ -424,6 +424,11 @@ namespace Aesthetics
                 SpawnSneakers (range);
                 return true;
             }
+            else if (typeof (T) == typeof (Revolver))
+            {
+                SpawnRevolver (range);
+                return true;
+            }
 
             else if (typeof (T) == typeof (ScoreMaker))
             {
@@ -1075,6 +1080,25 @@ namespace Aesthetics
             itemList.Add (spPrefab.GetComponent<Sneakers> ());
 
             return spPrefab.GetComponent<Sneakers> ();
+        }
+
+        
+
+        private Revolver SpawnRevolver (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject spPrefab = Instantiate (revolver_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            spPrefab.GetComponent<Revolver> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (spPrefab.GetComponent<Revolver> ());
+
+            return spPrefab.GetComponent<Revolver> ();
         }
 
        

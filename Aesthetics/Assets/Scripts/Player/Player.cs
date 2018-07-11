@@ -144,6 +144,23 @@ namespace Aesthetics
             }
         }
 
+        [Tooltip ("Is the player aiming with an item?")]
+        [SerializeField, Candlelight.PropertyBackingField]
+        private bool _isAiming = false;
+        public bool isAiming
+        {
+            get
+            {
+                return _isAiming;
+            }
+            set
+            {
+
+                _isAiming = value;
+
+            }
+        }
+
         [Tooltip ("fallen/death duration")]
         [SerializeField, ]
         public float fall_duration = 3;
@@ -681,13 +698,26 @@ namespace Aesthetics
                         if (rhythmSystem_ref.WasNoteHit ())
                         {
                             //print ("Player" + ID.ToString () + " Hit it!");
-
-                            //move player and increase combo
+                            
+                            //if aiming, shoot in direction pressed
+                            if(isAiming && hasItem && item && item.GetType () == typeof (Revolver))
+                            {
+                                Revolver r = (Revolver)item;
+                                r.shot_direction = getDirectionFromInput();
+                                r.Shoot(getDirectionFromInput());
+                                //print("NEW SHOT = " + r.shot_direction);
+                                
+                            }
+                            else
+                            {
+                                //move player and increase combo
                             if (Move ())
                             {
                                 combo++;
                                 multiplierCombo++;
                             }
+                            }
+                            
 
                         }
                         else
@@ -721,7 +751,17 @@ namespace Aesthetics
                         if (rhythmSystem_ref.WasNoteHit ())
                         {
                             //print ("Player" + ID.ToString () + " Hit it!");
-                            item.Use ();
+
+                            if(item.GetType () == typeof (Revolver))
+                            {
+                                isAiming = true;
+                            }
+                            else
+                            {
+                                if(!isAiming)
+                                item.Use ();
+                            }
+                            
 
                         }
                         else
@@ -849,6 +889,47 @@ namespace Aesthetics
             return true;
 
         }
+
+        public bool Steal (Player target, bool stealLocked)
+        {
+            if (target.isImmune) return false;
+            if (target.isShielded)
+            {
+                if (target.item)
+                {
+                    if (target.item.GetType () == typeof (FloppyDisk))
+                    {
+                        target.item.Kill (null);
+                    }
+                }
+
+                target.Immune (target.shieldImmunity_duration);
+                target.isShielded = false;
+                return false;
+            }
+
+             foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+            {
+
+                if (gb.owner == null || gb.owner != target) continue;
+                
+                if(!stealLocked)
+                    if(gb.isLocked)
+                        continue;
+
+                    if(gb.isLocked)
+                    gb.changeColor (this.blackGridColor);
+                    else gb.changeColor (this.gridColor);
+
+                    gb.changeOwner (this);
+                    gb.stolenOwner = target;
+                   
+                
+            }
+
+            return true;
+
+        }
         public bool Move ()
         {
             CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
@@ -862,6 +943,53 @@ namespace Aesthetics
 
             CameraScript.windRose? player_direction = null;
 
+            player_direction = getDirectionFromInput();
+            
+            
+                endGridBlock = getDestinationBlock (player_direction, 1);
+
+                //if the player is with sneakers, need to move double
+            if (hasItem && item.GetType () == typeof (Sneakers))
+            {
+                    // if both blocks are availaable, move to second, otherwise move only one.
+                    if(isMyDestinationBlockAvailable(player_direction,1) && isMyDestinationBlockAvailable(player_direction,2))
+                    {
+                        if(!getDestinationBlock (player_direction, 1).isFallen)
+                        endGridBlock = getDestinationBlock (player_direction, 2);
+                    }
+                   
+            }
+
+                //if destination gridBlock is already occupied
+                if (endGridBlock == null)
+                {
+
+                    //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
+                    return false;
+
+                }
+                else
+                {
+                    endGridBlock.isOccupied = true;
+
+                    endGridPosition = endGridBlock.transform.position;
+                    endGridPosition.y = 0.1f;
+
+                    isMoving = true;
+                    transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
+                    transform.DOLookAt (endGridPosition, 0.2f);
+                    return true;
+
+                }
+            
+
+        }
+
+        CameraScript.windRose? getDirectionFromInput()
+        {
+            CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
+
+            CameraScript.windRose? player_direction = null;
             //defines player move direction according to input and camera orientation
             switch (cameraScript.orientation)
             {
@@ -979,45 +1107,7 @@ namespace Aesthetics
 
             }
 
-            
-            
-                endGridBlock = getDestinationBlock (player_direction, 1);
-
-                //if the player is with sneakers, need to move double
-            if (hasItem && item.GetType () == typeof (Sneakers))
-            {
-                    // if both blocks are availaable, move to second, otherwise move only one.
-                    if(isMyDestinationBlockAvailable(player_direction,1) && isMyDestinationBlockAvailable(player_direction,2))
-                    {
-                        if(!getDestinationBlock (player_direction, 1).isFallen)
-                        endGridBlock = getDestinationBlock (player_direction, 2);
-                    }
-                   
-            }
-
-                //if destination gridBlock is already occupied
-                if (endGridBlock == null)
-                {
-
-                    //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
-                    return false;
-
-                }
-                else
-                {
-                    endGridBlock.isOccupied = true;
-
-                    endGridPosition = endGridBlock.transform.position;
-                    endGridPosition.y = 0.1f;
-
-                    isMoving = true;
-                    transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
-                    transform.DOLookAt (endGridPosition, 0.2f);
-                    return true;
-
-                }
-            
-
+            return player_direction;
         }
 
         bool isMyDestinationBlockAvailable (CameraScript.windRose? move_direction, int movement_amount)

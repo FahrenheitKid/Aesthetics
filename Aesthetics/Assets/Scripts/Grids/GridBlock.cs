@@ -286,6 +286,20 @@ public class GridBlock : MonoBehaviour
     }
 
     [SerializeField, Candlelight.PropertyBackingField]
+    protected Player _stolenOwner = null;
+    public Player stolenOwner
+    {
+        get
+        {
+            return _stolenOwner;
+        }
+        set
+        {
+            _stolenOwner = value;
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
     private bool _hasItem = false;
     public bool hasItem
     {

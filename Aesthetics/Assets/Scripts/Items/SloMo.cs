@@ -1,47 +1,48 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-
 using Aesthetics;
-public class SloMo : Item {
+using UnityEngine;
+public class SloMo : Item
+{
 
+    public static new float rarity = 40.04f;
 
-	public static new float rarity = 40.0f;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-
-	  public override void Setup (TheGrid grid, RhythmSystem rhythm, GridBlock gb)
+    // Use this for initialization
+    void Start ()
     {
-        base.Setup (grid, rhythm, gb);
-       // rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (IncreaseCount);
 
     }
-	
-	 public override bool Activate ()
+
+    public override void Setup (TheGrid grid, RhythmSystem rhythm, GridBlock gb)
+    {
+        base.Setup (grid, rhythm, gb);
+        // rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (IncreaseCount);
+
+    }
+
+    public override bool Activate ()
     {
         base.Activate ();
 
-		rhythmSystem_ref.ChangePitch(false);
-		 
-		
-		Kill(null);
-		bool gonnaDie = true;
-		return gonnaDie;
+        rhythmSystem_ref.ChangePitch (false);
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        Kill (null);
+        bool gonnaDie = true;
+        return gonnaDie;
 
-	 public override void Kill(Item current_Item){
+    }
 
-         foreach (var item in grid_ref.itemList.OfType<SloMo> ())
+    // Update is called once per frame
+    void Update ()
+    {
+
+    }
+
+    public override void Kill (Item current_Item)
+    {
+
+        foreach (var item in grid_ref.itemList.OfType<SloMo> ())
         {
             if (item == this)
             {
@@ -51,9 +52,7 @@ public class SloMo : Item {
 
         }
 
-       
-
-        base.Kill(current_Item);
+        base.Kill (current_Item);
     }
 
 }
