@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Aesthetics;
 using DG.Tweening;
 using SonicBloom.Koreo;
 using UnityEngine;
 using UnityEngine.Events;
-
-using Aesthetics;
 public class Arrow : Item
 {
 
@@ -18,9 +17,7 @@ public class Arrow : Item
         Quadruple
     }
 
-
-
-    public static new float rarity = 20.0f;
+    public static new float rarity = 25.02f;
     private int count = 0;
     public int beatsPerRotation = 4;
     [SerializeField]
@@ -36,10 +33,10 @@ public class Arrow : Item
 
     }
 
-        public override void Setup (TheGrid grid, RhythmSystem rhythm, GridBlock gb)
+    public override void Setup (TheGrid grid, RhythmSystem rhythm, GridBlock gb)
     {
         base.Setup (grid, rhythm, gb);
-        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID,IncreaseCount);
+        Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, IncreaseCount);
 
     }
 
@@ -124,10 +121,8 @@ public class Arrow : Item
         }
     }
 
-
     public override bool Activate ()
     {
-       
 
         bool doNorth = false;
         bool doEast = false;
@@ -299,20 +294,18 @@ public class Arrow : Item
             }
         }
 
-       
-
-       
-        base.Activate();
-        Kill(null);
+        base.Activate ();
+        Kill (null);
 
         bool gonnaDie = true;
-		return gonnaDie;
+        return gonnaDie;
         //Destroy (gameObject);
     }
 
-    public override void Kill(Item current_Item){
+    public override void Kill (Item current_Item)
+    {
 
-         foreach (var item in grid_ref.itemList.OfType<Arrow> ())
+        foreach (var item in grid_ref.itemList.OfType<Arrow> ())
         {
             if (item == this)
             {
@@ -322,10 +315,9 @@ public class Arrow : Item
 
         }
 
-        Koreographer.Instance.UnregisterForEvents (rhythmSystem_ref.mainBeatID,IncreaseCount);
-        
+        Koreographer.Instance.UnregisterForEvents (rhythmSystem_ref.mainBeatID, IncreaseCount);
 
-        base.Kill(current_Item);
+        base.Kill (current_Item);
     }
 
 }

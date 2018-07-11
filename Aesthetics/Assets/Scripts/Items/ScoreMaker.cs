@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-
 using Aesthetics;
+using UnityEngine;
 public class ScoreMaker : Item
 {
 
@@ -19,27 +18,26 @@ public class ScoreMaker : Item
 
     }
 
-
-
     public override bool Activate ()
     {
         base.Activate ();
         //GameObject.FindGameObjectWithTag ("Grid").GetComponent<TheGrid> ().Score (owner);
         grid_ref.Score (owner);
         //owner.hasItem = false;
-        grid_ref.updateScoreMakerSpawnRatio();
+        grid_ref.updateScoreMakerSpawnRatio ();
 
         bool gonnaDie = true;
-		
-        Kill(null);
+
+        Kill (null);
 
         return gonnaDie;
         //Destroy (gameObject);
     }
 
-    public override void Kill(Item current_Item){
+    public override void Kill (Item current_Item)
+    {
 
-         foreach (var item in grid_ref.itemList.OfType<ScoreMaker> ())
+        foreach (var item in grid_ref.itemList.OfType<ScoreMaker> ())
         {
             if (item == this)
             {
@@ -49,9 +47,7 @@ public class ScoreMaker : Item
 
         }
 
-       
-
-        base.Kill(current_Item);
+        base.Kill (current_Item);
     }
 
 }

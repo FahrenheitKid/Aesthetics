@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-
 using Aesthetics;
+using UnityEngine;
 
 public class Lock : Item
 {
@@ -11,7 +10,7 @@ public class Lock : Item
     [SerializeField]
     Countdown timer;
 
-    public static new float rarity = 10.0f;
+    public static new float rarity = 25.0f;
 
     [SerializeField]
     private int count = 0;
@@ -39,9 +38,9 @@ public class Lock : Item
     // Update is called once per frame
     void Update ()
     {
-        if(timer.stop && startCount)
+        if (timer.stop && startCount)
         {
-            Kill(null);
+            Kill (null);
         }
     }
 
@@ -80,11 +79,8 @@ public class Lock : Item
 
         }
 
-        if (current_Item != null)
-        {
-            if (current_Item.GetType () != typeof (Lock))
-            {
-                //print ("KILL DIFERENTE");
+
+           
                 foreach (GridBlock gb in grid_ref.GetGridBlockList ())
                 {
                     if (gb.owner == owner || gb.mainColor == owner.blackGridColor)
@@ -94,40 +90,40 @@ public class Lock : Item
                             gb.isLocked = false;
 
                     }
+
+                    if(gb.stolenOwner == owner)
+                    {
+                        if(gb.owner.item)
+                        {
+                            if(gb.owner.item.GetType() == typeof(Lock))
+                            {
+                                continue;
+                            }
+                            
+                        }
+
+
+                                gb.changeColor (gb.owner.gridColor);
+                                gb.isLocked = false;
+
+
+                         
+                         gb.stolenOwner = null;
+                    }
                 }
-
-            }
-        }
-        else
-        {
-
-            foreach (GridBlock gb in grid_ref.GetGridBlockList ())
-            {
-                if (gb.owner == owner || gb.mainColor == owner.blackGridColor)
-                {
-                    gb.changeColor (owner.gridColor);
-                    if (gb.isLocked)
-                        gb.isLocked = false;
-
-                }
-            }
-
-           // print ("KILL null");
-        }
 
         owner.hasItem = false;
         owner.item = null;
 
-        rhythmSystem_ref.getRhythmNoteToPoolEvent ().RemoveListener (IncreaseCount);
+      
 
-        base.Kill(null);
+        base.Kill (null);
 
     }
     public override bool Activate ()
     {
-       
 
-       // gridBlockOwner.hasItem = false;
+        // gridBlockOwner.hasItem = false;
         //gameObject.GetComponent<MeshRenderer> ().enabled = false;
         gameObject.GetComponent<BoxCollider> ().enabled = false;
 
@@ -144,10 +140,10 @@ public class Lock : Item
             }
         }
         startCount = true;
-        timer.startTimer(duration);
+        timer.startTimer (duration);
         count = 0;
         gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
-         return base.Activate ();
+        return base.Activate ();
 
     }
     public override void Equip (Player p)
