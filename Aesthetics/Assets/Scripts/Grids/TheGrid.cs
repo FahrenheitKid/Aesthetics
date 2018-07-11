@@ -419,6 +419,11 @@ namespace Aesthetics
                 SpawnRay (range, null);
                 return true;
             }
+            else if (typeof (T) == typeof (Sneakers))
+            {
+                SpawnSneakers (range);
+                return true;
+            }
 
             else if (typeof (T) == typeof (ScoreMaker))
             {
@@ -455,67 +460,71 @@ namespace Aesthetics
                 {
                     case "Arrow":
                         arrow_currentRarity = Arrow.rarity;
-                        arrow_currentRarity -= Arrow.rarityReduction (Arrow.rarity, getItemCurrentCount<Arrow> ());
+                        arrow_currentRarity -= Item.rarityReduction (Arrow.rarity, getItemCurrentCount<Arrow> ());
                         chance_total += arrow_currentRarity;
                         break;
 
                     case "CompactDisk":
                         compactDisk_currentRarity = CompactDisk.rarity;
-                        compactDisk_currentRarity -= CompactDisk.rarityReduction (CompactDisk.rarity, getItemCurrentCount<CompactDisk> ());
+                        compactDisk_currentRarity -= Item.rarityReduction (CompactDisk.rarity, getItemCurrentCount<CompactDisk> ());
                         chance_total += compactDisk_currentRarity;
                         break;
 
                     case "FastFoward":
                         fastFoward_currentRarity = FastFoward.rarity;
-                        fastFoward_currentRarity -= FastFoward.rarityReduction (FastFoward.rarity, getItemCurrentCount<FastFoward> ());
+                        fastFoward_currentRarity -= Item.rarityReduction (FastFoward.rarity, getItemCurrentCount<FastFoward> ());
                         chance_total += fastFoward_currentRarity;
                         break;
 
                     case "FloppyDisk":
                         floppyDisk_currentRarity = FloppyDisk.rarity;
-                        floppyDisk_currentRarity -= FloppyDisk.rarityReduction (FloppyDisk.rarity, getItemCurrentCount<FloppyDisk> ());
+                        floppyDisk_currentRarity -= Item.rarityReduction (FloppyDisk.rarity, getItemCurrentCount<FloppyDisk> ());
                         chance_total += floppyDisk_currentRarity;
                         break;
 
                     case "Glasses3D":
                         glases3D_currentRarity = Glasses3D.rarity;
-                        glases3D_currentRarity -= Glasses3D.rarityReduction (Glasses3D.rarity, getItemCurrentCount<Glasses3D> ());
+                        glases3D_currentRarity -= Item.rarityReduction (Glasses3D.rarity, getItemCurrentCount<Glasses3D> ());
                         chance_total += glases3D_currentRarity;
                         break;
 
                     case "Lock":
                         lock_currentRarity = Lock.rarity;
-                        lock_currentRarity -= Lock.rarityReduction (Lock.rarity, getItemCurrentCount<Lock> ());
+                        lock_currentRarity -= Item.rarityReduction (Lock.rarity, getItemCurrentCount<Lock> ());
                         chance_total += lock_currentRarity;
                         break;
 
                     case "RainbowLipstick":
                         rainbow_currentRarity = RainbowLipstick.rarity;
-                        rainbow_currentRarity -= RainbowLipstick.rarityReduction (RainbowLipstick.rarity, getItemCurrentCount<RainbowLipstick> ());
+                        rainbow_currentRarity -= Item.rarityReduction (RainbowLipstick.rarity, getItemCurrentCount<RainbowLipstick> ());
                         chance_total += rainbow_currentRarity;
                         break;
 
                     case "Ray":
                         ray_currentRarity = Ray.rarity;
-                        ray_currentRarity -= Ray.rarityReduction (Ray.rarity, getItemCurrentCount<Ray> ());
+                        ray_currentRarity -= Item.rarityReduction (Ray.rarity, getItemCurrentCount<Ray> ());
                         chance_total += ray_currentRarity;
                         break;
 
                     case "Revolver":
                         revolver_currentRarity = Revolver.rarity;
-                        revolver_currentRarity -= Revolver.rarityReduction (Revolver.rarity, getItemCurrentCount<Revolver> ());
+                        revolver_currentRarity -= Item.rarityReduction (Revolver.rarity, getItemCurrentCount<Revolver> ());
                         chance_total += revolver_currentRarity;
                         break;
 
                     case "SloMo":
                         slowmo_currentRarity = SloMo.rarity;
-                        slowmo_currentRarity -= SloMo.rarityReduction (SloMo.rarity, getItemCurrentCount<SloMo> ());
+                        slowmo_currentRarity -= Item.rarityReduction (SloMo.rarity, getItemCurrentCount<SloMo> ());
                         chance_total += slowmo_currentRarity;
                         break;
 
                     case "Sneakers":
                         sneakers_currentRarity = Sneakers.rarity;
-                        sneakers_currentRarity -= Sneakers.rarityReduction (Sneakers.rarity, getItemCurrentCount<Sneakers> ());
+                        if(getItemCurrentCount<Sneakers> () > 0)
+                        {
+                            int a = 3;
+                        }
+                        sneakers_currentRarity -= Item.rarityReduction (Sneakers.rarity, getItemCurrentCount<Sneakers> ());
                         chance_total += sneakers_currentRarity;
                         break;
 
@@ -523,6 +532,7 @@ namespace Aesthetics
 
             }
 
+            print("Sneakers chance: "  + sneakers_currentRarity);
             float val = UnityEngine.Random.Range (0, chance_total);
 
             bool exitLoop = false;
@@ -548,7 +558,7 @@ namespace Aesthetics
                     case "CompactDisk":
                         if (val <= compactDisk_currentRarity && CompactDisk.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                            //print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<CompactDisk> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -574,7 +584,7 @@ namespace Aesthetics
                     case "FloppyDisk":
                         if (val <= floppyDisk_currentRarity && FloppyDisk.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                           // print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<FloppyDisk> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -587,7 +597,7 @@ namespace Aesthetics
                     case "Glasses3D":
                         if (val <= glases3D_currentRarity && Glasses3D.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                            //print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<Glasses3D> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -626,7 +636,7 @@ namespace Aesthetics
                     case "Ray":
                         if (val <= ray_currentRarity && Ray.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                            //print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<Ray> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -652,7 +662,7 @@ namespace Aesthetics
                     case "SloMo":
                         if (val <= slowmo_currentRarity && SloMo.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                           // print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<SloMo> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -1048,8 +1058,30 @@ namespace Aesthetics
             return spPrefab.GetComponent<Glasses3D> ();
         }
 
-       
+        
 
+         private Sneakers SpawnSneakers (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject spPrefab = Instantiate (sneakers_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            spPrefab.GetComponent<Sneakers> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (spPrefab.GetComponent<Sneakers> ());
+
+            return spPrefab.GetComponent<Sneakers> ();
+        }
+
+       
+// north z--
+// south z++
+// west x--
+// east x++
         
 
         public GameObject getPrefabOfType<T> (Arrow.arrowType? typeOfArrow)

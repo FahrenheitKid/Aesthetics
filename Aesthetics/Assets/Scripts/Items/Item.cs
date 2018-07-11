@@ -363,7 +363,8 @@ public class Item : MonoBehaviour, System.IComparable<Item>
 
         public static float rarityReduction(float rarity, int currentCount)
         {
-            float percentageToReduce = (rarity / 2) * currentCount;
+
+            float percentageToReduce = (rarity / 4) * currentCount;
             float reductionActualValue = (percentageToReduce * 0.01f) * rarity;
 
             if(currentCount == 1)
