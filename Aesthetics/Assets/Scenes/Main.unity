@@ -612,6 +612,12 @@ Prefab:
       value: 
       objectReference: {fileID: 1886358085423990, guid: 9f4f923698c37a442950f0f333a1e0af,
         type: 2}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: rainbowLipstick_prefab
+      value: 
+      objectReference: {fileID: 1862368088360320, guid: 8d3c8d40a6624144ba3834fc536a608e,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
   m_IsPrefabParent: 0
@@ -3751,6 +3757,7 @@ MonoBehaviour:
   _item: {fileID: 0}
   _isStunned: 0
   _isFallen: 0
+  _isAiming: 0
   fall_duration: 3
   respawn_duration: 1.5
   respawnImmunity_duration: 2

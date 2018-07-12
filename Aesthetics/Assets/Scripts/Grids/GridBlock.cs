@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Aesthetics;
 using DG.Tweening;
-using TMPro;
 using SonicBloom.Koreo;
+using TMPro;
 using UnityEngine;
 
 public class GridBlock : MonoBehaviour
@@ -468,7 +469,7 @@ public class GridBlock : MonoBehaviour
             _isRespawning = value;
         }
     }
-    
+
     [SerializeField]
     public Countdown respawnTimer;
 
@@ -491,7 +492,7 @@ public class GridBlock : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        if(respawnTimer.stop)
+        if (respawnTimer.stop)
             isRespawning = false;
     }
 
@@ -518,20 +519,53 @@ public class GridBlock : MonoBehaviour
             Player p = other.GetComponent<Player> ();
             //print ("entrou trigger bloco " + X + ", " + Z);
 
+            //if tile is "paitable"
             if (!isLocked && !isFallen)
             {
-                if (p.item != null)
+                if (p.item != null || p.hasItem)
                 {
-                    if (p.item.GetType () == typeof (Lock))
+                    if (p != null)
                     {
-                        changeColor (p.blackGridColor);
-                        changeOwner (p);
-                        isLocked = true;
-                    }
-                    else
-                    {
-                        changeColor (p.gridColor);
-                        changeOwner (p);
+                        //if painting player has lock, need to paint it black and lock the tile
+                        if (p.item.GetType () == typeof (Lock))
+                        {
+                            changeColor (p.blackGridColor);
+                            changeOwner (p);
+                            stolenOwner = null;
+
+                            isLocked = true;
+                        } // if painting player has lipstick, need to paint with random enemy color
+                        else if (p.item.GetType () == typeof (RainbowLipstick))
+                        {
+                            List<Player> plist = grid_ref.GetPlayerList().ToList();
+                            plist.Remove (p);
+                            int idx = Random.Range (0, plist.Count);
+
+                            if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
+                            {
+                                // if the selected random enemy has lock, need to painted like a locked tile
+                                if (plist[idx].item != null && plist[idx].item.GetType () == typeof (Lock))
+                                {
+
+                                    changeColor (plist[idx].blackGridColor);
+                                    changeOwner (p);
+                                    stolenOwner = null;
+                                }
+                                else
+                                {
+                                    changeColor (plist[idx].gridColor);
+                                    changeOwner (p);
+                                    stolenOwner = null;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            changeColor (p.gridColor);
+                            changeOwner (p);
+                            stolenOwner = null;
+                        }
+
                     }
 
                 }
@@ -539,6 +573,7 @@ public class GridBlock : MonoBehaviour
                 {
                     changeColor (p.gridColor);
                     changeOwner (p);
+                    stolenOwner = null;
 
                 }
             }
@@ -601,9 +636,9 @@ public class GridBlock : MonoBehaviour
         if (fall_data.countdown > 0)
         {
             int show = fall_data.countdown + 1; // never show 0
-             SpawnCountdownText (pos, show.ToString (), Color.green);
+            SpawnCountdownText (pos, show.ToString (), Color.green);
         }
-           
+
         // textMesh.text =    fall_data.countdown.ToString();
 
         Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, FallIncrement);
@@ -625,8 +660,8 @@ public class GridBlock : MonoBehaviour
         block_data.startDuration = false;
         isPreBlocked = true;
 
-         //rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (BlockIncrement);
-         
+        //rhythmSystem_ref.getRhythmNoteToPoolEvent ().AddListener (BlockIncrement);
+
         Vector3 pos = startTransform.position;
         //pos.y += this.GetComponent<Renderer> ().bounds.size.y + 0.2f;
         pos.y += 0.2f;
@@ -640,7 +675,6 @@ public class GridBlock : MonoBehaviour
         Koreographer.Instance.RegisterForEvents (rhythmSystem_ref.mainBeatID, BlockIncrement);
         // textMesh.text =    fall_data.countdown.ToString();
 
-       
     }
 
     public void SpawnCountdownText (Vector3 pos, string tex, Color texCol) //spawn text above the gridblock
@@ -697,7 +731,7 @@ public class GridBlock : MonoBehaviour
                 }
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().color = col;
-                
+
             }
             else //countdown ended
             {
@@ -742,7 +776,7 @@ public class GridBlock : MonoBehaviour
                 //startCount = false;
                 transform.DOScale (new Vector3 (1, 1, 1), rhythmSystem_ref.rhythmTarget_Ref.duration / 2);
                 Koreographer.Instance.UnregisterForEvents (rhythmSystem_ref.mainBeatID, FallIncrement);
-               
+
                 //Kill (null);
             }
 
@@ -759,7 +793,7 @@ public class GridBlock : MonoBehaviour
         {
             if (block_data.countdown_count < block_data.countdown) //if countdown still going
             {
-              
+
                 block_data.countdown_count++;
                 int result = block_data.countdown - block_data.countdown_count + 1; // never show 0
                 int crossResult = (100 * result) / block_data.countdown;
@@ -788,7 +822,7 @@ public class GridBlock : MonoBehaviour
                 }
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().color = col;
-                
+
             }
             else //countdown ended
             {

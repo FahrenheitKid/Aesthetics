@@ -10,7 +10,7 @@ public class Lock : Item
     [SerializeField]
     Countdown timer;
 
-    public static new float rarity = 25.0f;
+    public static new float rarity = 20.0f;
 
     [SerializeField]
     private int count = 0;
@@ -83,15 +83,14 @@ public class Lock : Item
            
                 foreach (GridBlock gb in grid_ref.GetGridBlockList ())
                 {
-                    if (gb.owner == owner || gb.mainColor == owner.blackGridColor)
+                    if (gb.owner == owner)
                     {
                         gb.changeColor (owner.gridColor);
                         if (gb.isLocked)
                             gb.isLocked = false;
 
                     }
-
-                    if(gb.stolenOwner == owner)
+                    else if(gb.stolenOwner == owner)
                     {
                         if(gb.owner.item)
                         {
@@ -110,6 +109,11 @@ public class Lock : Item
                          
                          gb.stolenOwner = null;
                     }
+                    else if(gb.mainColor == owner.blackGridColor)
+                    {
+                         gb.changeColor (gb.owner.gridColor);
+                    }
+
                 }
 
         owner.hasItem = false;
@@ -129,15 +133,19 @@ public class Lock : Item
 
         foreach (GridBlock gb in grid_ref.GetGridBlockList ())
         {
-            if (gb.owner == owner || gb.mainColor == owner.gridColor)
+            if (gb.owner == owner)
             {
                 if (!gb.isLocked)
                 {
-                    gb.changeColor (owner.blackGridColor);
+                   
                     gb.isLocked = true;
                 }
 
             }
+
+            //change by the color so lipstick colored tiles disguise as locked as well
+            if(gb.mainColor == owner.gridColor)
+                 gb.changeColor (owner.blackGridColor);
         }
         startCount = true;
         timer.startTimer (duration);

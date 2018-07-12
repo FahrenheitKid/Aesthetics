@@ -6,7 +6,7 @@ using UnityEngine;
 public class Revolver : Item
 {
 
-    public static new float rarity = 15.0f;
+    public static new float rarity = 1500.0f;
     Countdown rayRenderTimer;
     public float rayTimeDuration = 0.35f;
     public float stunDuration = 3.5f;
@@ -85,6 +85,8 @@ public class Revolver : Item
 
         List<Player> targets = new List<Player> ();
 
+        print("Atirei :" + shot_direction + "| sizelist: " + grid_ref.GetPlayerList ().Count);
+        
         foreach (Player p in grid_ref.GetPlayerList ())
         {
             if (p == owner) continue;
@@ -96,7 +98,7 @@ public class Revolver : Item
 
                     if (p.x == owner.x && p.z < owner.z)
                     {
-						//print("atirei norteeee");
+						print("acertei norteeee");
                         targets.Add (p);
                     }
 
@@ -107,7 +109,7 @@ public class Revolver : Item
                     if (p.x == owner.x && p.z > owner.z)
                     {
                         targets.Add (p);
-						//print("atirei south");
+						print("acertei south");
                     }
 
                     break;
@@ -117,7 +119,7 @@ public class Revolver : Item
                     if (p.z == owner.z && p.x < owner.x)
                     {
                         targets.Add (p);
-						//print("atirei west");
+						print("acertei west");
                     }
 
                     break;
@@ -126,7 +128,7 @@ public class Revolver : Item
                     if (p.z == owner.z && p.x > owner.x)
                     {
                         targets.Add (p);
-						//print("atirei east");
+						print("acertei east");
                     }
                     break;
 

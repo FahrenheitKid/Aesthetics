@@ -10,12 +10,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-
+using Aesthetics;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
-
-using Aesthetics;
 public static class ReflectiveEnumerator
 {
     static ReflectiveEnumerator () { }
@@ -79,13 +77,9 @@ namespace Aesthetics
 
         [SerializeField]
         private GameObject sneakers_prefab;
-        
 
-                [SerializeField]
+        [SerializeField]
         private GameObject[] arrows_prefabs = new GameObject[3];
-
-
-
 
         [SerializeField]
         private RhythmSystem rhythmSystem_ref;
@@ -93,7 +87,7 @@ namespace Aesthetics
         [SerializeField]
         private List<GameObject> playerPrefabList = new List<GameObject> (2);
 
-                [SerializeField]
+        [SerializeField]
         private GameObject scoreFloatingText_prefab;
 
         [SerializeField]
@@ -126,7 +120,7 @@ namespace Aesthetics
         [SerializeField]
         private CameraScript cameraScript;
 
-        public CameraScript GetCameraScript()  {  return cameraScript;  }
+        public CameraScript GetCameraScript () { return cameraScript; }
 
         [SerializeField, Candlelight.PropertyBackingField]
         private int _mapWidth = 0;
@@ -429,6 +423,11 @@ namespace Aesthetics
                 SpawnRevolver (range);
                 return true;
             }
+            else if (typeof (T) == typeof (RainbowLipstick))
+            {
+                SpawnRainbowLipstick (range);
+                return true;
+            }
 
             else if (typeof (T) == typeof (ScoreMaker))
             {
@@ -437,8 +436,6 @@ namespace Aesthetics
                 return true;
 
             }
-
-            
 
             return false;
         }
@@ -525,7 +522,7 @@ namespace Aesthetics
 
                     case "Sneakers":
                         sneakers_currentRarity = Sneakers.rarity;
-                        if(getItemCurrentCount<Sneakers> () > 0)
+                        if (getItemCurrentCount<Sneakers> () > 0)
                         {
                             int a = 3;
                         }
@@ -537,7 +534,7 @@ namespace Aesthetics
 
             }
 
-            print("Sneakers chance: "  + sneakers_currentRarity);
+            print ("Sneakers chance: " + sneakers_currentRarity);
             float val = UnityEngine.Random.Range (0, chance_total);
 
             bool exitLoop = false;
@@ -589,7 +586,7 @@ namespace Aesthetics
                     case "FloppyDisk":
                         if (val <= floppyDisk_currentRarity && FloppyDisk.ruleCheck (this))
                         {
-                           // print ("Rolled" + itemtype.GetType ().Name);
+                            // print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<FloppyDisk> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -667,7 +664,7 @@ namespace Aesthetics
                     case "SloMo":
                         if (val <= slowmo_currentRarity && SloMo.ruleCheck (this))
                         {
-                           // print ("Rolled" + itemtype.GetType ().Name);
+                            // print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<SloMo> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -824,11 +821,11 @@ namespace Aesthetics
             a.rhythmSystem_ref = rhythmSystem_ref;
             a.gridBlockOwner = gb;
             a.arrow_type = typeOfArrow;
-           
+
             a.x = gb.X;
             a.y = gb.Y;
             a.z = gb.Z;
-             a.Setup(this,rhythmSystem_ref,gb);
+            a.Setup (this, rhythmSystem_ref, gb);
             gb.hasItem = true;
             itemList.Add (a);
 
@@ -883,15 +880,13 @@ namespace Aesthetics
             a.y = gb.Y;
             a.z = gb.Z;
 
-             a.Setup(this,rhythmSystem_ref,gb);
+            a.Setup (this, rhythmSystem_ref, gb);
 
             gb.hasItem = true;
             itemList.Add (a);
 
             return a;
         }
-
-      
 
         private Ray SpawnRay (float range, Ray.rayType? typeOfRay)
         {
@@ -915,7 +910,6 @@ namespace Aesthetics
             switch (typeOfRay)
             {
 
-
                 case Ray.rayType.Vray:
                     prefab = vRay_prefab;
                     break;
@@ -938,7 +932,7 @@ namespace Aesthetics
             a.y = gb.Y;
             a.z = gb.Z;
 
-             a.Setup(this,rhythmSystem_ref,gb);
+            a.Setup (this, rhythmSystem_ref, gb);
 
             gb.hasItem = true;
             itemList.Add (a);
@@ -978,7 +972,7 @@ namespace Aesthetics
             return lockPrefab.GetComponent<Lock> ();
         }
 
-       private FastFoward SpawnFastFoward (float range)
+        private FastFoward SpawnFastFoward (float range)
         {
             GridBlock gb = null;
             while (gb == null)
@@ -1012,8 +1006,7 @@ namespace Aesthetics
             return smPrefab.GetComponent<SloMo> ();
         }
 
-        
-          private CompactDisk SpawnCompactDisk (float range)
+        private CompactDisk SpawnCompactDisk (float range)
         {
             GridBlock gb = null;
             while (gb == null)
@@ -1046,7 +1039,7 @@ namespace Aesthetics
             return smPrefab.GetComponent<FloppyDisk> ();
         }
 
-         private Glasses3D SpawnGlasses3D (float range)
+        private Glasses3D SpawnGlasses3D (float range)
         {
             GridBlock gb = null;
             while (gb == null)
@@ -1063,9 +1056,7 @@ namespace Aesthetics
             return spPrefab.GetComponent<Glasses3D> ();
         }
 
-        
-
-         private Sneakers SpawnSneakers (float range)
+        private Sneakers SpawnSneakers (float range)
         {
             GridBlock gb = null;
             while (gb == null)
@@ -1081,8 +1072,6 @@ namespace Aesthetics
 
             return spPrefab.GetComponent<Sneakers> ();
         }
-
-        
 
         private Revolver SpawnRevolver (float range)
         {
@@ -1101,12 +1090,27 @@ namespace Aesthetics
             return spPrefab.GetComponent<Revolver> ();
         }
 
-       
-// north z--
-// south z++
-// west x--
-// east x++
-        
+        private RainbowLipstick SpawnRainbowLipstick (float range)
+        {
+            GridBlock gb = null;
+            while (gb == null)
+                gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
+
+            if (gb.isOccupied || gb.hasItem) return null;
+
+            GameObject spPrefab = Instantiate (rainbowLipstick_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            spPrefab.GetComponent<RainbowLipstick> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
+
+            gb.hasItem = true;
+            itemList.Add (spPrefab.GetComponent<RainbowLipstick> ());
+
+            return spPrefab.GetComponent<RainbowLipstick> ();
+        }
+
+        // north z--
+        // south z++
+        // west x--
+        // east x++
 
         public GameObject getPrefabOfType<T> (Arrow.arrowType? typeOfArrow)
         {
@@ -1335,6 +1339,7 @@ namespace Aesthetics
 
                     gb.changeColor (GridBlock.gridBlockColor.White);
                     gb.changeOwner (null);
+                    gb.stolenOwner = null;
                     gb.isLocked = false;
                     result++;
                 }
