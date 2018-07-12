@@ -892,6 +892,7 @@ namespace Aesthetics
 
         public bool Steal (Player target, bool stealLocked)
         {
+            print("Stealing " + target.name );
             if (target.isImmune) return false;
             if (target.isShielded)
             {
