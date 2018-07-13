@@ -6,7 +6,7 @@ using UnityEngine;
 public class Glasses3D : Item
 {
 
-    public static new float rarity = 30.03f;
+    public static new float rarity = 20.03f;
 
     public int multiplier_increase = 3;
 
@@ -30,8 +30,9 @@ public class Glasses3D : Item
         //owner.isShielded = true;
         //gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
         base.Activate ();
-
-        owner.multiplier += 3;
+        owner.multiplierCombo = ((owner.multiplier + 3) * 10);
+        //owner.multiplier += 3;
+        
         grid_ref.GetCameraScript ().Rotate ((Random.value > 0.5f));
         Kill (null);
         bool gonnaDie = true;

@@ -161,13 +161,13 @@ public class CameraScript : MonoBehaviour
         // Rotation method
         if (Input.GetKeyDown (KeyCode.Q))
         {
-            Rotate(false);
-            print (orientation);
+            //Rotate(false);
+            //print (orientation);
         }
         if (Input.GetKeyDown (KeyCode.E))
         {
-           Rotate(true);
-            print (orientation);
+           //Rotate(true);
+            //print (orientation);
         }
 
         if (Input.GetKeyDown (KeyCode.Z))
