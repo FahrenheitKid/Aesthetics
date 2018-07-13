@@ -10,7 +10,7 @@ public class RainbowLipstick : Item
     [SerializeField]
     Countdown timer;
 
-    public static new float rarity = 2000.0f;
+    public static new float rarity = 20.0f;
 
     [SerializeField]
     private int count = 0;
@@ -79,60 +79,51 @@ public class RainbowLipstick : Item
 
         }
 
+        foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+        {
+            if (gb.owner == owner)
+            {
 
-           
-                foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+                if (gb.isLocked)
                 {
-                    if (gb.owner == owner)
+                    if (gb.mainColor != owner.blackGridColor)
                     {
-                        
-
-                             if(gb.isLocked)
-                             {
-                                if(gb.mainColor != owner.blackGridColor)
-                                {
-                                    gb.changeColor(owner.blackGridColor);
-                                }
-                             }
-                             else
-                             {
-                                if(gb.mainColor != owner.gridColor)
-                                {
-                                    gb.changeColor(owner.gridColor);
-                                }
-                             }
-                             
-
+                        gb.changeColor (owner.blackGridColor);
                     }
-                    else if (gb.stolenOwner == owner)
-                    {
-                        
-
-                             if(gb.isLocked)
-                             {
-                                if(gb.mainColor != gb.owner.blackGridColor)
-                                {
-                                    gb.changeColor(gb.owner.blackGridColor);
-                                }
-                             }
-                             else
-                             {
-                                if(gb.mainColor != gb.owner.gridColor)
-                                {
-                                    gb.changeColor(gb.owner.gridColor);
-                                }
-                             }
-                             
-
-                    }
-
-                  
                 }
+                else
+                {
+                    if (gb.mainColor != owner.gridColor)
+                    {
+                        gb.changeColor (owner.gridColor);
+                    }
+                }
+
+            }
+            else if (gb.stolenOwner == owner)
+            {
+
+                if (gb.isLocked)
+                {
+                    if (gb.mainColor != gb.owner.blackGridColor)
+                    {
+                        gb.changeColor (gb.owner.blackGridColor);
+                    }
+                }
+                else
+                {
+                    if (gb.mainColor != gb.owner.gridColor)
+                    {
+                        gb.changeColor (gb.owner.gridColor);
+                    }
+                }
+
+            }
+
+        }
 
         owner.hasItem = false;
         owner.item = null;
-
-      
 
         base.Kill (null);
 
@@ -149,27 +140,24 @@ public class RainbowLipstick : Item
             if (gb.owner == owner)
             {
 
-                List<Player> plist = grid_ref.GetPlayerList().ToList();
-                    plist.Remove(owner);
-                    int idx = Random.Range(0,plist.Count);
-                
+                List<Player> plist = grid_ref.GetPlayerList ().ToList ();
+                plist.Remove (owner);
+                int idx = Random.Range (0, plist.Count);
 
-                    if(plist.Count > 0 && idx >= 0 && idx < plist.Count)
+                if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
+                {
+                    if (!gb.isLocked)
                     {
-                        if (!gb.isLocked)
-                        {
-                    
-                            gb.changeColor (plist[idx].gridColor);
-                        }
-                        else
-                        {
-                             gb.changeColor (plist[idx].blackGridColor);
-                        }
+
+                        gb.changeColor (plist[idx].gridColor);
                     }
-                    
-                    
-                   // gb.isLocked = true;
-               
+                    else
+                    {
+                        gb.changeColor (plist[idx].blackGridColor);
+                    }
+                }
+
+                // gb.isLocked = true;
 
             }
         }

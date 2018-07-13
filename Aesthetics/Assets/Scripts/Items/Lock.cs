@@ -79,47 +79,40 @@ public class Lock : Item
 
         }
 
+        foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+        {
+            if (gb.owner == owner)
+            {
+                gb.changeColor (owner.gridColor);
+                if (gb.isLocked)
+                    gb.isLocked = false;
 
-           
-                foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+            }
+            else if (gb.stolenOwner == owner)
+            {
+                if (gb.owner.item)
                 {
-                    if (gb.owner == owner)
+                    if (gb.owner.item.GetType () == typeof (Lock))
                     {
-                        gb.changeColor (owner.gridColor);
-                        if (gb.isLocked)
-                            gb.isLocked = false;
-
-                    }
-                    else if(gb.stolenOwner == owner)
-                    {
-                        if(gb.owner.item)
-                        {
-                            if(gb.owner.item.GetType() == typeof(Lock))
-                            {
-                                continue;
-                            }
-                            
-                        }
-
-
-                                gb.changeColor (gb.owner.gridColor);
-                                gb.isLocked = false;
-
-
-                         
-                         gb.stolenOwner = null;
-                    }
-                    else if(gb.mainColor == owner.blackGridColor)
-                    {
-                         gb.changeColor (gb.owner.gridColor);
+                        continue;
                     }
 
                 }
 
+                gb.changeColor (gb.owner.gridColor);
+                gb.isLocked = false;
+
+                gb.stolenOwner = null;
+            }
+            else if (gb.mainColor == owner.blackGridColor)
+            {
+                gb.changeColor (gb.owner.gridColor);
+            }
+
+        }
+
         owner.hasItem = false;
         owner.item = null;
-
-      
 
         base.Kill (null);
 
@@ -137,15 +130,15 @@ public class Lock : Item
             {
                 if (!gb.isLocked)
                 {
-                   
+
                     gb.isLocked = true;
                 }
 
             }
 
             //change by the color so lipstick colored tiles disguise as locked as well
-            if(gb.mainColor == owner.gridColor)
-                 gb.changeColor (owner.blackGridColor);
+            if (gb.mainColor == owner.gridColor)
+                gb.changeColor (owner.blackGridColor);
         }
         startCount = true;
         timer.startTimer (duration);

@@ -69,7 +69,7 @@ public class Sneakers : Item
 
     public override void Kill (Item current_Item)
     {
-      foreach (var item in grid_ref.itemList.OfType<Sneakers> ())
+        foreach (var item in grid_ref.itemList.OfType<Sneakers> ())
         {
             if (item == this)
             {
@@ -93,7 +93,7 @@ public class Sneakers : Item
 
         }
 
-        base.Kill(null);
+        base.Kill (null);
     }
     public override bool Activate ()
     {

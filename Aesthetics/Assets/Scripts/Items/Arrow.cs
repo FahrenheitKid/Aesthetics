@@ -198,12 +198,41 @@ public class Arrow : Item
 
                 if (gb.Z <= gridBlockOwner.Z && gb.X == gridBlockOwner.X)
                 {
+
                     if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
                     {
                         if (gb.isLocked == false)
                         {
+
                             gb.changeColor (owner.blackGridColor);
                             gb.changeOwner (owner);
+                        }
+
+                    }
+                    else if (owner.hasItem && owner.item && owner.item.GetType () == typeof (RainbowLipstick))
+                    {
+                        List<Player> plist = grid_ref.GetPlayerList ().ToList ();
+                        plist.Remove (owner);
+                        int idx = Random.Range (0, plist.Count);
+
+                        if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
+                        {
+                            if (!gb.isLocked)
+                            {
+
+                               
+                                gb.changeOwner (owner);
+                                
+                                if(plist[idx].item && plist[idx].item.GetType() == typeof(Lock))
+                                {
+                                     
+                                      gb.changeColor (plist[idx].blackGridColor);
+                                }
+                                else
+                                {
+                                    gb.changeColor (plist[idx].gridColor);
+                                }
+                            }
                         }
 
                     }
@@ -227,8 +256,36 @@ public class Arrow : Item
                     {
                         if (gb.isLocked == false)
                         {
+
                             gb.changeColor (owner.blackGridColor);
                             gb.changeOwner (owner);
+                        }
+
+                    }
+                    else if (owner.hasItem && owner.item && owner.item.GetType () == typeof (RainbowLipstick))
+                    {
+                        List<Player> plist = grid_ref.GetPlayerList ().ToList ();
+                        plist.Remove (owner);
+                        int idx = Random.Range (0, plist.Count);
+
+                        if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
+                        {
+                            if (!gb.isLocked)
+                            {
+
+                               
+                                gb.changeOwner (owner);
+                                
+                                if(plist[idx].item && plist[idx].item.GetType() == typeof(Lock))
+                                {
+                                     
+                                      gb.changeColor (plist[idx].blackGridColor);
+                                }
+                                else
+                                {
+                                    gb.changeColor (plist[idx].gridColor);
+                                }
+                            }
                         }
 
                     }
@@ -240,6 +297,7 @@ public class Arrow : Item
                             gb.changeOwner (owner);
                         }
                     }
+
                 }
             }
 
@@ -252,8 +310,36 @@ public class Arrow : Item
                     {
                         if (gb.isLocked == false)
                         {
+
                             gb.changeColor (owner.blackGridColor);
                             gb.changeOwner (owner);
+                        }
+
+                    }
+                    else if (owner.hasItem && owner.item && owner.item.GetType () == typeof (RainbowLipstick))
+                    {
+                        List<Player> plist = grid_ref.GetPlayerList ().ToList ();
+                        plist.Remove (owner);
+                        int idx = Random.Range (0, plist.Count);
+
+                        if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
+                        {
+                            if (!gb.isLocked)
+                            {
+
+                               
+                                gb.changeOwner (owner);
+                                
+                                if(plist[idx].item && plist[idx].item.GetType() == typeof(Lock))
+                                {
+                                     
+                                      gb.changeColor (plist[idx].blackGridColor);
+                                }
+                                else
+                                {
+                                    gb.changeColor (plist[idx].gridColor);
+                                }
+                            }
                         }
 
                     }
@@ -265,6 +351,7 @@ public class Arrow : Item
                             gb.changeOwner (owner);
                         }
                     }
+
                 }
 
             }
@@ -273,12 +360,40 @@ public class Arrow : Item
             {
                 if (gb.X <= gridBlockOwner.X && gb.Z == gridBlockOwner.Z)
                 {
-                    if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
+                   if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
                     {
                         if (gb.isLocked == false)
                         {
+
                             gb.changeColor (owner.blackGridColor);
                             gb.changeOwner (owner);
+                        }
+
+                    }
+                    else if (owner.hasItem && owner.item && owner.item.GetType () == typeof (RainbowLipstick))
+                    {
+                        List<Player> plist = grid_ref.GetPlayerList ().ToList ();
+                        plist.Remove (owner);
+                        int idx = Random.Range (0, plist.Count);
+
+                        if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
+                        {
+                            if (!gb.isLocked)
+                            {
+
+                               
+                                gb.changeOwner (owner);
+                                
+                                if(plist[idx].item && plist[idx].item.GetType() == typeof(Lock))
+                                {
+                                     
+                                      gb.changeColor (plist[idx].blackGridColor);
+                                }
+                                else
+                                {
+                                    gb.changeColor (plist[idx].gridColor);
+                                }
+                            }
                         }
 
                     }
@@ -290,6 +405,7 @@ public class Arrow : Item
                             gb.changeOwner (owner);
                         }
                     }
+
                 }
             }
         }

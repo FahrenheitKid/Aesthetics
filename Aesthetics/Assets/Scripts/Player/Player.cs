@@ -330,6 +330,7 @@ namespace Aesthetics
             {
 
                 _multiplier = value;
+                if(_multiplier <= 0) _multiplier = 1;
                 int i = (ID > 0) ? ID - 1 : 0;
                 grid_ref.GetPlayerUIList () [i].setMultiplier (_multiplier);
             }
