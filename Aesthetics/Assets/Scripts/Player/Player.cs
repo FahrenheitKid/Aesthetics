@@ -217,7 +217,7 @@ namespace Aesthetics
                 }
                 else
                 {
-                    Shader normal = Shader.Find ("Standard");
+                    Shader normal = Shader.Find ("Custom/Tint/2TintShader");
                     gameObject.GetComponent<Renderer> ().materials[0].shader = normal;
                 }
 
@@ -330,7 +330,7 @@ namespace Aesthetics
             {
 
                 _multiplier = value;
-                if(_multiplier <= 0) _multiplier = 1;
+                if (_multiplier <= 0) _multiplier = 1;
                 int i = (ID > 0) ? ID - 1 : 0;
                 grid_ref.GetPlayerUIList () [i].setMultiplier (_multiplier);
             }
@@ -488,6 +488,11 @@ namespace Aesthetics
             private bool allowDiagonals = false;
             private bool correctDiagonalSpeed = true;
             private Vector2 input;
+
+             public int inputCountX;
+            public int inputCountY;
+            private bool X_isAxisInUse = false;
+            private bool Y_isAxisInUse = false;
             [SerializeField]
             private bool isMoving = false;
 
@@ -501,7 +506,7 @@ namespace Aesthetics
             //Sets the player's ID
             private void Awake ()
             {
-            if (globalID >= 2) globalID = 0;
+            if (globalID >= 4) globalID = 0;
             ID = ++globalID;
 
             stunTimer = gameObject.AddComponent<Countdown> ();
@@ -661,8 +666,17 @@ namespace Aesthetics
         void handleInput ()
         {
             //int numPressed = 0;
-            HandleAxisState (ref horizontalAxisState, "Horizontal" + ID);
-            HandleAxisState (ref verticalAxisState, "Vertical" + ID);
+            if(ID <2)
+            {
+                HandleAxisState (ref horizontalAxisState, "Horizontal" + ID);
+                HandleAxisState (ref verticalAxisState, "Vertical" + ID);
+            }
+            else
+            {
+                HandleAxisStateDPad (ref horizontalAxisState, "Horizontal" + ID);
+                HandleAxisStateDPad (ref verticalAxisState, "Vertical" + ID);
+            }
+            
 
             if (isStunned)
             {
@@ -699,26 +713,25 @@ namespace Aesthetics
                         if (rhythmSystem_ref.WasNoteHit ())
                         {
                             //print ("Player" + ID.ToString () + " Hit it!");
-                            
+
                             //if aiming, shoot in direction pressed
-                            if(isAiming && hasItem && item && item.GetType () == typeof (Revolver))
+                            if (isAiming && hasItem && item && item.GetType () == typeof (Revolver))
                             {
-                                Revolver r = (Revolver)item;
-                                r.shot_direction = getDirectionFromInput();
-                                r.Shoot(getDirectionFromInput());
+                                Revolver r = (Revolver) item;
+                                r.shot_direction = getDirectionFromInput ();
+                                r.Shoot (getDirectionFromInput ());
                                 //print("NEW SHOT = " + r.shot_direction);
-                                
+
                             }
                             else
                             {
                                 //move player and increase combo
-                            if (Move ())
-                            {
-                                combo++;
-                                multiplierCombo++;
+                                if (Move ())
+                                {
+                                    combo++;
+                                    multiplierCombo++;
+                                }
                             }
-                            }
-                            
 
                         }
                         else
@@ -753,16 +766,15 @@ namespace Aesthetics
                         {
                             //print ("Player" + ID.ToString () + " Hit it!");
 
-                            if(item.GetType () == typeof (Revolver))
+                            if (item.GetType () == typeof (Revolver))
                             {
                                 isAiming = true;
                             }
                             else
                             {
-                                if(!isAiming)
-                                item.Use ();
+                                if (!isAiming)
+                                    item.Use ();
                             }
-                            
 
                         }
                         else
@@ -893,7 +905,7 @@ namespace Aesthetics
 
         public bool Steal (Player target, bool stealLocked)
         {
-            print("Stealing " + target.name );
+            print ("Stealing " + target.name);
             if (target.isImmune) return false;
             if (target.isShielded)
             {
@@ -910,23 +922,22 @@ namespace Aesthetics
                 return false;
             }
 
-             foreach (GridBlock gb in grid_ref.GetGridBlockList ())
+            foreach (GridBlock gb in grid_ref.GetGridBlockList ())
             {
 
                 if (gb.owner == null || gb.owner != target) continue;
-                
-                if(!stealLocked)
-                    if(gb.isLocked)
+
+                if (!stealLocked)
+                    if (gb.isLocked)
                         continue;
 
-                    if(gb.isLocked)
+                if (gb.isLocked)
                     gb.changeColor (this.blackGridColor);
-                    else gb.changeColor (this.gridColor);
+                else gb.changeColor (this.gridColor);
 
-                    gb.changeOwner (this);
-                    gb.stolenOwner = target;
-                   
-                
+                gb.changeOwner (this);
+                gb.stolenOwner = target;
+
             }
 
             return true;
@@ -945,49 +956,47 @@ namespace Aesthetics
 
             CameraScript.windRose? player_direction = null;
 
-            player_direction = getDirectionFromInput();
-            
-            
-                endGridBlock = getDestinationBlock (player_direction, 1);
+            player_direction = getDirectionFromInput ();
 
-                //if the player is with sneakers, need to move double
+            endGridBlock = getDestinationBlock (player_direction, 1);
+
+            //if the player is with sneakers, need to move double
             if (hasItem && item.GetType () == typeof (Sneakers))
             {
-                    // if both blocks are availaable, move to second, otherwise move only one.
-                    if(isMyDestinationBlockAvailable(player_direction,1) && isMyDestinationBlockAvailable(player_direction,2))
-                    {
-                        if(!getDestinationBlock (player_direction, 1).isFallen)
+                // if both blocks are availaable, move to second, otherwise move only one.
+                if (isMyDestinationBlockAvailable (player_direction, 1) && isMyDestinationBlockAvailable (player_direction, 2))
+                {
+                    if (!getDestinationBlock (player_direction, 1).isFallen)
                         endGridBlock = getDestinationBlock (player_direction, 2);
-                    }
-                   
+                }
+
             }
 
-                //if destination gridBlock is already occupied
-                if (endGridBlock == null)
-                {
+            //if destination gridBlock is already occupied
+            if (endGridBlock == null)
+            {
 
-                    //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
-                    return false;
+                //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
+                return false;
 
-                }
-                else
-                {
-                    endGridBlock.isOccupied = true;
+            }
+            else
+            {
+                endGridBlock.isOccupied = true;
 
-                    endGridPosition = endGridBlock.transform.position;
-                    endGridPosition.y = 0.1f;
+                endGridPosition = endGridBlock.transform.position;
+                endGridPosition.y = 0.1f;
 
-                    isMoving = true;
-                    transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
-                    transform.DOLookAt (endGridPosition, 0.2f);
-                    return true;
+                isMoving = true;
+                transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
+                transform.DOLookAt (endGridPosition, 0.2f);
+                return true;
 
-                }
-            
+            }
 
         }
 
-        CameraScript.windRose? getDirectionFromInput()
+        CameraScript.windRose? getDirectionFromInput ()
         {
             CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
 
@@ -1114,7 +1123,7 @@ namespace Aesthetics
 
         bool isMyDestinationBlockAvailable (CameraScript.windRose? move_direction, int movement_amount)
         {
-            if(move_direction == null) return false;
+            if (move_direction == null) return false;
             CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
 
             Vector3 startGridPosition = new Vector3 (x, y, z);
@@ -1130,7 +1139,7 @@ namespace Aesthetics
 
                     endGridPosition = startGridPosition;
                     if (endGridPosition.z > 0)
-                        endGridPosition.z-= movement_amount;
+                        endGridPosition.z -= movement_amount;
 
                     break;
 
@@ -1139,7 +1148,7 @@ namespace Aesthetics
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.z < grid_ref.mapHeight - movement_amount)
-                        endGridPosition.z+= movement_amount;
+                        endGridPosition.z += movement_amount;
 
                     break;
                 case CameraScript.windRose.West:
@@ -1147,14 +1156,14 @@ namespace Aesthetics
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.x > 0)
-                        endGridPosition.x-= movement_amount;
+                        endGridPosition.x -= movement_amount;
 
                     break;
                 case CameraScript.windRose.East:
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.x < grid_ref.mapWidth - movement_amount)
-                        endGridPosition.x+= movement_amount;
+                        endGridPosition.x += movement_amount;
 
                     break;
 
@@ -1162,7 +1171,7 @@ namespace Aesthetics
 
             endGridBlock = grid_ref.GetGridBlock ((int) endGridPosition.x, (int) endGridPosition.z);
 
-            if(!endGridBlock) return false;
+            if (!endGridBlock) return false;
             //if destination gridBlock is already occupied
             if (endGridBlock.isOccupied || endGridBlock.isBlocked || endGridBlock.isRespawning)
             {
@@ -1195,7 +1204,7 @@ namespace Aesthetics
 
                     endGridPosition = startGridPosition;
                     if (endGridPosition.z > 0)
-                        endGridPosition.z-= movement_amount;
+                        endGridPosition.z -= movement_amount;
 
                     break;
 
@@ -1204,7 +1213,7 @@ namespace Aesthetics
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.z < grid_ref.mapHeight - movement_amount)
-                        endGridPosition.z+= movement_amount;
+                        endGridPosition.z += movement_amount;
 
                     break;
                 case CameraScript.windRose.West:
@@ -1212,14 +1221,14 @@ namespace Aesthetics
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.x > 0)
-                        endGridPosition.x-= movement_amount;
+                        endGridPosition.x -= movement_amount;
 
                     break;
                 case CameraScript.windRose.East:
                     endGridPosition = startGridPosition;
 
                     if (endGridPosition.x < grid_ref.mapWidth - movement_amount)
-                        endGridPosition.x+= movement_amount;
+                        endGridPosition.x += movement_amount;
 
                     break;
 
@@ -1227,7 +1236,7 @@ namespace Aesthetics
 
             endGridBlock = grid_ref.GetGridBlock ((int) endGridPosition.x, (int) endGridPosition.z);
 
-            if(!endGridBlock) return null;
+            if (!endGridBlock) return null;
 
             //if destination gridBlock is already occupied
             if (endGridBlock.isOccupied || endGridBlock.isBlocked || endGridBlock.isRespawning)
@@ -1437,6 +1446,79 @@ namespace Aesthetics
 
                 case AxisState.Held:
                     if (Input.GetAxis (axi) > -deadZone && Input.GetAxis (axi) < deadZone)
+                    {
+                        state = AxisState.Up;
+                    }
+                    break;
+
+                case AxisState.Up:
+                    state = AxisState.Idle;
+                    break;
+            }
+
+        }
+
+        void HandleAxisStateDPad (ref AxisState state, string axi)
+        {
+
+                /*
+                if (Input.GetAxisRaw ("DpadX") != 0)
+            {
+                if (X_isAxisInUse == false)
+                {
+                    if (Input.GetAxisRaw ("DpadX") == +1)
+                    {
+                        inputCountX += 1;
+                    }
+                    else if (Input.GetAxisRaw ("DpadX") == -1)
+                    {
+                        inputCountX -= 1;
+                    }
+                    X_isAxisInUse = true;
+                }
+            }
+            if (Input.GetAxisRaw ("DpadX") == 0)
+            {
+                X_isAxisInUse = false;
+            }
+            //----------------------------------------
+            if (Input.GetAxisRaw ("DpadY") != 0)
+            {
+                if (Y_isAxisInUse == false)
+                {
+                    if (Input.GetAxisRaw ("DpadY") == +1)
+                    {
+                        inputCountY += 1;
+                    }
+                    else if (Input.GetAxisRaw ("DpadY") == -1)
+                    {
+                        inputCountY -= 1;
+                    }
+                    Y_isAxisInUse = true;
+                }
+            }
+            if (Input.GetAxisRaw ("DpadY") == 0)
+            {
+                Y_isAxisInUse = false;
+            }
+                 */
+            
+
+            switch (state)
+            {
+                case AxisState.Idle:
+                    if (Input.GetAxisRaw (axi) < -deadZone || Input.GetAxisRaw (axi) > deadZone)
+                    {
+                        state = AxisState.Down;
+                    }
+                    break;
+
+                case AxisState.Down:
+                    state = AxisState.Held;
+                    break;
+
+                case AxisState.Held:
+                    if (Input.GetAxisRaw (axi) > -deadZone && Input.GetAxisRaw (axi) < deadZone)
                     {
                         state = AxisState.Up;
                     }

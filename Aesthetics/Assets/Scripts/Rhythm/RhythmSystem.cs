@@ -223,6 +223,8 @@ public class RhythmSystem : MonoBehaviour
         if (!grid_ref)
             grid_ref = GameObject.FindGameObjectWithTag ("Grid").GetComponent<TheGrid> ();
 
+        int randomidx = UnityEngine.Random.Range(0,koreographyList.Count);
+        //LoadKoreography (koreographyList[randomidx], 0, true);
         LoadKoreography (koreographyList.Find (element => element.name == "MainKoreo"), 0, true);
 
     }
@@ -234,7 +236,10 @@ public class RhythmSystem : MonoBehaviour
         InitializeLeadIn ();
 
         //load random or specific Koreo by name
-        LoadKoreography (koreographyList.Find (element => element.name == "MainKoreo"), 0, true);
+         LoadKoreography (koreographyList.Find (element => element.name == "MainKoreo"), 0, true);
+
+        //int randomidx = UnityEngine.Random.Range(0,koreographyList.Count);
+        //LoadKoreography (koreographyList[randomidx], 0, true);
 
         InitKoreography ();
         audioCom.pitch = pitch;
