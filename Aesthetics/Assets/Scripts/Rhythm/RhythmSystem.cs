@@ -119,6 +119,9 @@ public class RhythmSystem : MonoBehaviour
     // list with all fall events
     List<KoreographyEvent> fallEvents;
 
+    // list with all fall events
+    List<KoreographyEvent> blockEvents;
+
     // A Queue that contains all of the Note Objects currently active (on-screen) within this lane.  Input and
     //  lifetime validity checks are tracked with operations on this Queue.
     List<RhythmNote> trackedNotes = new List<RhythmNote> ();
@@ -303,11 +306,15 @@ public class RhythmSystem : MonoBehaviour
         // Grab all the events out of the Koreography.
         KoreographyTrackBase rhythmTrack = playingKoreo.GetTrackByID (mainBeatID);
         KoreographyTrackBase fallTrack = playingKoreo.GetTrackByID (fallBeatID);
+        KoreographyTrackBase blockTrack = playingKoreo.GetTrackByID (blockBeatID);
 
         beatEvents = rhythmTrack.GetAllEvents ();
+        fallEvents = fallTrack.GetAllEvents ();
+        blockEvents = blockTrack.GetAllEvents ();
 
-        Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
-        Koreographer.Instance.RegisterForEvents (blockBeatID, OnBlockBeat);
+        //Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
+        //Koreographer.Instance.RegisterForEvents (blockBeatID, OnBlockBeat);
+        Koreographer.Instance.RegisterForEvents (mainBeatID, OnMainBeat);
         /*------------------------------------------------------------- */
 
         SetupSpawnPositions ();
@@ -702,6 +709,94 @@ public class RhythmSystem : MonoBehaviour
         return onNoteReturnedToPool;
     }
 
+    int getEventCountdown(KoreographyEvent evt)
+    {
+
+         int pattern = 0;
+        int countdown = 0;
+        int duration = 0;
+
+         string[] result;
+        string[] stringSeparators = new string[] { "," };
+        if (evt.Payload is TextPayload)
+        {
+            TextPayload tp = evt.Payload as TextPayload;
+            result = tp.TextVal.Split (stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+           if (result.Length == 3)
+            {
+                pattern = Convert.ToInt32 (result[0]);
+                if(pattern > Enum.GetNames(typeof(GridBlock.gridBlockPattern)).Length)
+                pattern = 0;
+                countdown = Convert.ToInt32 (result[1]);
+                duration = Convert.ToInt32 (result[2]);
+            }
+
+            GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
+        }
+
+        return countdown;
+    }
+
+
+    KoreographyEvent getEquivalentEvent(List<KoreographyEvent> list, KoreographyEvent match)
+    {
+
+        return list.Find(evt => evt.StartSample == match.StartSample);
+    }
+
+    int getEquivalentEventIndex(List<KoreographyEvent> list, KoreographyEvent match)
+    {
+
+        return list.FindIndex(evt => evt.StartSample == match.StartSample);
+    }
+
+    bool hasSameStartSample(KoreographyEvent a, KoreographyEvent b)
+    {
+        return a.StartSample == b.StartSample; 
+    }
+
+
+    void OnMainBeat(KoreographyEvent evt)
+    {
+        for(int i = 0; i < fallEvents.Count; i++)
+        {
+            int idx = getEquivalentEventIndex(beatEvents,fallEvents[i]);
+            idx -= getEventCountdown(fallEvents[i]);
+            if(!(idx > 0 && idx < beatEvents.Count)) continue;
+
+           
+            if(hasSameStartSample(evt,beatEvents[idx]))
+            {
+                 //print("fall event id preEQ= " + getEquivalentEventIndex(beatEvents,fallEvents[i]) + " | beat Event id = " +  getEquivalentEventIndex(beatEvents,evt) + " | idx = " + idx);
+                 OnFallBeat(fallEvents[i]);
+
+            }
+            
+
+
+        }
+
+        for(int i = 0; i < blockEvents.Count; i++)
+        {
+            int idx = getEquivalentEventIndex(beatEvents,blockEvents[i]);
+            idx -= getEventCountdown(blockEvents[i]);
+            if(!(idx > 0 && idx < beatEvents.Count)) continue;
+
+           
+            if(hasSameStartSample(evt,beatEvents[idx]))
+            {
+                 //print("fall event id preEQ= " + getEquivalentEventIndex(beatEvents,fallEvents[i]) + " | beat Event id = " +  getEquivalentEventIndex(beatEvents,evt) + " | idx = " + idx);
+                 OnBlockBeat(blockEvents[i]);
+
+            }
+            
+
+
+        }
+    }
+
+    
     void OnFallBeat (KoreographyEvent evt)
     {
         int pattern = 0;
