@@ -85,7 +85,7 @@ namespace Aesthetics
         private RhythmSystem rhythmSystem_ref;
 
         [SerializeField]
-        private List<GameObject> playerPrefabList = new List<GameObject> (2);
+        private List<GameObject> playerPrefabList = new List<GameObject> (4);
 
         [SerializeField]
         private GameObject scoreFloatingText_prefab;
@@ -101,8 +101,10 @@ namespace Aesthetics
             return playerUIList;
         }
 
+         [SerializeField]
+        public int numberOfPlayers = 4;
         [SerializeField]
-        private List<Player> playerList = new List<Player> (2);
+        private List<Player> playerList = new List<Player> (4);
 
         public List<Player> GetPlayerList ()
         {
@@ -735,6 +737,16 @@ namespace Aesthetics
 
                 }
                 else if (i == 1)
+                {
+                    initial_pos = GetGridBlock (mapWidth - 1, 0).gameObject.transform.position;
+                    initial_pos.y = playerInitY;
+                }
+                else if (i == 2)
+                {
+                    initial_pos = GetGridBlock (0,  mapHeight - 1).gameObject.transform.position;
+                    initial_pos.y = playerInitY;
+                }
+                else if (i == 3)
                 {
                     initial_pos = GetGridBlock (mapWidth - 1, mapHeight - 1).gameObject.transform.position;
                     initial_pos.y = playerInitY;
@@ -1851,19 +1863,19 @@ namespace Aesthetics
 
             for (int i = 0; i < playerList.Count; i++)
             {
-                if (i < 2)
+                if (i < numberOfPlayers)
                     Assert.IsNotNull (playerList[i]);
             }
 
             for (int i = 0; i < playerPrefabList.Count; i++)
             {
-                if (i < 2)
+                if (i < numberOfPlayers)
                     Assert.IsNotNull (playerPrefabList[i]);
             }
 
             for (int i = 0; i < playerUIList.Count; i++)
             {
-                if (i < 2)
+                if (i < numberOfPlayers)
                     Assert.IsNotNull (playerUIList[i]);
             }
 

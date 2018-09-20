@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: -1223223985, guid: aa81bbec85a3f423193272a7c6154986, type: 3}
   m_Name: MaybeBeats
   m_EditorClassIdentifier: 
-  mEventID: MaybeBeats
+  mEventID: mainBeat
   mEventList:
   - mStartSample: 1495
     mEndSample: 1495

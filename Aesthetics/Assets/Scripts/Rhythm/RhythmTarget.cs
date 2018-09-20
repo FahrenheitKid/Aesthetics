@@ -62,7 +62,7 @@ public class RhythmTarget : MonoBehaviour
 
     void OnMainBeat (KoreographyEvent evt)
     {
-
+        if(transform.localScale.x > beatPunchScale) transform.localScale = Vector3.one * beatPunchScale;
         transform.DOPunchScale (transform.localScale * beatPunchScale, duration, vibrato, elasticity);
 
     }
