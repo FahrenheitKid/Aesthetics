@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour {
 
@@ -46,6 +47,18 @@ public class Menu : MonoBehaviour {
 
 			Camera.main.GetComponent<Animator>().SetBool(Camera.main.GetComponent<Animator>().parameters[cameraAnimIdx].name,true);
 			//print(Camera.main.GetComponent<Animator>().parameters[cameraAnimIdx].name + " " + Camera.main.GetComponent<Animator>().GetBool(cameraAnimIdx));
+		}
+
+		if(Input.GetKeyDown(KeyCode.S))
+		{
+			SceneManager.LoadScene(1);
+
+		}
+
+		if(Input.GetKeyDown(KeyCode.Escape))
+		{
+			Aesthetics.TheGrid.QuitGame();
+			
 		}
 		
 	}

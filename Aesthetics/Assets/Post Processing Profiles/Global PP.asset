@@ -20,7 +20,7 @@ MonoBehaviour:
   - {fileID: 114352494315189934}
   - {fileID: 114801030672418320}
   - {fileID: 114442895959114106}
-  - {fileID: 114950052759633358}
+  - {fileID: 114536207916776096}
   - {fileID: 114058405194797030}
   - {fileID: 114027023996506392}
 --- !u!114 &114027023996506392
@@ -233,6 +233,27 @@ MonoBehaviour:
   scale:
     overrideState: 0
     value: 1
+--- !u!114 &114536207916776096
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b94fcd11afffcb142908bfcb1e261fba, type: 3}
+  m_Name: MotionBlur
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  shutterAngle:
+    overrideState: 0
+    value: 270
+  sampleCount:
+    overrideState: 0
+    value: 10
 --- !u!114 &114555976377014714
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -268,7 +289,7 @@ MonoBehaviour:
     value: 0.634
   toneCurveShoulderLength:
     overrideState: 1
-    value: 3.12
+    value: 2.75
   toneCurveShoulderAngle:
     overrideState: 1
     value: 0
@@ -337,7 +358,7 @@ MonoBehaviour:
     value: {x: 1, y: 0.9377216, z: 0.96343744, w: 0.039643213}
   gamma:
     overrideState: 1
-    value: {x: 0.9823033, y: 0.95628566, z: 1, w: 0}
+    value: {x: 0.919435, y: 0.8673084, z: 1, w: 0}
   gain:
     overrideState: 1
     value: {x: 1, y: 0.9956502, z: 0.9956503, w: 0.0594648}
@@ -505,7 +526,7 @@ MonoBehaviour:
         m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 0
+        m_RotationOrder: 4
       m_Loop: 0
       m_ZeroValue: 0.5
       m_Range: 1
@@ -607,31 +628,10 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 0
+    value: 0.253
   size:
     overrideState: 1
     value: 1
   lumContrib:
     overrideState: 1
     value: 0.8
---- !u!114 &114950052759633358
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b94fcd11afffcb142908bfcb1e261fba, type: 3}
-  m_Name: MotionBlur
-  m_EditorClassIdentifier: 
-  active: 1
-  enabled:
-    overrideState: 1
-    value: 0
-  shutterAngle:
-    overrideState: 1
-    value: 0
-  sampleCount:
-    overrideState: 1
-    value: 20

@@ -711,7 +711,15 @@ namespace Aesthetics
             if (Input.GetKeyDown (KeyCode.R))
             {
 
-                SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
+               SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
+            
+            }
+
+             if (Input.GetKeyDown (KeyCode.T))
+            {
+
+             
+               SceneManager.LoadScene (0);
             }
 
             if (Input.GetKeyDown (KeyCode.G))
@@ -1880,7 +1888,7 @@ namespace Aesthetics
             }
 
         }
-        public void QuitGame ()
+        public static void QuitGame ()
         {
             // save any game data here
 #if UNITY_EDITOR
