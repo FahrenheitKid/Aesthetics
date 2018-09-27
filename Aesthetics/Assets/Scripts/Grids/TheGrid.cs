@@ -93,6 +93,9 @@ namespace Aesthetics
         [SerializeField]
         private GameObject missFloatingText_prefab;
 
+         [SerializeField]
+        public List<Color> stageHighlightColors = new List<Color>(3);
+
         [SerializeField]
         private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
 
@@ -192,6 +195,10 @@ namespace Aesthetics
         [Tooltip ("current ratio value to spawn scoreMakers.  1 each 5 seconds")]
         [SerializeField]
         float scoreMakerCurrentSpawnRatio = 5;
+
+         [Tooltip ("item height from ground")]
+        [SerializeField]
+        float itemHeightFromGround = 0.2f;
 
         [SerializeField]
         int amountScoreMaker = 0;
@@ -773,7 +780,7 @@ namespace Aesthetics
             GridBlock gb = GetGridBlock (x, z);
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (x, z, itemHeightFromGround), Quaternion.identity) as GameObject;
             ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
             sm.grid_ref = GetComponent<TheGrid> ();
             sm.rhythmSystem_ref = rhythmSystem_ref;
@@ -797,7 +804,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
             sm.grid_ref = GetComponent<TheGrid> ();
             sm.rhythmSystem_ref = rhythmSystem_ref;
@@ -835,7 +842,7 @@ namespace Aesthetics
                     break;
 
             }
-            GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (x, z, itemHeightFromGround), Quaternion.identity) as GameObject;
             Arrow a = arrowPrefab.GetComponent<Arrow> ();
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
@@ -889,7 +896,7 @@ namespace Aesthetics
 
             }
 
-            GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             Arrow a = arrowPrefab.GetComponent<Arrow> ();
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
@@ -941,7 +948,7 @@ namespace Aesthetics
 
             }
 
-            GameObject rayPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject rayPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             Ray a = rayPrefab.GetComponent<Ray> ();
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
@@ -965,7 +972,7 @@ namespace Aesthetics
             GridBlock gb = GetGridBlock (x, z);
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, itemHeightFromGround), Quaternion.identity) as GameObject;
 
             lockPrefab.GetComponent<Lock> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
@@ -983,7 +990,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             lockPrefab.GetComponent<Lock> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1000,7 +1007,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject ffPrefab = Instantiate (fastFoward_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject ffPrefab = Instantiate (fastFoward_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             ffPrefab.GetComponent<FastFoward> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1017,7 +1024,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject smPrefab = Instantiate (sloMo_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject smPrefab = Instantiate (sloMo_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             smPrefab.GetComponent<SloMo> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1034,7 +1041,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             smPrefab.GetComponent<CompactDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1050,7 +1057,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject smPrefab = Instantiate (floppyDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject smPrefab = Instantiate (floppyDisk_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             smPrefab.GetComponent<FloppyDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1067,7 +1074,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject spPrefab = Instantiate (glasses3D_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject spPrefab = Instantiate (glasses3D_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             spPrefab.GetComponent<Glasses3D> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1084,7 +1091,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject spPrefab = Instantiate (sneakers_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject spPrefab = Instantiate (sneakers_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             spPrefab.GetComponent<Sneakers> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1101,7 +1108,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject spPrefab = Instantiate (revolver_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject spPrefab = Instantiate (revolver_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             spPrefab.GetComponent<Revolver> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1118,7 +1125,7 @@ namespace Aesthetics
 
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject spPrefab = Instantiate (rainbowLipstick_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject spPrefab = Instantiate (rainbowLipstick_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             spPrefab.GetComponent<RainbowLipstick> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;

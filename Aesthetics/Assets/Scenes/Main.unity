@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.97794116, g: 0.9703041, b: 0.9276059, a: 1}
-  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientSkyColor: {r: 0.5896226, g: 0.9727492, b: 1, a: 1}
+  m_AmbientEquatorColor: {r: 9.849155, g: 4.2486553, b: 8.922176, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 0.38
-  m_AmbientMode: 0
+  m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 617d9be015db68348a623b01ea51a8c5, type: 2}
   m_HaloStrength: 0.5
@@ -38,27 +38,27 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.19235185, g: 0.5927958, b: 0.77698183, a: 1}
+  m_IndirectSpecularColor: {r: 0.19239527, g: 0.5928501, b: 0.77373916, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 1
+  m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
     m_IndirectOutputScale: 1
     m_AlbedoBoost: 1
     m_TemporalCoherenceThreshold: 1
-    m_EnvironmentLightingMode: 0
+    m_EnvironmentLightingMode: 1
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
     serializedVersion: 10
     m_Resolution: 2
     m_BakeResolution: 40
-    m_AtlasSize: 1024
+    m_AtlasSize: 512
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -66,7 +66,7 @@ LightmapSettings:
     m_Padding: 2
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
-    m_TextureCompression: 1
+    m_TextureCompression: 0
     m_FinalGather: 0
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
@@ -364,6 +364,11 @@ Prefab:
       propertyPath: playerPrefabList.Array.size
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4107013760415986, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -642,6 +647,66 @@ Prefab:
       propertyPath: playerUIList.Array.data[3]
       value: 
       objectReference: {fileID: 299435570}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[0].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[0].g
+      value: 0.2688679
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[0].b
+      value: 0.5875668
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[0].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[1].r
+      value: 0.9339623
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[1].g
+      value: 0.49564445
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[1].b
+      value: 0.2775454
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[1].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[2].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[2].g
+      value: 0.0990566
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[2].b
+      value: 0.2871859
+      objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: stageHighlightColors.Array.data[2].a
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
   m_IsPrefabAsset: 0
@@ -891,7 +956,7 @@ GameObject:
   m_Icon: {fileID: -3701561207968579530, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &226263714
 Light:
   m_ObjectHideFlags: 0
@@ -2249,7 +2314,7 @@ GameObject:
   m_Icon: {fileID: -3701561207968579530, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &655208953
 Light:
   m_ObjectHideFlags: 0
@@ -2506,7 +2571,7 @@ GameObject:
   m_Icon: {fileID: -3701561207968579530, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &818141150
 Light:
   m_ObjectHideFlags: 0
@@ -2572,7 +2637,7 @@ GameObject:
   m_Icon: {fileID: -3701561207968579530, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &849343080
 Light:
   m_ObjectHideFlags: 0
@@ -2762,7 +2827,7 @@ GameObject:
   m_Icon: {fileID: -3701561207968579530, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &948544604
 Light:
   m_ObjectHideFlags: 0
@@ -3920,7 +3985,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1543938885
 Light:
   m_ObjectHideFlags: 0
@@ -3986,7 +4051,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1579753945
 Light:
   m_ObjectHideFlags: 0
@@ -4467,7 +4532,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1536
+    m_Bits: 4294967295
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}

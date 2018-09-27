@@ -312,7 +312,19 @@ public class GridBlock : MonoBehaviour
         {
             _hasItem = value;
             if (_hasItem == false)
+            {
                 Item = null;
+                GetComponent<MeshRenderer>().material.SetColor("_TintColor2",Color.white);
+                //GetComponent<MeshRenderer>().material.SetFloat("_Tint2Gamma",0.3f);
+                
+
+            }
+                else
+                {
+                    //GetComponent<MeshRenderer>().material.SetFloat("_Tint2Gamma",0.2f);
+                    
+                    GetComponent<MeshRenderer>().material.SetColor("_TintColor2",grid_ref.stageHighlightColors.First());
+                }
         }
     }
 
