@@ -4,7 +4,7 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Player3 Mat
   m_Shader: {fileID: 4800000, guid: b8271ffad79a3d749afdac3fec0b6bd0, type: 3}
@@ -55,6 +55,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _BumpAmt: 10
     - _BumpScale: 1
     - _ColorProximity: 0.943
     - _ColorProximity1: 0.699
