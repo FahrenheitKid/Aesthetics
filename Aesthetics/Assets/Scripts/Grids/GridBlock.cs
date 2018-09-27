@@ -900,57 +900,57 @@ public class GridBlock : MonoBehaviour
         switch (col)
         {
             case gridBlockColor.Blue_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Blue_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Blue_W];
 
                 break;
             case gridBlockColor.Green_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Green_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Green_W];
 
                 break;
 
             case gridBlockColor.Pink_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Pink_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Pink_W];
 
                 break;
 
             case gridBlockColor.Purple_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Purple_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Purple_W];
                 break;
 
             case gridBlockColor.Yellow_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Yellow_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Yellow_W];
 
                 break;
 
             case gridBlockColor.White:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.White];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.White];
 
                 break;
 
             case gridBlockColor.Blue_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Blue_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Blue_B];
                 break;
             case gridBlockColor.Green_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Green_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Green_B];
 
                 break;
 
             case gridBlockColor.Pink_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Pink_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Pink_B];
 
                 break;
 
             case gridBlockColor.Purple_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Purple_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Purple_B];
                 break;
 
             case gridBlockColor.Yellow_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Yellow_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Yellow_B];
 
                 break;
 
             case gridBlockColor.Black:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Black];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Black];
                 print ("painted back");
                 break;
 

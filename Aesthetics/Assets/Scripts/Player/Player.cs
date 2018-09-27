@@ -108,16 +108,16 @@ namespace Aesthetics
                     combo = 0;
                     multiplierCombo = 0;
                     disableInput = true;
-                    Shader shader_ref = gameObject.GetComponent<Renderer> ().materials[0].shader;
+                    Shader shader_ref = gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader;
 
-                    gameObject.GetComponent<Renderer> ().materials[0].SetColor ("_Color", Color.blue);
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_Color", Color.blue);
                 }
                 else
                 {
 
-                    Shader shader_ref = gameObject.GetComponent<Renderer> ().materials[0].shader;
+                    Shader shader_ref = gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader;
 
-                    gameObject.GetComponent<Renderer> ().materials[0].SetColor ("_Color", Color.white);
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_Color", Color.white);
 
                     disableInput = false;
                 }
@@ -212,13 +212,13 @@ namespace Aesthetics
                 {
 
                     Shader glass = Shader.Find ("FX/Glass/Stained BumpDistort");
-                    gameObject.GetComponent<Renderer> ().materials[0].shader = glass;
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader = glass;
 
                 }
                 else
                 {
                     Shader normal = Shader.Find ("Custom/Tint/2TintShader");
-                    gameObject.GetComponent<Renderer> ().materials[0].shader = normal;
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader = normal;
                 }
 
                 _isImmune = value;

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Player1 Mat
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: b8271ffad79a3d749afdac3fec0b6bd0, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -73,6 +73,7 @@ Material:
     m_Floats:
     - _ALPHA: 0
     - _Brightness: 2
+    - _BumpAmt: 10
     - _BumpScale: 1
     - _ColorProximity1: 1
     - _ColorProximity2: 1
