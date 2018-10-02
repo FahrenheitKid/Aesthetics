@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour {
 
 
+	//[SerializeField]
+	//List <Button>
 
 	int cameraAnimIdx = 0;
 	
@@ -62,4 +64,12 @@ public class Menu : MonoBehaviour {
 		}
 		
 	}
+
+
+	void GoToScreen(Menu Screen, string cameraState)
+	{
+
+	}
+
+
 }
