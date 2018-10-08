@@ -108,16 +108,13 @@ namespace Aesthetics
                     combo = 0;
                     multiplierCombo = 0;
                     disableInput = true;
-                    Shader shader_ref = gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader;
-
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_Color", Color.blue);
+                    setShaderColors( stunColor, stunColor, stunColor, stunColor, stunColor, stunColor);
                 }
                 else
                 {
 
-                    Shader shader_ref = gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader;
+                   setShaderColors(colorPrim[0],colorPrim[1],colorSec[0], colorSec[1], colorTert[0], colorTert[1]);
 
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_Color", Color.white);
 
                     disableInput = false;
                 }
@@ -126,6 +123,16 @@ namespace Aesthetics
 
             }
         }
+
+        [SerializeField]
+        Color32 stunColor;
+
+        [SerializeField]
+        Color32 [] colorPrim = new Color32[2];
+        [SerializeField]
+        Color32 [] colorSec = new Color32[2];
+        [SerializeField]
+        Color32 [] colorTert = new Color32[2];
 
         [Tooltip ("Is the player fallen?")]
         [SerializeField, Candlelight.PropertyBackingField]
@@ -217,7 +224,7 @@ namespace Aesthetics
                 }
                 else
                 {
-                    Shader normal = Shader.Find ("Custom/Tint/2TintShader");
+                    Shader normal = Shader.Find ("Toon/Lit ColorMask Gradient");
                     gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader = normal;
                 }
 
@@ -530,6 +537,8 @@ namespace Aesthetics
             immunityTimer = gameObject.AddComponent<Countdown> ();
             fallenTimer = gameObject.AddComponent<Countdown> ();
             respawnTimer = gameObject.AddComponent<Countdown> ();
+
+            setShaderColors(colorPrim[0],colorPrim[1],colorSec[0], colorSec[1], colorTert[0], colorTert[1]);
 
         }
 
@@ -994,6 +1003,21 @@ namespace Aesthetics
 
             }
 
+        }
+
+
+        void setShaderColors(Color32 colorPrim1, Color32 colorPrim2, Color32 colorSec1,Color32 colorSec2, Color32 colorTert1, Color32 colorTert2)
+        {
+            Shader shader_ref = gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader;
+
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorPrim1", colorPrim1);
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorPrim2", colorPrim2);
+                    
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorSec1", colorSec1);
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorSec2", colorSec2);
+
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorTert1", colorTert1);
+                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorTert2", colorTert2);
         }
 
         CameraScript.windRose? getDirectionFromInput ()

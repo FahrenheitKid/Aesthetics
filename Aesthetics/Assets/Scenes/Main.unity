@@ -488,13 +488,13 @@ Prefab:
         type: 2}
       propertyPath: playerPrefabList.Array.data[0]
       value: 
-      objectReference: {fileID: 1232862958451660, guid: 6b24f21b438172f4b978021cdf01e67d,
+      objectReference: {fileID: 1232862958451660, guid: f88b2ef34d4a5a545b200f40a43f9005,
         type: 2}
     - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
         type: 2}
       propertyPath: playerPrefabList.Array.data[1]
       value: 
-      objectReference: {fileID: 1558422369199744, guid: 9d87bc098a3196d44a5eb272e7373cb9,
+      objectReference: {fileID: 1558422369199744, guid: 467b72aab75f6654cad7f97ac1183b2c,
         type: 2}
     - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
         type: 2}
@@ -629,13 +629,13 @@ Prefab:
         type: 2}
       propertyPath: playerPrefabList.Array.data[2]
       value: 
-      objectReference: {fileID: 1232862958451660, guid: fd545428ede28f248bda0250fb4fdea5,
+      objectReference: {fileID: 1232862958451660, guid: 30591de9d45170b42bc51be5aaa2a93e,
         type: 2}
     - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
         type: 2}
       propertyPath: playerPrefabList.Array.data[3]
       value: 
-      objectReference: {fileID: 1558422369199744, guid: 5af749b9b2d3cea4db2daa969c8abc0a,
+      objectReference: {fileID: 1558422369199744, guid: c84e90e98d79a684ba0d0f018a783787,
         type: 2}
     - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
         type: 2}
@@ -5303,6 +5303,24 @@ MonoBehaviour:
   _hasItem: 0
   _item: {fileID: 0}
   _isStunned: 0
+  stunColor:
+    serializedVersion: 2
+    rgba: 0
+  colorPrim:
+  - serializedVersion: 2
+    rgba: 0
+  - serializedVersion: 2
+    rgba: 0
+  colorSec:
+  - serializedVersion: 2
+    rgba: 0
+  - serializedVersion: 2
+    rgba: 0
+  colorTert:
+  - serializedVersion: 2
+    rgba: 0
+  - serializedVersion: 2
+    rgba: 0
   _isFallen: 0
   _isAiming: 0
   fall_duration: 3

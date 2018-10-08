@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Player3 Mat
+  m_Name: Female2 New Mat
   m_Shader: {fileID: 4800000, guid: cea28c36918724040a4e8c820a80b806, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -39,11 +39,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 7a4b6aa38f17e6346be7b9361a740194, type: 3}
+        m_Texture: {fileID: 2800000, guid: 714fe4d537a45c2448e53a79b9064a40, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 251c13c967d9419428ea67cfbfad4452, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -65,9 +65,8 @@ Material:
     m_Floats:
     - _BumpAmt: 10
     - _BumpScale: 1
-    - _ColorProximity: 0.943
-    - _ColorProximity1: 0.9
-    - _ColorProximity2: 0.472
+    - _ColorProximity1: 0.284
+    - _ColorProximity2: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -85,22 +84,20 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _Value1: 0.5
+    - _Value1: 1.6
     - _Value2: 0.5
     - _Value3: 0.5
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorMask: {r: 0.003921569, g: 0.8039216, b: 0.99607843, a: 1}
-    - _ColorMask1: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorMask2: {r: 0.9338235, g: 0.51268744, b: 0.30211934, a: 1}
-    - _ColorPrim1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _ColorPrim2: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _ColorSec1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _ColorSec2: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _ColorTert1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _ColorTert2: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _ColorMask1: {r: 0.9716981, g: 0.60039306, b: 0.42626378, a: 1}
+    - _ColorMask2: {r: 1, g: 0.44313726, b: 0.80784315, a: 1}
+    - _ColorPrim1: {r: 0, g: 0.8039216, b: 0.99607843, a: 1}
+    - _ColorPrim2: {r: 0, g: 0.8039216, b: 0.99607843, a: 1}
+    - _ColorSec1: {r: 0.015686275, g: 0.53333336, b: 0.6627451, a: 1}
+    - _ColorSec2: {r: 0.015686275, g: 0.53333336, b: 0.6627451, a: 1}
+    - _ColorTert1: {r: 0.6039216, g: 0.91764706, b: 0.99607843, a: 1}
+    - _ColorTert2: {r: 0.6039216, g: 0.91764706, b: 0.99607843, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _TintColor: {r: 0.019607844, g: 1, b: 0.6313726, a: 1}
-    - _TintColor1: {r: 0.019607844, g: 1, b: 0.6313726, a: 1}
-    - _TintColor2: {r: 0.019607844, g: 1, b: 0.6313726, a: 1}
+    - _TintColor1: {r: 1, g: 0.9843137, b: 0.5882353, a: 1}
+    - _TintColor2: {r: 1, g: 0.9843137, b: 0.5882353, a: 1}

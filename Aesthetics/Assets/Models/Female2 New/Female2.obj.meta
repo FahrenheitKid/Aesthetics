@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: b206f7d77ddfb9b4abec7625cfe345c5
+guid: 732e6d85f83be8d43bfdcbaeec277173
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Female1
+    100000: Female2
     100002: //RootNode
-    400000: Female1
+    400000: Female2
     400002: //RootNode
     2100000: palette
-    2300000: Female1
-    3300000: Female1
-    4300000: Female1
+    2300000: Female2
+    3300000: Female2
+    4300000: Female2
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -42,7 +42,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.2
+    globalScale: 0.1
     meshCompression: 0
     addColliders: 0
     importVisibility: 1
