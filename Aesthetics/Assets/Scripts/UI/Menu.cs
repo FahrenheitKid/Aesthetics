@@ -9,6 +9,8 @@ public class Menu : MonoBehaviour {
 	//[SerializeField]
 	//List <Button>
 
+
+	public List<GameObject> screens;
 	int cameraAnimIdx = 0;
 	
 	// Use this for initialization
