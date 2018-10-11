@@ -10,7 +10,10 @@ public class Menu : MonoBehaviour {
 	//List <Button>
 
 
-	public List<GameObject> screens;
+	public List<MenuScreen> screens;
+
+	[SerializeField]
+	MenuScreen currentScreen;
 	int cameraAnimIdx = 0;
 	
 	// Use this for initialization
@@ -64,13 +67,45 @@ public class Menu : MonoBehaviour {
 			Aesthetics.TheGrid.QuitGame();
 			
 		}
+
+		if(Input.GetKeyDown(KeyCode.Return))
+		{
+			DefaultEnter();
+		}
 		
 	}
 
 
-	void GoToScreen(Menu Screen, string cameraState)
+	void GoToScreen(MenuScreen Screen, string cameraState)
 	{
+		currentScreen = Screen;
 
+		Camera.main.GetComponent<Animator>().Play(cameraState);
+
+
+		if(currentScreen.options[0])
+		{
+			currentScreen.options[0].isSelected = true;
+			currentScreen.options[0].pulse = true;
+		}
+		
+		
+	}
+
+	void DefaultEnter()
+	{
+		foreach(MenuOption o in currentScreen.options)
+		{
+			if(o && o.isSelected)
+			{
+				o.isSelected = false;
+				o.pulse = false;
+				GoToScreen(o.nextScreen, o.nextScreen.cameraState);
+
+				
+
+			}
+		}
 	}
 
 
