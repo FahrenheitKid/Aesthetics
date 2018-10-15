@@ -174,8 +174,8 @@ MonoBehaviour:
   _moveSpeed: 2
   grid_ref: {fileID: 0}
   rhythmSystem_ref: {fileID: 0}
-  _gridColor: 4
-  _blackGridColor: 10
+  _gridColor: 5
+  _blackGridColor: 11
   beatPunchScale: 0.05
   vibrato: 0
   elasticity: 0
