@@ -152,7 +152,44 @@ public class GridBlock : MonoBehaviour
     }
     #endregion
 
-    public static gridType GridType;
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private gridType _GridType;
+    public gridType GridType
+    {
+        get
+        {
+            return _GridType;
+
+        }
+        set
+        {
+            _GridType = value;
+            
+            if(_GridType == gridType.Hole)
+            {
+                isBlocked = false;
+                isPreBlocked = false;
+
+                isFallen = true;
+                isPreFallen = true;
+                transform.localScale = new Vector3 (0.001f, 0.001f, 0.001f);
+                
+            }
+
+            if(_GridType == gridType.Obstacle)
+            {
+                isBlocked = true;
+                isPreBlocked = true;
+                
+                isFallen = false;
+                isPreFallen = false;
+                transform.localScale = blockScale;
+                changeColor(gridBlockColor.Black);
+            }
+
+        }
+    }
 
     [SerializeField]
     private TheGrid grid_ref;

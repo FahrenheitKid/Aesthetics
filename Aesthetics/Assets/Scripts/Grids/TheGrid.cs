@@ -1245,10 +1245,14 @@ namespace Aesthetics
                     GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xOffset * j - mapWidth * xOffset, 0, zOffset * mapHeight - i * zOffset), Quaternion.identity) as GameObject;
 
                     TilePrefab.transform.parent = transform;
-                    TilePrefab.GetComponent<GridBlock> ().init (j, 0, i, GetComponent<TheGrid> (), rhythmSystem_ref);
-                    TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor) tiles[i, j]);
-                    TilePrefab.GetComponent<GridBlock> ().startTransform = TilePrefab.transform;
-                    _GridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
+
+                    GridBlock gr = TilePrefab.GetComponent<GridBlock> ();
+                    gr.init (j, 0, i, GetComponent<TheGrid> (), rhythmSystem_ref);
+                    gr.GridType = (GridBlock.gridType)tiles[i, j];
+                    if(gr.GridType == GridBlock.gridType.Normal)
+                    gr.changeColor (GridBlock.gridBlockColor.White);
+                    gr.startTransform = TilePrefab.transform;
+                    _GridBlockList.Add (gr);
 
                 }
             }

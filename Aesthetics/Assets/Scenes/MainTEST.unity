@@ -707,6 +707,11 @@ Prefab:
       propertyPath: stageHighlightColors.Array.data[2].a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
+        type: 2}
+      propertyPath: fileNameToLoad
+      value: map0.txt
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
   m_IsPrefabAsset: 0

@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: CaveiraMat_1
-  m_Shader: {fileID: 4800000, guid: cea28c36918724040a4e8c820a80b806, type: 3}
+  m_Name: female1
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -38,23 +38,11 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _IrTex:
-        m_Texture: {fileID: 2800000, guid: 15392d4fe449eb548894270ed447f9c2, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 2a8885c253423f941b63f4a9fac47dee, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Mask:
-        m_Texture: {fileID: 2800000, guid: 2a8885c253423f941b63f4a9fac47dee, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5890cb09b9563fd4290591067575995c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Noise:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -66,46 +54,23 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Ramp:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Brightness: 1
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _Emis1: 0
-    - _Emis2: 0
-    - _Emis3: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0
+    - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LM: 0
-    - _LM2: 0
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _Offset: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _Value: 1
-    - _Value1: 0.5
-    - _Value2: 2
-    - _Value3: 0.5
-    - _WorldScale: 1
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorPrim1: {r: 1, g: 0.042452812, b: 0.042452812, a: 1}
-    - _ColorPrim2: {r: 1, g: 0, b: 0, a: 1}
-    - _ColorSec1: {r: 0.042452812, g: 1, b: 0.9521702, a: 1}
-    - _ColorSec2: {r: 0, g: 1, b: 0.89999986, a: 1}
-    - _ColorTert1: {r: 1, g: 0.21226418, b: 0.83859986, a: 1}
-    - _ColorTert2: {r: 1, g: 0.23113209, b: 0.8791238, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _IrColor: {r: 0.6792453, g: 0.18903525, b: 0.630894, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
