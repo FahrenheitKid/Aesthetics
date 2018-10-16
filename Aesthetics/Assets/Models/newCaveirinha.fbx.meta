@@ -615,13 +615,13 @@ ModelImporter:
     400606: VIS_upper_arm_ik_pole.L_end
     400608: VIS_upper_arm_ik_pole.R
     400610: VIS_upper_arm_ik_pole.R_end
-    2100000: Outline
-    2100002: OlhosMat
+    2100000: CorpoMat
+    2100002: DetalheMat
     4300000: caveirinha
-    7400000: rig|Animation_00
-    7400002: rig|Animation_01
-    7400004: rig|Animation_02
-    7400006: rig|Tpose
+    7400000: Animation_01.001
+    7400002: rig|Animation_00
+    7400004: rig|Animation_01
+    7400006: rig|T_Pose
     9500000: //RootNode
     13700000: caveirinha
   externalObjects: {}
@@ -675,7 +675,7 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.01
+    previousCalculatedGlobalScale: 0.001
     hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
