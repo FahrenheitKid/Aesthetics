@@ -7,6 +7,9 @@ public class MenuScreen : MonoBehaviour {
 
 	public List<MenuOption> options;
 	public string cameraState;
+	public bool isHorizontal;
+
+	public MenuOption currentOption;
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +21,16 @@ public class MenuScreen : MonoBehaviour {
 
 		
 		
+	}
+
+	public void SetOptionsActive(bool active)
+	{
+		
+		foreach(MenuOption o in options)
+		{
+			
+			o.gameObject.SetActive(active);
+		}
 	}
 
 	

@@ -38,6 +38,7 @@ public class MenuOption : MonoBehaviour {
 			if(_isSelected)
 			{
 				pulse = true;
+				transform.parent.GetComponent<MenuScreen>().currentOption = this;
 			}
 			else
 			{
@@ -58,9 +59,17 @@ public class MenuOption : MonoBehaviour {
         {
             _pulse = value;
 
-			if(pulse && punchScale.IsPlaying())
+			if(pulse)
 			{
-				punchScale = transform.DOScale(punchAddScale + Vector3.one,1).SetLoops(-1,LoopType.Yoyo);
+				if(punchScale == null && !punchScale.IsPlaying())
+				{
+					punchScale = transform.DOScale(punchAddScale + Vector3.one,1).SetLoops(-1,LoopType.Yoyo);
+				}
+				else
+				{
+					punchScale.Restart();
+				}
+				
 			}
 			else
 			{
@@ -80,6 +89,11 @@ public class MenuOption : MonoBehaviour {
 		//punchScale = transform.DOPunchScale(punchAddScale,2,0,0).SetLoops(-1);
 		if(pulse)
 		punchScale = transform.DOScale(punchAddScale + Vector3.one,1).SetLoops(-1,LoopType.Yoyo);
+		else
+		{
+			punchScale = transform.DOScale(punchAddScale + Vector3.one,1).SetLoops(-1,LoopType.Yoyo);
+			punchScale.Pause();
+		}
 		//punchScale.Pause();
 		
 	}
@@ -89,12 +103,12 @@ public class MenuOption : MonoBehaviour {
 
 		
 
-		if(pulse && !punchScale.IsPlaying())
-		{
-			//print(punchScale.IsPlaying());
-			punchScale.Restart();
+		//if(pulse && !punchScale.IsPlaying())
+		//{
+		//	//print(punchScale.IsPlaying());
+		//	punchScale.Restart();
 			
-		}
+		//}
 
 		for(int i = 1; i <=4; i++)
 		{

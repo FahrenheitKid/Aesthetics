@@ -24,7 +24,9 @@ public class Menu : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if(Input.GetKeyDown(KeyCode.D))
+
+		/*
+			if(Input.GetKeyDown(KeyCode.D))
 		{
 			foreach (AnimatorControllerParameter parameter in Camera.main.GetComponent<Animator>().parameters) {
     		if (parameter.type == AnimatorControllerParameterType.Bool)
@@ -55,11 +57,44 @@ public class Menu : MonoBehaviour {
 			Camera.main.GetComponent<Animator>().SetBool(Camera.main.GetComponent<Animator>().parameters[cameraAnimIdx].name,true);
 			//print(Camera.main.GetComponent<Animator>().parameters[cameraAnimIdx].name + " " + Camera.main.GetComponent<Animator>().GetBool(cameraAnimIdx));
 		}
+		 */
+		
 
-		if(Input.GetKeyDown(KeyCode.S))
+		if(Input.GetKeyDown(KeyCode.Q))
 		{
 			SceneManager.LoadScene(1);
 
+		}
+
+		if(Input.GetAxis("Horizontal1") < 0)
+		{
+			if(currentScreen.isHorizontal)
+			{
+				GoToOption(currentScreen.currentOption.next);
+			}
+		}
+		else if(Input.GetAxis("Horizontal1") > 0)
+		{
+			if(currentScreen.isHorizontal)
+			{
+				GoToOption(currentScreen.currentOption.previous);
+			}
+		}
+
+		if(Input.GetAxis("Vertical1") > 0)
+		{
+			if(!currentScreen.isHorizontal)
+			{
+				
+				GoToOption(currentScreen.currentOption.next);
+			}
+		}
+		else if(Input.GetAxis("Vertical1") < 0)
+		{
+			if(!currentScreen.isHorizontal)
+			{
+				GoToOption(currentScreen.currentOption.previous);
+			}
 		}
 
 		if(Input.GetKeyDown(KeyCode.Escape))
@@ -78,18 +113,32 @@ public class Menu : MonoBehaviour {
 
 	void GoToScreen(MenuScreen Screen, string cameraState)
 	{
+
+		currentScreen.SetOptionsActive(false);
+
 		currentScreen = Screen;
 
 		Camera.main.GetComponent<Animator>().Play(cameraState);
 
+		currentScreen.SetOptionsActive(true);
 
 		if(currentScreen.options[0])
 		{
-			currentScreen.options[0].isSelected = true;
-			currentScreen.options[0].pulse = true;
+			//currentScreen.options[0].isSelected = true;
+			//currentScreen.options[0].pulse = true;
 		}
 		
 		
+		
+	}
+
+	public void GoToOption(MenuOption option)
+	{
+		if(!option) return;
+		currentScreen.currentOption.isSelected = false;
+		
+		option.isSelected = true;
+		currentScreen.currentOption = option;
 	}
 
 	void DefaultEnter()
