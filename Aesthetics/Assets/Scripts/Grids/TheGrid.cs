@@ -1379,7 +1379,7 @@ namespace Aesthetics
             result *= p.multiplier;
 
             Vector3 pos = p.transform.position;
-            pos.y += p.GetComponent<Renderer> ().bounds.size.y + 0.0f;
+            pos.y += p.renderer_Ref.bounds.size.y + 0.0f;
             SpawnScoreFloatingText (pos, result.ToString (), GridBlock.getColorOfGridBlockColor (p.gridColor));
             p.score += result;
 

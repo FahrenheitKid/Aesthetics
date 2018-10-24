@@ -302,7 +302,7 @@ namespace Aesthetics
                 gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
 
             //print("new local scale: " + transform.localScale);
-            float player_height = p.gameObject.GetComponent<MeshRenderer> ().bounds.max.y;
+            float player_height = p.renderer_Ref.bounds.max.y;
             transform.localPosition = new Vector3 (0.0f, player_height, 0.0f);
 
             grid_ref.updateItemSpawnRatio ();

@@ -187,6 +187,14 @@ namespace Aesthetics
         [SerializeField, ]
         public GridBlock fall_gridBlock_Ref = null;
 
+        [Tooltip ("model renderer ref")]
+        [SerializeField, ]
+        public Renderer renderer_Ref = null;
+
+        [Tooltip ("model renderer ref")]
+        [SerializeField, ]
+        public Animator animator_Ref = null;
+
         [Tooltip ("Is the player respawning?")]
         [SerializeField, Candlelight.PropertyBackingField]
         private bool _isRespawning = false;
@@ -219,13 +227,13 @@ namespace Aesthetics
                 {
 
                     Shader glass = Shader.Find ("FX/Glass/Stained BumpDistort");
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader = glass;
+                    renderer_Ref.sharedMaterials[0].shader = glass;
 
                 }
                 else
                 {
                     Shader normal = Shader.Find ("Toon/Lit ColorMask Gradient");
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader = normal;
+                    renderer_Ref.sharedMaterials[0].shader = normal;
                 }
 
                 _isImmune = value;
@@ -748,7 +756,7 @@ namespace Aesthetics
                             //lose combo
 
                             Vector3 pos = transform.position;
-                            pos.y += GetComponent<Renderer> ().bounds.size.y + 0.0f;
+                            pos.y += renderer_Ref.bounds.size.y + 0.0f;
                             grid_ref.SpawnMissFloatingText (pos);
 
                             combo = 0;
@@ -791,7 +799,7 @@ namespace Aesthetics
                             //lose combo
 
                             Vector3 pos = transform.position;
-                            pos.y += GetComponent<Renderer> ().bounds.size.y + 0.0f;
+                            pos.y += renderer_Ref.bounds.size.y + 0.0f;
                             grid_ref.SpawnMissFloatingText (pos);
 
                             combo = 0;
@@ -1008,16 +1016,18 @@ namespace Aesthetics
 
         void setShaderColors(Color32 colorPrim1, Color32 colorPrim2, Color32 colorSec1,Color32 colorSec2, Color32 colorTert1, Color32 colorTert2)
         {
-            Shader shader_ref = gameObject.GetComponent<Renderer> ().sharedMaterials[0].shader;
+            if(!renderer_Ref) return;
 
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorPrim1", colorPrim1);
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorPrim2", colorPrim2);
+            Shader shader_ref = renderer_Ref.sharedMaterials[0].shader;
+
+                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorPrim1", colorPrim1);
+                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorPrim2", colorPrim2);
                     
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorSec1", colorSec1);
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorSec2", colorSec2);
+                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorSec1", colorSec1);
+                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorSec2", colorSec2);
 
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorTert1", colorTert1);
-                    gameObject.GetComponent<Renderer> ().sharedMaterials[0].SetColor ("_ColorTert2", colorTert2);
+                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorTert1", colorTert1);
+                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorTert2", colorTert2);
         }
 
         CameraScript.windRose? getDirectionFromInput ()

@@ -3,7 +3,7 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -28,3 +28,5 @@ MonoBehaviour:
     bStartNewMeasure: 1
   mTracks:
   - {fileID: 11400000, guid: 1b419107b0b4b0b449012877e200bbc0, type: 2}
+  - {fileID: 11400000, guid: f6fc8f1a92d977847a4f1b0e1489a60f, type: 2}
+  - {fileID: 11400000, guid: cc51e95595d7d294e9051dd932c77972, type: 2}
