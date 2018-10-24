@@ -11,15 +11,18 @@ public class MenuOption : MonoBehaviour {
 
 	public Vector3 selectedScale;
 	public Color32 selectedColor;
+	public Color32 color;
 
 	public Vector3 punchAddScale;
 
-	public Color32 color;
+	
 
 	public MenuOption previous;
 
 	public MenuOption next;
 
+
+	public MenuScreen previousScreen;
 	public MenuScreen nextScreen;
 
 
@@ -37,12 +40,17 @@ public class MenuOption : MonoBehaviour {
 
 			if(_isSelected)
 			{
-				pulse = true;
+				
 				transform.parent.GetComponent<MenuScreen>().currentOption = this;
+				transform.DOScale(selectedScale, 0.2f);
+				text.fontMaterial.SetFloat("_FaceDilate", 0.4f);
+				text.fontMaterial.SetColor("_FaceColor", selectedColor);
 			}
 			else
 			{
-				pulse = false;
+				transform.DOScale(Vector3.one, 0.2f);
+				text.fontMaterial.SetFloat("_FaceDilate", 0.1f);
+				text.fontMaterial.SetColor("_FaceColor", color);
 			}
         }
     }
@@ -61,7 +69,7 @@ public class MenuOption : MonoBehaviour {
 
 			if(pulse)
 			{
-				if(punchScale == null && !punchScale.IsPlaying())
+				if(punchScale == null)
 				{
 					punchScale = transform.DOScale(punchAddScale + Vector3.one,1).SetLoops(-1,LoopType.Yoyo);
 				}
@@ -74,6 +82,8 @@ public class MenuOption : MonoBehaviour {
 			else
 			{
 				punchScale.Kill(true);
+				punchScale = null;
+				transform.localScale = Vector3.one;
 			}
         }
     }
@@ -87,12 +97,16 @@ public class MenuOption : MonoBehaviour {
 
 		
 		//punchScale = transform.DOPunchScale(punchAddScale,2,0,0).SetLoops(-1);
-		if(pulse)
-		punchScale = transform.DOScale(punchAddScale + Vector3.one,1).SetLoops(-1,LoopType.Yoyo);
-		else
+		if(isSelected && !pulse)
 		{
-			punchScale = transform.DOScale(punchAddScale + Vector3.one,1).SetLoops(-1,LoopType.Yoyo);
-			punchScale.Pause();
+			isSelected = false;
+			isSelected = true;
+		}
+
+		if(pulse)
+		{
+			pulse = false;
+			pulse = true;
 		}
 		//punchScale.Pause();
 		

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Aesthetics;
 
 public class Menu : MonoBehaviour {
 
@@ -15,6 +16,19 @@ public class Menu : MonoBehaviour {
 	[SerializeField]
 	MenuScreen currentScreen;
 	int cameraAnimIdx = 0;
+
+	
+        [SerializeField]
+        private Player.AxisState horizontalAxisState = Player.AxisState.Idle;
+
+        [SerializeField]
+        private Player.AxisState verticalAxisState = Player.AxisState.Idle;
+
+        [Tooltip ("Deadzone for the axis press/down")]
+        [SerializeField]
+        private float deadZone = 0.01f;
+
+		public Vector2[] input = new Vector2[4];
 	
 	// Use this for initialization
 	void Start () {
@@ -59,21 +73,33 @@ public class Menu : MonoBehaviour {
 		}
 		 */
 		
+			handleAxisStates();
+			handleInput();
+		
+		
+	}
 
+	void handleInput()
+	{
 		if(Input.GetKeyDown(KeyCode.Q))
 		{
 			SceneManager.LoadScene(1);
 
 		}
+		
+		
+		
+                
+		
 
-		if(Input.GetAxis("Horizontal1") < 0)
+		if(horizontalAxisState == Player.AxisState.Up && input[0].x > 0)
 		{
 			if(currentScreen.isHorizontal)
 			{
 				GoToOption(currentScreen.currentOption.next);
 			}
 		}
-		else if(Input.GetAxis("Horizontal1") > 0)
+		else if(horizontalAxisState == Player.AxisState.Down && input[0].x < 0)
 		{
 			if(currentScreen.isHorizontal)
 			{
@@ -81,7 +107,7 @@ public class Menu : MonoBehaviour {
 			}
 		}
 
-		if(Input.GetAxis("Vertical1") > 0)
+		if(verticalAxisState == Player.AxisState.Down && input[0].y > 0)
 		{
 			if(!currentScreen.isHorizontal)
 			{
@@ -89,7 +115,7 @@ public class Menu : MonoBehaviour {
 				GoToOption(currentScreen.currentOption.next);
 			}
 		}
-		else if(Input.GetAxis("Vertical1") < 0)
+		else if((verticalAxisState == Player.AxisState.Down )&& input[0].y < 0)
 		{
 			if(!currentScreen.isHorizontal)
 			{
@@ -97,36 +123,75 @@ public class Menu : MonoBehaviour {
 			}
 		}
 
+                
+            
+
 		if(Input.GetKeyDown(KeyCode.Escape))
 		{
 			Aesthetics.TheGrid.QuitGame();
 			
 		}
 
-		if(Input.GetKeyDown(KeyCode.Return))
+		if(Input.GetButtonDown("ActionA1"))
 		{
 			DefaultEnter();
 		}
-		
+
+		if(Input.GetButtonDown("ActionB1"))
+		{
+			DefaultBack();
+		}
 	}
 
-
-	void GoToScreen(MenuScreen Screen, string cameraState)
+	void handleAxisStates()
 	{
 
-		currentScreen.SetOptionsActive(false);
+		if(currentScreen.name == "Player Select Screen") // let other players move
+		{
+			for(int i = 0; i < input.Length; i++)
+		{
+			input[i] = new Vector2 (Input.GetAxis ("Horizontal" + (i +1)), Input.GetAxis ("Vertical" + (i +1)));
+        
+                    if (Mathf.Abs (input[i].x) > Mathf.Abs (input[i].y))
+                    {
+                        input[i].y = 0;
+                    }
+                    else
+                    {
+                        input[i].x = 0;
+                    }
+		}
+		}
+		else
+		{
+			input[0] = new Vector2 (Input.GetAxis ("Horizontal" + 1), Input.GetAxis ("Vertical" + 1));
+        
+                    if (Mathf.Abs (input[0].x) > Mathf.Abs (input[0].y))
+                    {
+                        input[0].y = 0;
+                    }
+                    else
+                    {
+                        input[0].x = 0;
+					}
+		}
+			HandleAxisState (ref horizontalAxisState, "Horizontal" + 1);
+            HandleAxisState (ref verticalAxisState, "Vertical" + 1);
+        
+         
+                //HandleAxisStateDPad (ref horizontalAxisState, "Horizontal" + 2);
+               // HandleAxisStateDPad (ref verticalAxisState, "Vertical" + 2);
+	}
+	void GoToScreen(MenuScreen Screen, string cameraState)
+	{
+		
+		currentScreen.isSelected = false;
+		
 
 		currentScreen = Screen;
+		currentScreen.isSelected = true;
 
 		Camera.main.GetComponent<Animator>().Play(cameraState);
-
-		currentScreen.SetOptionsActive(true);
-
-		if(currentScreen.options[0])
-		{
-			//currentScreen.options[0].isSelected = true;
-			//currentScreen.options[0].pulse = true;
-		}
 		
 		
 		
@@ -137,8 +202,10 @@ public class Menu : MonoBehaviour {
 		if(!option) return;
 		currentScreen.currentOption.isSelected = false;
 		
-		option.isSelected = true;
 		currentScreen.currentOption = option;
+		option.isSelected = true;
+		
+		//print(currentScreen.currentOption.name);
 	}
 
 	void DefaultEnter()
@@ -147,8 +214,7 @@ public class Menu : MonoBehaviour {
 		{
 			if(o && o.isSelected)
 			{
-				o.isSelected = false;
-				o.pulse = false;
+				
 				GoToScreen(o.nextScreen, o.nextScreen.cameraState);
 
 				
@@ -157,5 +223,122 @@ public class Menu : MonoBehaviour {
 		}
 	}
 
+	void DefaultBack()
+	{
+		foreach(MenuOption o in currentScreen.options)
+		{
+			if(o && o.isSelected)
+			{
+				
+				GoToScreen(o.previousScreen, o.previousScreen.cameraState);
+
+				
+
+			}
+		}
+	}
+
+
+	        void HandleAxisState (ref Player.AxisState state, string axi)
+        {
+            switch (state)
+            {
+                case Player.AxisState.Idle:
+                    if (Input.GetAxis (axi) < -deadZone || Input.GetAxis (axi) > deadZone)
+                    {
+                        state = Player.AxisState.Down;
+                    }
+                    break;
+
+                case Player.AxisState.Down:
+                    state = Player.AxisState.Held;
+                    break;
+
+                case Player.AxisState.Held:
+                    if (Input.GetAxis (axi) > -deadZone && Input.GetAxis (axi) < deadZone)
+                    {
+                        state = Player.AxisState.Up;
+                    }
+                    break;
+
+                case Player.AxisState.Up:
+                    state = Player.AxisState.Idle;
+                    break;
+            }
+
+        }
+
+        void HandleAxisStateDPad (ref Player.AxisState state, string axi)
+        {
+
+                /*
+                if (Input.GetAxisRaw ("DpadX") != 0)
+            {
+                if (X_isAxisInUse == false)
+                {
+                    if (Input.GetAxisRaw ("DpadX") == +1)
+                    {
+                        inputCountX += 1;
+                    }
+                    else if (Input.GetAxisRaw ("DpadX") == -1)
+                    {
+                        inputCountX -= 1;
+                    }
+                    X_isAxisInUse = true;
+                }
+            }
+            if (Input.GetAxisRaw ("DpadX") == 0)
+            {
+                X_isAxisInUse = false;
+            }
+            //----------------------------------------
+            if (Input.GetAxisRaw ("DpadY") != 0)
+            {
+                if (Y_isAxisInUse == false)
+                {
+                    if (Input.GetAxisRaw ("DpadY") == +1)
+                    {
+                        inputCountY += 1;
+                    }
+                    else if (Input.GetAxisRaw ("DpadY") == -1)
+                    {
+                        inputCountY -= 1;
+                    }
+                    Y_isAxisInUse = true;
+                }
+            }
+            if (Input.GetAxisRaw ("DpadY") == 0)
+            {
+                Y_isAxisInUse = false;
+            }
+                 */
+            
+
+            switch (state)
+            {
+                case Player.AxisState.Idle:
+                    if (Input.GetAxisRaw (axi) < -deadZone || Input.GetAxisRaw (axi) > deadZone)
+                    {
+                        state = Player.AxisState.Down;
+                    }
+                    break;
+
+                case Player.AxisState.Down:
+                    state = Player.AxisState.Held;
+                    break;
+
+                case Player.AxisState.Held:
+                    if (Input.GetAxisRaw (axi) > -deadZone && Input.GetAxisRaw (axi) < deadZone)
+                    {
+                        state = Player.AxisState.Up;
+                    }
+                    break;
+
+                case Player.AxisState.Up:
+                    state = Player.AxisState.Idle;
+                    break;
+            }
+
+        }
 
 }

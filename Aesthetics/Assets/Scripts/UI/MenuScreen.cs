@@ -11,6 +11,53 @@ public class MenuScreen : MonoBehaviour {
 
 	public MenuOption currentOption;
 
+	public Menu menu_Ref;
+
+	[SerializeField, Candlelight.PropertyBackingField]
+    protected bool _isSelected;
+    public bool isSelected
+    {
+        get
+        {
+            return _isSelected;
+        }
+        set
+        {
+            _isSelected = value;
+
+			if(_isSelected)
+			{
+				if(name == "Player Select Screen") // show only players options
+				{
+					//get the number of players selected to diplay only the necessary UI elements
+					MenuScreen scr = menu_Ref.screens.Find(screen => screen.name == "Player Number Screen");
+					
+					int optionIndex = 1;
+					optionIndex =  scr.options.FindIndex(opt => opt.isSelected == true);
+
+					
+					for(int i = 0; i < optionIndex + 2; i++)
+					{
+						options[i].gameObject.SetActive(true);
+					}
+
+				}
+				else
+				{
+					SetOptionsActive(true);
+
+				}
+				
+				
+			}
+			else
+			{
+				SetOptionsActive(false);
+			}
+        }
+    }
+
+
 	// Use this for initialization
 	void Start () {
 		
