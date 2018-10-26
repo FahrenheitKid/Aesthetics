@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using System.Linq;
 
 public class MenuOption : MonoBehaviour {
 
@@ -25,6 +26,9 @@ public class MenuOption : MonoBehaviour {
 	public MenuScreen previousScreen;
 	public MenuScreen nextScreen;
 
+	public TextMeshPro leftArrow;
+	public TextMeshPro rightArrow;
+
 
 	[SerializeField, Candlelight.PropertyBackingField]
     protected bool _isSelected;
@@ -40,17 +44,45 @@ public class MenuOption : MonoBehaviour {
 
 			if(_isSelected)
 			{
-				
 				transform.parent.GetComponent<MenuScreen>().currentOption = this;
+				if(!isMultipleOptions)
+				{
+				
+				
 				transform.DOScale(selectedScale, 0.2f);
 				text.fontMaterial.SetFloat("_FaceDilate", 0.4f);
 				text.fontMaterial.SetColor("_FaceColor", selectedColor);
+
+				}
+				else
+				{
+					leftArrow.fontMaterial.SetFloat("_FaceDilate", 0.4f);
+					leftArrow.fontMaterial.SetColor("_FaceColor", selectedColor);
+
+					rightArrow.fontMaterial.SetFloat("_FaceDilate", 0.4f);
+					rightArrow.fontMaterial.SetColor("_FaceColor", selectedColor);
+				}
+				
 			}
 			else
 			{
+				if(!isMultipleOptions)
+				{
+
 				transform.DOScale(Vector3.one, 0.2f);
 				text.fontMaterial.SetFloat("_FaceDilate", 0.1f);
 				text.fontMaterial.SetColor("_FaceColor", color);
+
+				}
+				else
+				{
+					leftArrow.fontMaterial.SetFloat("_FaceDilate", 0.1f);
+					leftArrow.fontMaterial.SetColor("_FaceColor", color);
+
+					rightArrow.fontMaterial.SetFloat("_FaceDilate", 0.1f);
+					rightArrow.fontMaterial.SetColor("_FaceColor", color);
+
+				}
 			}
         }
     }
@@ -89,10 +121,16 @@ public class MenuOption : MonoBehaviour {
     }
 
 	Tween punchScale;
+	public bool isMultipleOptions;
+	public bool isHorizontal;
+	public List <GameObject> optionsList;
+	public GameObject currentMultipleOption;
 	
 
 	// Use this for initialization
 	void Start () {
+
+		if(text)
 		text.color = color;
 
 		
@@ -124,6 +162,8 @@ public class MenuOption : MonoBehaviour {
 			
 		//}
 
+	/*
+		
 		for(int i = 1; i <=4; i++)
 		{
 			string axis = "Vertical" + i;
@@ -138,6 +178,8 @@ public class MenuOption : MonoBehaviour {
 			}
 			
 		}
+	
+	 */
 
 		
 		
@@ -155,6 +197,40 @@ public class MenuOption : MonoBehaviour {
 
 	}
 
-	
+	public void pulsateArrows(bool left, bool right)
+	{
+		if(right && rightArrow)
+		rightArrow.transform.DOPunchScale(new Vector3(0.8f,0.8f,0f),0.3f,2,0.8f);
+		if(left && leftArrow)
+		leftArrow.transform.DOPunchScale(new Vector3(0.8f,0.8f,0f),0.3f,2,0.8f);
+	}
+
+	public void GoToMultipleOption(bool next)
+	{
+		if(optionsList.Any() && optionsList.Count > 1)
+		{
+			if(currentMultipleOption)
+			currentMultipleOption.SetActive(false);
+			else currentMultipleOption = optionsList[0];
+
+			//ARRUMAR AQUI
+
+			int i = optionsList.FindIndex(o => currentMultipleOption);
+			
+			print("before " + i);
+			if(next) i++; else i--;
+
+
+			if(i >= optionsList.Count - 1)
+			{
+				i = 0;
+			} else if(i < 0) i = optionsList.Count - 1;
+
+			print(i);
+			currentMultipleOption = optionsList[i];
+
+			currentMultipleOption.SetActive(true);
+		}
+	}
 
 }

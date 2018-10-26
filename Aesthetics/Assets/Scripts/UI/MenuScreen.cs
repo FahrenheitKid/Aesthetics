@@ -80,5 +80,15 @@ public class MenuScreen : MonoBehaviour {
 		}
 	}
 
+	public void SetChildrenActive(bool active)
+	{
+		
+		foreach(Transform o in transform)
+		{
+			
+			o.gameObject.SetActive(active);
+		}
+	}
+
 	
 }
