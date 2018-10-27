@@ -32,12 +32,16 @@ public class MenuScreen : MonoBehaviour {
 					//get the number of players selected to diplay only the necessary UI elements
 					MenuScreen scr = menu_Ref.screens.Find(screen => screen.name == "Player Number Screen");
 					
-					int optionIndex = 1;
-					optionIndex =  scr.options.FindIndex(opt => opt.isSelected == true);
+					int numberOfPlayers = 2;
+					string name = scr.options.Find(opt => opt.isSelected == true).name;
+					
+					numberOfPlayers =  (int)System.Char.GetNumericValue(name[name.Length - 1]);
 
 					
-					for(int i = 0; i < optionIndex + 2; i++)
+					for(int i = 0; i < options.Count; i++)
 					{
+						//if last character is lower than number of players
+						if((int)System.Char.GetNumericValue(options[i].name[options[i].name.Length - 1]) <= numberOfPlayers)
 						options[i].gameObject.SetActive(true);
 					}
 

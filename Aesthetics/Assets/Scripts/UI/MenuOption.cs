@@ -56,11 +56,20 @@ public class MenuOption : MonoBehaviour {
 				}
 				else
 				{
+					//if(true) return ;
+					/*
 					leftArrow.fontMaterial.SetFloat("_FaceDilate", 0.4f);
 					leftArrow.fontMaterial.SetColor("_FaceColor", selectedColor);
 
 					rightArrow.fontMaterial.SetFloat("_FaceDilate", 0.4f);
 					rightArrow.fontMaterial.SetColor("_FaceColor", selectedColor);
+					 */
+
+					
+					leftArrow.color = selectedColor;
+					rightArrow.color = selectedColor;
+					
+					
 				}
 				
 			}
@@ -76,11 +85,18 @@ public class MenuOption : MonoBehaviour {
 				}
 				else
 				{
-					leftArrow.fontMaterial.SetFloat("_FaceDilate", 0.1f);
+					//if(true) return ;
+
+					/*
+						leftArrow.fontMaterial.SetFloat("_FaceDilate", 0.1f);
 					leftArrow.fontMaterial.SetColor("_FaceColor", color);
 
 					rightArrow.fontMaterial.SetFloat("_FaceDilate", 0.1f);
 					rightArrow.fontMaterial.SetColor("_FaceColor", color);
+					 */
+					
+					leftArrow.color = color;
+					rightArrow.color = color;
 
 				}
 			}
@@ -215,13 +231,13 @@ public class MenuOption : MonoBehaviour {
 
 			//ARRUMAR AQUI
 
-			int i = optionsList.FindIndex(o => currentMultipleOption);
+			int i = optionsList.FindIndex(x => x.gameObject.name == currentMultipleOption.name);
 			
 			print("before " + i);
 			if(next) i++; else i--;
 
 
-			if(i >= optionsList.Count - 1)
+			if(i >= optionsList.Count)
 			{
 				i = 0;
 			} else if(i < 0) i = optionsList.Count - 1;
