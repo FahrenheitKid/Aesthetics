@@ -38,12 +38,13 @@ public class MenuScreen : MonoBehaviour
 
                     numberOfPlayers = (int) System.Char.GetNumericValue (name[name.Length - 1]);
 
+                    
                     for (int i = 0; i < options.Count; i++)
                     {
                         //if last character is lower than number of players
                         if ((int) System.Char.GetNumericValue (options[i].name[options[i].name.Length - 1]) <= numberOfPlayers)
                             options[i].gameObject.SetActive (true);
-                    }
+                    }  
 
                 }
                 else

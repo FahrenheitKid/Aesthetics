@@ -19,6 +19,15 @@ namespace Aesthetics
             Up
         }
 
+        public enum InputType
+        {
+            WASD,
+            Arrows,
+            Xbox,
+            PS4
+        }
+
+
         [SerializeField, Candlelight.PropertyBackingField]
         private static int _globalID = 0;
         public int globalID
@@ -44,6 +53,34 @@ namespace Aesthetics
             set
             {
                 _ID = value;
+            }
+        }
+
+         [SerializeField, Candlelight.PropertyBackingField]
+        private int _inputID = 0;
+        public int inputID
+        {
+            get
+            {
+                return _inputID;
+            }
+            set
+            {
+                _inputID = value;
+            }
+        }
+
+        [SerializeField, Candlelight.PropertyBackingField]
+        private InputType _controllerType = 0;
+        public InputType controllerType
+        {
+            get
+            {
+                return _controllerType;
+            }
+            set
+            {
+                _controllerType = value;
             }
         }
 
@@ -680,19 +717,23 @@ namespace Aesthetics
             }
         }
 
+
+        string getHorizontalInputName()
+        {
+            return "Horizontal " + inputID + " " + controllerType.ToString();
+        }
+
+        string getVerticalInputName()
+        {
+            return "Vertical " + inputID + " " + controllerType.ToString();
+        }
         void handleInput ()
         {
             //int numPressed = 0;
-            if(ID <2)
-            {
-                HandleAxisState (ref horizontalAxisState, "Horizontal" + ID);
-                HandleAxisState (ref verticalAxisState, "Vertical" + ID);
-            }
-            else
-            {
-                HandleAxisStateDPad (ref horizontalAxisState, "Horizontal" + ID);
-                HandleAxisStateDPad (ref verticalAxisState, "Vertical" + ID);
-            }
+            
+                HandleAxisState (ref horizontalAxisState,getHorizontalInputName());
+                HandleAxisState (ref verticalAxisState, getVerticalInputName());
+            
             
 
             if (isStunned)
@@ -702,7 +743,7 @@ namespace Aesthetics
 
             if (!isMoving)
             {
-                input = new Vector2 (Input.GetAxis ("Horizontal" + ID), Input.GetAxis ("Vertical" + ID));
+                input = new Vector2 (Input.GetAxis (getHorizontalInputName()), Input.GetAxis (getVerticalInputName()));
                 if (!allowDiagonals)
                 {
                     if (Mathf.Abs (input.x) > Mathf.Abs (input.y))
@@ -768,7 +809,7 @@ namespace Aesthetics
                 }
                 else
 
-                if (Input.GetButtonDown ("ActionA" + ID) &&
+                if (Input.GetButtonDown ("ActionA " + inputID + " " + controllerType) &&
                     ((verticalAxisState == AxisState.Idle) &&
                         (horizontalAxisState == AxisState.Idle)))
                 {
@@ -1565,6 +1606,8 @@ namespace Aesthetics
 
         }
 
+
+    
         //Main beta callback
         void OnMainBeat (KoreographyEvent evt)
         {

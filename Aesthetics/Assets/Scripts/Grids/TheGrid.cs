@@ -772,6 +772,11 @@ namespace Aesthetics
                 playerList[i] = player_prefab.GetComponent<Player> ();
 
             }
+
+            setupPlayersInputIDs();
+           
+
+
         }
 
         //spawn ScoreMaker Item
@@ -1349,6 +1354,36 @@ namespace Aesthetics
             }
             return null;
         }
+
+
+    void setupPlayersInputIDs()
+    {
+        
+            // get list with all the players using controllers and sort inputID by it
+            List <Player> controllers = GetPlayerList().FindAll(p => p.controllerType == Player.InputType.Xbox || p.controllerType == Player.InputType.PS4);
+            List <Player> keyboards = GetPlayerList().FindAll(p => p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4);
+
+            int idx = 1;
+            foreach(Player p in controllers)
+            {
+              //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
+                p.inputID = idx;
+                idx++;
+
+            }
+
+             foreach(Player p in keyboards)
+            {
+              //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
+                p.inputID = idx;
+                idx++;
+
+            }
+
+
+            
+        
+    }
 
         // Score points for the player
         public void Score (Player p)

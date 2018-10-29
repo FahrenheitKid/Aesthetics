@@ -506,6 +506,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ID: 0
+  _inputID: 0
+  _controllerType: 1
   horizontalAxisState: 0
   verticalAxisState: 0
   deadZone: 0.02

@@ -276,17 +276,19 @@ public class Menu : MonoBehaviour
         {
             if (currentScreen.isMultiplePlayers)
             {
+
+                MenuOption[] activeOptions = System.Array.FindAll(currentScreen.currentOptions, op => op.gameObject.activeSelf == true);
                 //if multiple players, only go to next screen if all the players are in the last option
-                if ((System.Array.TrueForAll (currentScreen.currentOptions, op => op.next == null) && lastCurrentOption.next == null))
+                if ((System.Array.TrueForAll (activeOptions, op => op.next == null) && lastCurrentOption.next == null))
                 {
                     print ("all is true");
                     GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
                     lastCurrentOption.isSelected = false;
                     return;
                 }
-                else if ((System.Array.TrueForAll (currentScreen.currentOptions, op => op.previous == null) && lastCurrentOption.previous == null))
+                else if ((System.Array.TrueForAll (activeOptions, op => op.previous == null) && lastCurrentOption.previous == null))
                 {
-                    print ("all is true");
+                    print ("all is true Previous");
                     GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
                     lastCurrentOption.isSelected = false;
                     return;
