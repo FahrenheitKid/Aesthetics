@@ -9074,19 +9074,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorPrim:
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4294888705
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4294888705
   colorSec:
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4287525634
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4287525634
   colorTert:
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4294172034
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4294172034
+  renderer_Ref: {fileID: 137250658219042482}
 --- !u!137 &137250658219042482
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

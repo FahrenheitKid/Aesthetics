@@ -73,7 +73,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1168179992831082
 GameObject:
   m_ObjectHideFlags: 1
@@ -496,19 +496,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorPrim:
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4294888705
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4294888705
   colorSec:
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4287525634
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4287525634
   colorTert:
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4294172034
   - serializedVersion: 2
-    rgba: 0
+    rgba: 4294172034
+  renderer_Ref: {fileID: 137192825382365444}
 --- !u!137 &137192825382365444
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
