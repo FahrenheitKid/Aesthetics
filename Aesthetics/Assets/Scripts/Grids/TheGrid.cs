@@ -233,7 +233,7 @@ namespace Aesthetics
             itemTimersAwake ();
             SpawnPlayers ();
 
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = 60; // -1 uncapp
             typesOfItemList = ReflectiveEnumerator.GetEnumerableOfType<Item> ();
 
         }
@@ -1363,20 +1363,44 @@ namespace Aesthetics
             List <Player> controllers = GetPlayerList().FindAll(p => p.controllerType == Player.InputType.Xbox || p.controllerType == Player.InputType.PS4);
             List <Player> keyboards = GetPlayerList().FindAll(p => p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4);
 
-            int idx = 1;
+            List <int> xboxJoysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => name.ToLower().Contains("xbox"));
+            List <int> ps4Joysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => !name.ToLower().Contains("xbox"));
+
+            List <int> possibleIDs = new List<int>();
+
+            for(int i = 1; i <= playerList.Count; i++) possibleIDs.Add(i);
+
+            
             foreach(Player p in controllers)
             {
               //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
-                p.inputID = idx;
-                idx++;
+
+              if(p.controllerType == Player.InputType.Xbox && xboxJoysticks.Any())
+              {
+                  
+                  p.inputID = xboxJoysticks.First() + 1;
+                  xboxJoysticks.Remove(xboxJoysticks.First());
+                  possibleIDs.Remove(p.inputID);
+              }
+              else if(p.controllerType == Player.InputType.PS4 && ps4Joysticks.Any())
+              {
+                   p.inputID = ps4Joysticks.First() + 1;
+                  ps4Joysticks.Remove(ps4Joysticks.First());
+                  possibleIDs.Remove(p.inputID);
+
+              }
+              
+
+               
 
             }
+            
 
              foreach(Player p in keyboards)
             {
               //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
-                p.inputID = idx;
-                idx++;
+                p.inputID = possibleIDs.First();
+                possibleIDs.Remove(possibleIDs.First());
 
             }
 

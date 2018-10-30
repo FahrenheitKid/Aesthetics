@@ -1,6 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+
+public static class CollectionsExtensions
+{
+    public static List<int> FindAllIndex<T>(this List<T> container, System.Predicate<T> match)
+    {
+        var items = container.FindAll(match);
+        List<int> indexes = new List<int>();
+        foreach (var item in items)
+        {
+            indexes.Add(container.IndexOf(item));
+        }
+
+        return indexes;
+    }
+
+     public static int[] FindAllIndexof<T>(this IEnumerable<T> values, T val)
+    {
+        return values.Select((b,i) => object.Equals(b, val) ? i : -1).Where(i => i != -1).ToArray();
+    }
+}
+
 
 public class UtilityTools
 {

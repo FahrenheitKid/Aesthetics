@@ -29,11 +29,14 @@ public class Menu : MonoBehaviour
 
     public Vector2[] input = new Vector2[4];
 
+    public List <Player.InputType> playerControllers = new List<Player.InputType>(4);
+
     // Use this for initialization
     void Start ()
     {
         horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         verticalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+        //playerControllers = new List<Player.InputType>(4);
 
     }
 
@@ -201,7 +204,7 @@ public class Menu : MonoBehaviour
         {
             if (currentScreen.currentOptions[i] && currentScreen.currentOptions[i] != null)
             {
-                if (Input.GetButtonDown ("ActionA" + (i + 1).ToString ()))
+                if (Input.GetButtonDown ("ActionA " + (i + 1).ToString () + " " + playerControllers[i].ToString()))
                 {
                     if ((!currentScreen.currentOptions[i].isMultipleOptions))
                     {
@@ -213,7 +216,7 @@ public class Menu : MonoBehaviour
                     }
 
                 }
-                else if (Input.GetButtonDown ("ActionB" + (i + 1).ToString ()))
+                else if (Input.GetButtonDown ("ActionB " + (i + 1).ToString () + " " + playerControllers[i].ToString()))
                 {
 
                     if ((!currentScreen.currentOptions[i].isMultipleOptions))
@@ -237,7 +240,7 @@ public class Menu : MonoBehaviour
 
         for (int i = 0; i < input.Length; i++)
         {
-            input[i] = new Vector2 (Input.GetAxis ("Horizontal" + (i + 1)), Input.GetAxis ("Vertical" + (i + 1)));
+            input[i] = new Vector2 (Input.GetAxis ("Horizontal " + (i + 1) + " " + playerControllers[i].ToString()), Input.GetAxis ("Vertical " + (i + 1) + " "  + playerControllers[i].ToString()));
 
             if (Mathf.Abs (input[i].x) > Mathf.Abs (input[i].y))
             {
@@ -248,8 +251,8 @@ public class Menu : MonoBehaviour
                 input[i].x = 0;
             }
 
-            HandleAxisState (ref horizontalAxisState[i], "Horizontal" + (i + 1));
-            HandleAxisState (ref verticalAxisState[i], "Vertical" + (i + 1));
+            HandleAxisState (ref horizontalAxisState[i], "Horizontal " + (i + 1) + " " + playerControllers[i].ToString());
+            HandleAxisState (ref verticalAxisState[i], "Vertical " + (i + 1) + " " + playerControllers[i].ToString());
         }
 
         //HandleAxisStateDPad (ref horizontalAxisState, "Horizontal" + 2);
@@ -307,6 +310,7 @@ public class Menu : MonoBehaviour
         }
 
         lastCurrentOption.isSelected = false;
+        if(option)
         option.isSelected = true;
         return;
         //print(currentScreen.currentOption.name);

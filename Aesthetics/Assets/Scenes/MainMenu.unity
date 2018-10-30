@@ -10377,6 +10377,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114586416525839872, guid: b7d68d994414c99439f13062499526e9,
+        type: 2}
+      propertyPath: playerControllers.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 4127801667091964, guid: b7d68d994414c99439f13062499526e9, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -10459,6 +10464,26 @@ Prefab:
       propertyPath: currentScreen
       value: 
       objectReference: {fileID: 897007354}
+    - target: {fileID: 114586416525839872, guid: b7d68d994414c99439f13062499526e9,
+        type: 2}
+      propertyPath: playerControllers.Array.data[1]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114586416525839872, guid: b7d68d994414c99439f13062499526e9,
+        type: 2}
+      propertyPath: playerControllers.Array.data[2]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114586416525839872, guid: b7d68d994414c99439f13062499526e9,
+        type: 2}
+      propertyPath: playerControllers.Array.data[3]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114586416525839872, guid: b7d68d994414c99439f13062499526e9,
+        type: 2}
+      propertyPath: playerControllers.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7d68d994414c99439f13062499526e9, type: 2}
   m_IsPrefabAsset: 0
