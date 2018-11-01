@@ -1039,7 +1039,7 @@ GameObject:
   - component: {fileID: 256806892}
   - component: {fileID: 256806891}
   m_Layer: 0
-  m_Name: PS
+  m_Name: PS4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2848,7 +2848,7 @@ MonoBehaviour:
   - {fileID: 1872063710}
   - {fileID: 380691667}
   - {fileID: 453112516}
-  currentMultipleOption: {fileID: 1466555545}
+  currentMultipleOption: {fileID: 380691667}
 --- !u!1 &380691667
 GameObject:
   m_ObjectHideFlags: 0
@@ -2867,7 +2867,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &380691668
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3308,12 +3308,12 @@ GameObject:
   - component: {fileID: 415396024}
   - component: {fileID: 415396023}
   m_Layer: 0
-  m_Name: PS
+  m_Name: PS4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &415396022
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3588,7 +3588,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &426963639
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3844,7 +3844,7 @@ GameObject:
   - component: {fileID: 453112519}
   - component: {fileID: 453112518}
   m_Layer: 0
-  m_Name: PS
+  m_Name: PS4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4915,7 +4915,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &569470518
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6316,7 +6316,7 @@ MonoBehaviour:
   - {fileID: 1285431458}
   - {fileID: 853953222}
   - {fileID: 415396021}
-  currentMultipleOption: {fileID: 426963638}
+  currentMultipleOption: {fileID: 415396021}
 --- !u!1 &808651202
 GameObject:
   m_ObjectHideFlags: 0
@@ -8686,7 +8686,7 @@ GameObject:
   - component: {fileID: 1124515183}
   - component: {fileID: 1124515182}
   m_Layer: 0
-  m_Name: PS
+  m_Name: PS4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10379,6 +10379,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 114586416525839872, guid: b7d68d994414c99439f13062499526e9,
         type: 2}
+      propertyPath: players.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114586416525839872, guid: b7d68d994414c99439f13062499526e9,
+        type: 2}
       propertyPath: playerControllers.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -11646,7 +11651,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1466555546
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13974,7 +13979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1741224393
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14526,7 +14531,7 @@ MonoBehaviour:
   - {fileID: 569470517}
   - {fileID: 405306609}
   - {fileID: 256806889}
-  currentMultipleOption: {fileID: 1741224392}
+  currentMultipleOption: {fileID: 569470517}
 --- !u!1 &1872063710
 GameObject:
   m_ObjectHideFlags: 0

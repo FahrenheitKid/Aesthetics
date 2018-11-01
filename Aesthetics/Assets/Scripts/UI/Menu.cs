@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Aesthetics;
 using DG.Tweening;
 using UnityEngine;
@@ -29,7 +30,8 @@ public class Menu : MonoBehaviour
 
     public Vector2[] input = new Vector2[4];
 
-    public List <Player.InputType> playerControllers = new List<Player.InputType>(4);
+   // public List <Player.InputType> playerControllers = new List<Player.InputType>(4);
+     public List <PlayerMenu> players = new List<PlayerMenu>(4);
 
     // Use this for initialization
     void Start ()
@@ -37,6 +39,13 @@ public class Menu : MonoBehaviour
         horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         verticalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         //playerControllers = new List<Player.InputType>(4);
+          
+                        PlayerMenu p = (PlayerMenu)ScriptableObject.CreateInstance(typeof(PlayerMenu));
+                        p.ID = 0;
+                        p.inputID = 1;
+                        p.controllerType = (Player.InputType)0;
+                        p.name = "Player " + p.ID.ToString();
+                        players.Add(p);
 
     }
 
@@ -202,9 +211,11 @@ public class Menu : MonoBehaviour
 
         for (int i = 0; i < currentScreen.currentOptions.Length; i++)
         {
+            if(!(i < players.Count)) continue;
+            
             if (currentScreen.currentOptions[i] && currentScreen.currentOptions[i] != null)
             {
-                if (Input.GetButtonDown ("ActionA " + (i + 1).ToString () + " " + playerControllers[i].ToString()))
+                if (Input.GetButtonDown ("ActionA " + players[i].inputID.ToString () + " " + players[i].controllerType.ToString()))
                 {
                     if ((!currentScreen.currentOptions[i].isMultipleOptions))
                     {
@@ -216,7 +227,7 @@ public class Menu : MonoBehaviour
                     }
 
                 }
-                else if (Input.GetButtonDown ("ActionB " + (i + 1).ToString () + " " + playerControllers[i].ToString()))
+                else if (Input.GetButtonDown ("ActionB " + players[i].inputID.ToString () + " " + players[i].controllerType.ToString()))
                 {
 
                     if ((!currentScreen.currentOptions[i].isMultipleOptions))
@@ -238,9 +249,11 @@ public class Menu : MonoBehaviour
     void handleAxisStates ()
     {
 
-        for (int i = 0; i < input.Length; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            input[i] = new Vector2 (Input.GetAxis ("Horizontal " + (i + 1) + " " + playerControllers[i].ToString()), Input.GetAxis ("Vertical " + (i + 1) + " "  + playerControllers[i].ToString()));
+            string horizontalName = "Horizontal " + (players[i].inputID) + " " + players[i].controllerType.ToString();
+            string verticalName = "Vertical " + (players[i].inputID) + " "  + players[i].controllerType.ToString();
+            input[i] = new Vector2 (Input.GetAxis (horizontalName), Input.GetAxis (verticalName));
 
             if (Mathf.Abs (input[i].x) > Mathf.Abs (input[i].y))
             {
@@ -251,8 +264,8 @@ public class Menu : MonoBehaviour
                 input[i].x = 0;
             }
 
-            HandleAxisState (ref horizontalAxisState[i], "Horizontal " + (i + 1) + " " + playerControllers[i].ToString());
-            HandleAxisState (ref verticalAxisState[i], "Vertical " + (i + 1) + " " + playerControllers[i].ToString());
+            HandleAxisState (ref horizontalAxisState[i], horizontalName);
+            HandleAxisState (ref verticalAxisState[i], verticalName);
         }
 
         //HandleAxisStateDPad (ref horizontalAxisState, "Horizontal" + 2);
@@ -369,6 +382,60 @@ public class Menu : MonoBehaviour
                 break;
         }
 
+    }
+
+
+     public void setupPlayersInputIDs()
+    {
+        
+            // get list with all the players using controllers and sort inputID by it
+            List <PlayerMenu> controllers = players.FindAll(p => p.controllerType == Player.InputType.Xbox || p.controllerType == Player.InputType.PS4);
+            List <PlayerMenu> keyboards = players.FindAll(p => p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4);
+
+            List <int> xboxJoysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => name.ToLower().Contains("xbox"));
+            List <int> ps4Joysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => !name.ToLower().Contains("xbox"));
+
+            List <int> possibleIDs = new List<int>();
+
+            for(int i = 1; i <= players.Count; i++) possibleIDs.Add(i);
+
+            
+            foreach(PlayerMenu p in controllers)
+            {
+              //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
+
+              if(p.controllerType == Player.InputType.Xbox && xboxJoysticks.Any())
+              {
+                  
+                  p.inputID = xboxJoysticks.First() + 1;
+                  xboxJoysticks.Remove(xboxJoysticks.First());
+                  possibleIDs.Remove(p.inputID);
+              }
+              else if(p.controllerType == Player.InputType.PS4 && ps4Joysticks.Any())
+              {
+                   p.inputID = ps4Joysticks.First() + 1;
+                  ps4Joysticks.Remove(ps4Joysticks.First());
+                  possibleIDs.Remove(p.inputID);
+
+              }
+              
+
+               
+
+            }
+            
+
+             foreach(PlayerMenu p in keyboards)
+            {
+              //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
+                p.inputID = possibleIDs.First();
+                possibleIDs.Remove(possibleIDs.First());
+
+            }
+
+
+            
+        
     }
 
     void HandleAxisStateDPad (ref Player.AxisState state, string axi)

@@ -13,7 +13,7 @@ public class PlayerModel : MonoBehaviour {
         Color32 [] colorTert = new Color32[2];
 
 		public Renderer renderer_Ref;
-
+                public Aesthetics.Player.Character character;
 
 		
 	// Use this for initialization

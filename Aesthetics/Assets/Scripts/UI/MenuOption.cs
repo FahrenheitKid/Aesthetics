@@ -27,6 +27,9 @@ public class MenuOption : MonoBehaviour
     public TextMeshPro leftArrow;
     public TextMeshPro rightArrow;
 
+    public Tween rightArrowTween;
+    public Tween leftArrowTween;
+
     [SerializeField, Candlelight.PropertyBackingField]
     protected bool _isSelected;
     public bool isSelected
@@ -217,9 +220,30 @@ public class MenuOption : MonoBehaviour
     public void pulsateArrows (bool left, bool right)
     {
         if (right && rightArrow)
-            rightArrow.transform.DOPunchScale (new Vector3 (0.8f, 0.8f, 0f), 0.3f, 2, 0.8f);
-        if (left && leftArrow)
-            leftArrow.transform.DOPunchScale (new Vector3 (0.8f, 0.8f, 0f), 0.3f, 2, 0.8f);
+        {
+            if(rightArrowTween != null)
+            {
+                rightArrowTween.Complete();
+                rightArrowTween.Kill();
+                rightArrowTween = null;
+            }
+             rightArrowTween = rightArrow.transform.DOPunchScale (new Vector3 (0.8f, 0.8f, 0f), 0.3f, 2, 0.8f);
+
+        }
+        
+        if(left && leftArrow)
+        {
+             if(leftArrowTween != null)
+            {
+                leftArrowTween.Complete();
+                leftArrowTween.Kill();
+                leftArrowTween = null;
+            }
+             leftArrowTween = leftArrow.transform.DOPunchScale (new Vector3 (0.8f, 0.8f, 0f), 0.3f, 2, 0.8f);
+
+        }
+        
+            
     }
 
     public void GoToMultipleOption (bool next)

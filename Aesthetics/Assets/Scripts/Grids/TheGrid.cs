@@ -1356,7 +1356,7 @@ namespace Aesthetics
         }
 
 
-    void setupPlayersInputIDs()
+    public void setupPlayersInputIDs()
     {
         
             // get list with all the players using controllers and sort inputID by it

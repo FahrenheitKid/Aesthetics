@@ -9018,6 +9018,7 @@ MonoBehaviour:
   - serializedVersion: 2
     rgba: 4294172034
   renderer_Ref: {fileID: 137383397268412634}
+  character: 2
 --- !u!137 &137383397268412634
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

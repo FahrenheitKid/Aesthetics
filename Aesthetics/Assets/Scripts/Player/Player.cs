@@ -27,6 +27,14 @@ namespace Aesthetics
             PS4
         }
 
+        public enum Character
+        {
+            AnimeGirl,
+            David,
+            Skull,
+            Afro
+        }
+
 
         [SerializeField, Candlelight.PropertyBackingField]
         private static int _globalID = 0;

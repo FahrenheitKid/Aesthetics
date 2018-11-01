@@ -9079,6 +9079,7 @@ MonoBehaviour:
   - serializedVersion: 2
     rgba: 4294172034
   renderer_Ref: {fileID: 137458595693054982}
+  character: 3
 --- !u!114 &114920623592365880
 MonoBehaviour:
   m_ObjectHideFlags: 1
