@@ -10,7 +10,7 @@ public class Sneakers : Item
     [SerializeField]
     Countdown timer;
 
-    public static new float rarity = 30.03f;
+    public static new float rarity = 20.03f;
 
     [SerializeField]
     private int count = 0;

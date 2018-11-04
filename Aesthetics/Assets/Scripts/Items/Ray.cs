@@ -12,7 +12,7 @@ public class Ray : Item
         Vray
     }
 
-    public static new float rarity = 50.05f;
+    public static new float rarity = 20.05f;
     public rayType ray_type;
     Countdown rayRenderTimer;
     public float rayTimeDuration = 0.35f;

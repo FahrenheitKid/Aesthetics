@@ -9,6 +9,7 @@ public class MenuOption : MonoBehaviour
 {
 
     public TextMeshPro text;
+    public TextMeshPro labelText;
 
     public Vector3 selectedScale;
     public Color32 selectedColor;
@@ -46,13 +47,21 @@ public class MenuOption : MonoBehaviour
             {
                 transform.parent.GetComponent<MenuScreen> ().currentOptions[player_idx] = this;
                 if (currentMultipleOption) currentMultipleOption.SetActive (true);
-                if (!isMultipleOptions)
+                if (!isMultipleOptions && !isToggleOption)
                 {
 
                     transform.DOScale (selectedScale, 0.2f);
-                    text.fontMaterial.SetFloat ("_FaceDilate", 0.4f);
-                    text.fontMaterial.SetColor ("_FaceColor", selectedColor);
+                    //text.fontMaterial.SetFloat ("_FaceDilate", 0.4f);
+                    //text.fontMaterial.SetColor ("_FaceColor", selectedColor);
+                    text.color = selectedColor;
 
+                }
+                else if (isToggleOption)
+                {
+                    if (text)
+                        text.color = selectedColor;
+                    if (labelText)
+                        labelText.color = selectedColor;
                 }
                 else
                 {
@@ -76,16 +85,30 @@ public class MenuOption : MonoBehaviour
 
                 }
 
+                if (pulseSelect)
+                {
+                    if (!pulse)
+                        pulse = true;
+                }
+
             }
             else
             {
-                if (!isMultipleOptions)
+                if (!isMultipleOptions && !isToggleOption)
                 {
 
                     transform.DOScale (Vector3.one, 0.2f);
-                    text.fontMaterial.SetFloat ("_FaceDilate", 0.1f);
-                    text.fontMaterial.SetColor ("_FaceColor", color);
+                    //text.fontMaterial.SetFloat ("_FaceDilate", 0.1f);
+                    //text.fontMaterial.SetColor ("_FaceColor", color);
+                    text.color = color;
 
+                }
+                else if (isToggleOption)
+                {
+                    if (text)
+                        text.color = color;
+                    if (labelText)
+                        labelText.color = color;
                 }
                 else
                 {
@@ -107,6 +130,12 @@ public class MenuOption : MonoBehaviour
                     if (rightArrow)
                         rightArrow.color = color;
 
+                }
+
+                if (pulseSelect)
+                {
+                    if (pulse)
+                        pulse = false;
                 }
             }
         }
@@ -145,10 +174,71 @@ public class MenuOption : MonoBehaviour
         }
     }
 
+    [SerializeField, Candlelight.PropertyBackingField]
+    protected bool _pulseSelect = false;
+    public bool pulseSelect
+    {
+        get
+        {
+            return _pulseSelect;
+        }
+        set
+        {
+            _pulseSelect = value;
+
+        }
+    }
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    protected bool _isToggleOn;
+    public bool isToggleOn
+    {
+        get
+        {
+            return _isToggleOn;
+        }
+        set
+        {
+            _isToggleOn = value;
+
+            if (_isToggleOn)
+            {
+                foreach (GameObject go in togglableOptionsOn)
+                {
+                    go.SetActive (true);
+                }
+
+                foreach (GameObject go in togglableOptionsOff)
+                {
+                    go.SetActive (false);
+                }
+
+            }
+            else
+            {
+
+                foreach (GameObject go in togglableOptionsOn)
+                {
+                    go.SetActive (false);
+                }
+
+                foreach (GameObject go in togglableOptionsOff)
+                {
+                    go.SetActive (true);
+                }
+            }
+        }
+    }
+
     Tween punchScale;
+
+    public bool isToggleOption;
     public bool isMultipleOptions;
     public bool isHorizontal;
     public List<GameObject> optionsList;
+
+    public List<GameObject> togglableOptionsOn;
+    public List<GameObject> togglableOptionsOff;
     public GameObject currentMultipleOption;
 
     // Use this for initialization
@@ -165,11 +255,13 @@ public class MenuOption : MonoBehaviour
             isSelected = true;
         }
 
-        if (pulse)
+        if (pulse && pulseSelect == false)
         {
+            print ("FOI: pulse: " + pulse + " select: " + pulseSelect);
             pulse = false;
             pulse = true;
         }
+
         //punchScale.Pause();
 
     }
@@ -213,7 +305,8 @@ public class MenuOption : MonoBehaviour
         isSelected = false;
         pulse = false;
         option.isSelected = true;
-        option.pulse = true;
+        if (pulseSelect)
+            option.pulse = true;
 
     }
 
@@ -221,29 +314,28 @@ public class MenuOption : MonoBehaviour
     {
         if (right && rightArrow)
         {
-            if(rightArrowTween != null)
+            if (rightArrowTween != null)
             {
-                rightArrowTween.Complete();
-                rightArrowTween.Kill();
+                rightArrowTween.Complete ();
+                rightArrowTween.Kill ();
                 rightArrowTween = null;
             }
-             rightArrowTween = rightArrow.transform.DOPunchScale (new Vector3 (0.8f, 0.8f, 0f), 0.3f, 2, 0.8f);
+            rightArrowTween = rightArrow.transform.DOPunchScale (new Vector3 (0.8f, 0.8f, 0f), 0.3f, 2, 0.8f);
 
         }
-        
-        if(left && leftArrow)
+
+        if (left && leftArrow)
         {
-             if(leftArrowTween != null)
+            if (leftArrowTween != null)
             {
-                leftArrowTween.Complete();
-                leftArrowTween.Kill();
+                leftArrowTween.Complete ();
+                leftArrowTween.Kill ();
                 leftArrowTween = null;
             }
-             leftArrowTween = leftArrow.transform.DOPunchScale (new Vector3 (0.8f, 0.8f, 0f), 0.3f, 2, 0.8f);
+            leftArrowTween = leftArrow.transform.DOPunchScale (new Vector3 (0.8f, 0.8f, 0f), 0.3f, 2, 0.8f);
 
         }
-        
-            
+
     }
 
     public void GoToMultipleOption (bool next)

@@ -30,8 +30,11 @@ public class Menu : MonoBehaviour
 
     public Vector2[] input = new Vector2[4];
 
-   // public List <Player.InputType> playerControllers = new List<Player.InputType>(4);
-     public List <PlayerMenu> players = new List<PlayerMenu>(4);
+    // public List <Player.InputType> playerControllers = new List<Player.InputType>(4);
+    public List<PlayerMenu> players = new List<PlayerMenu> (4);
+
+    public List<System.Type> itemSetup = new List<System.Type> (11);
+    public float itemFrequency = 50f;
 
     // Use this for initialization
     void Start ()
@@ -39,13 +42,13 @@ public class Menu : MonoBehaviour
         horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         verticalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         //playerControllers = new List<Player.InputType>(4);
-          
-                        PlayerMenu p = (PlayerMenu)ScriptableObject.CreateInstance(typeof(PlayerMenu));
-                        p.ID = 0;
-                        p.inputID = 1;
-                        p.controllerType = (Player.InputType)0;
-                        p.name = "Player " + p.ID.ToString();
-                        players.Add(p);
+
+        PlayerMenu p = (PlayerMenu) ScriptableObject.CreateInstance (typeof (PlayerMenu));
+        p.ID = 0;
+        p.inputID = 1;
+        p.controllerType = (Player.InputType) 0;
+        p.name = "Player " + p.ID.ToString ();
+        players.Add (p);
 
     }
 
@@ -211,13 +214,13 @@ public class Menu : MonoBehaviour
 
         for (int i = 0; i < currentScreen.currentOptions.Length; i++)
         {
-            if(!(i < players.Count)) continue;
-            
+            if (!(i < players.Count)) continue;
+
             if (currentScreen.currentOptions[i] && currentScreen.currentOptions[i] != null)
             {
-                if (Input.GetButtonDown ("ActionA " + players[i].inputID.ToString () + " " + players[i].controllerType.ToString()))
+                if (Input.GetButtonDown ("ActionA " + players[i].inputID.ToString () + " " + players[i].controllerType.ToString ()))
                 {
-                    if ((!currentScreen.currentOptions[i].isMultipleOptions))
+                    if ((!currentScreen.currentOptions[i].isMultipleOptions) && (!currentScreen.currentOptions[i].isToggleOption))
                     {
                         DefaultEnter ();
                     }
@@ -225,18 +228,26 @@ public class Menu : MonoBehaviour
                     {
                         GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i]);
                     }
+                    else if (currentScreen.currentOptions[i].isToggleOption)
+                    {
+                        currentScreen.currentOptions[i].isToggleOn ^= true;
+                    }
 
                 }
-                else if (Input.GetButtonDown ("ActionB " + players[i].inputID.ToString () + " " + players[i].controllerType.ToString()))
+                else if (Input.GetButtonDown ("ActionB " + players[i].inputID.ToString () + " " + players[i].controllerType.ToString ()))
                 {
 
-                    if ((!currentScreen.currentOptions[i].isMultipleOptions))
+                    if ((!currentScreen.currentOptions[i].isMultipleOptions) && (!currentScreen.currentOptions[i].isToggleOption))
                     {
                         DefaultBack ();
                     }
                     else if (currentScreen.currentOptions[i].isMultipleOptions)
                     {
                         GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i]);
+                    }
+                    else if (currentScreen.currentOptions[i].isToggleOption)
+                    {
+                        //  GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i]);
                     }
                 }
 
@@ -251,8 +262,8 @@ public class Menu : MonoBehaviour
 
         for (int i = 0; i < players.Count; i++)
         {
-            string horizontalName = "Horizontal " + (players[i].inputID) + " " + players[i].controllerType.ToString();
-            string verticalName = "Vertical " + (players[i].inputID) + " "  + players[i].controllerType.ToString();
+            string horizontalName = "Horizontal " + (players[i].inputID) + " " + players[i].controllerType.ToString ();
+            string verticalName = "Vertical " + (players[i].inputID) + " " + players[i].controllerType.ToString ();
             input[i] = new Vector2 (Input.GetAxis (horizontalName), Input.GetAxis (verticalName));
 
             if (Mathf.Abs (input[i].x) > Mathf.Abs (input[i].y))
@@ -293,7 +304,7 @@ public class Menu : MonoBehaviour
             if (currentScreen.isMultiplePlayers)
             {
 
-                MenuOption[] activeOptions = System.Array.FindAll(currentScreen.currentOptions, op => op.gameObject.activeSelf == true);
+                MenuOption[] activeOptions = System.Array.FindAll (currentScreen.currentOptions, op => op.gameObject.activeSelf == true);
                 //if multiple players, only go to next screen if all the players are in the last option
                 if ((System.Array.TrueForAll (activeOptions, op => op.next == null) && lastCurrentOption.next == null))
                 {
@@ -317,14 +328,17 @@ public class Menu : MonoBehaviour
 
             }
 
-            GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
+            if (lastCurrentOption.previous == null)
+                GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
+            else if (lastCurrentOption.next == null)
+                GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
             lastCurrentOption.isSelected = false;
             return;
         }
 
         lastCurrentOption.isSelected = false;
-        if(option)
-        option.isSelected = true;
+        if (option)
+            option.isSelected = true;
         return;
         //print(currentScreen.currentOption.name);
     }
@@ -384,58 +398,49 @@ public class Menu : MonoBehaviour
 
     }
 
-
-     public void setupPlayersInputIDs()
+    public void setupPlayersInputIDs ()
     {
-        
-            // get list with all the players using controllers and sort inputID by it
-            List <PlayerMenu> controllers = players.FindAll(p => p.controllerType == Player.InputType.Xbox || p.controllerType == Player.InputType.PS4);
-            List <PlayerMenu> keyboards = players.FindAll(p => p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4);
 
-            List <int> xboxJoysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => name.ToLower().Contains("xbox"));
-            List <int> ps4Joysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => !name.ToLower().Contains("xbox"));
+        // get list with all the players using controllers and sort inputID by it
+        List<PlayerMenu> controllers = players.FindAll (p => p.controllerType == Player.InputType.Xbox || p.controllerType == Player.InputType.PS4);
+        List<PlayerMenu> keyboards = players.FindAll (p => p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4);
 
-            List <int> possibleIDs = new List<int>();
+        List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => name.ToLower ().Contains ("xbox"));
+        List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => !name.ToLower ().Contains ("xbox"));
 
-            for(int i = 1; i <= players.Count; i++) possibleIDs.Add(i);
+        List<int> possibleIDs = new List<int> ();
 
-            
-            foreach(PlayerMenu p in controllers)
+        for (int i = 1; i <= players.Count; i++) possibleIDs.Add (i);
+
+        foreach (PlayerMenu p in controllers)
+        {
+            //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
+
+            if (p.controllerType == Player.InputType.Xbox && xboxJoysticks.Any ())
             {
-              //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
 
-              if(p.controllerType == Player.InputType.Xbox && xboxJoysticks.Any())
-              {
-                  
-                  p.inputID = xboxJoysticks.First() + 1;
-                  xboxJoysticks.Remove(xboxJoysticks.First());
-                  possibleIDs.Remove(p.inputID);
-              }
-              else if(p.controllerType == Player.InputType.PS4 && ps4Joysticks.Any())
-              {
-                   p.inputID = ps4Joysticks.First() + 1;
-                  ps4Joysticks.Remove(ps4Joysticks.First());
-                  possibleIDs.Remove(p.inputID);
-
-              }
-              
-
-               
-
+                p.inputID = xboxJoysticks.First () + 1;
+                xboxJoysticks.Remove (xboxJoysticks.First ());
+                possibleIDs.Remove (p.inputID);
             }
-            
-
-             foreach(PlayerMenu p in keyboards)
+            else if (p.controllerType == Player.InputType.PS4 && ps4Joysticks.Any ())
             {
-              //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
-                p.inputID = possibleIDs.First();
-                possibleIDs.Remove(possibleIDs.First());
+                p.inputID = ps4Joysticks.First () + 1;
+                ps4Joysticks.Remove (ps4Joysticks.First ());
+                possibleIDs.Remove (p.inputID);
 
             }
 
+        }
 
-            
-        
+        foreach (PlayerMenu p in keyboards)
+        {
+            //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
+            p.inputID = possibleIDs.First ();
+            possibleIDs.Remove (possibleIDs.First ());
+
+        }
+
     }
 
     void HandleAxisStateDPad (ref Player.AxisState state, string axi)
