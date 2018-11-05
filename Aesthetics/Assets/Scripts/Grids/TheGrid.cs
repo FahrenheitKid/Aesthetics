@@ -1375,18 +1375,36 @@ namespace Aesthetics
             {
               //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
 
-              if(p.controllerType == Player.InputType.Xbox && xboxJoysticks.Any())
+              if(p.controllerType == Player.InputType.Xbox )
               {
+                  if(xboxJoysticks.Any())
+                  {
+                      p.inputID = xboxJoysticks.First() + 1;
+                      xboxJoysticks.Remove(xboxJoysticks.First());
+                      possibleIDs.Remove(p.inputID);
+
+                  }
+                  else
+                  {
+                      keyboards.Add(p);
+                  }
                   
-                  p.inputID = xboxJoysticks.First() + 1;
-                  xboxJoysticks.Remove(xboxJoysticks.First());
-                  possibleIDs.Remove(p.inputID);
               }
-              else if(p.controllerType == Player.InputType.PS4 && ps4Joysticks.Any())
+              else if(p.controllerType == Player.InputType.PS4 )
               {
-                   p.inputID = ps4Joysticks.First() + 1;
+
+                  if(ps4Joysticks.Any())
+                  {
+                       p.inputID = ps4Joysticks.First() + 1;
                   ps4Joysticks.Remove(ps4Joysticks.First());
                   possibleIDs.Remove(p.inputID);
+
+                  }
+                  else
+                  {
+                      keyboards.Add(p);
+                  }
+                  
 
               }
               

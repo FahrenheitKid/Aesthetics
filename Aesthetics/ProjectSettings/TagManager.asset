@@ -17,6 +17,7 @@ TagManager:
   - GridBlockUI
   - Player 3 UI
   - Player 4 UI
+  - Menu
   layers:
   - Default
   - TransparentFX

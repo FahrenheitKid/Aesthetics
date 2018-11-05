@@ -4,6 +4,8 @@ using System.Linq;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using SonicBloom.Koreo;
+using SonicBloom.Koreo.Players;
 
 public class MenuOption : MonoBehaviour
 {
@@ -45,11 +47,14 @@ public class MenuOption : MonoBehaviour
 
             if (_isSelected)
             {
+                //set this option as current option
                 transform.parent.GetComponent<MenuScreen> ().currentOptions[player_idx] = this;
                 if (currentMultipleOption) currentMultipleOption.SetActive (true);
+
+                //scale and change colors
                 if (!isMultipleOptions && !isToggleOption)
                 {
-
+                    
                     transform.DOScale (selectedScale, 0.2f);
                     //text.fontMaterial.SetFloat ("_FaceDilate", 0.4f);
                     //text.fontMaterial.SetColor ("_FaceColor", selectedColor);
@@ -89,6 +94,25 @@ public class MenuOption : MonoBehaviour
                 {
                     if (!pulse)
                         pulse = true;
+                }
+
+                if(isMusicOption)
+                {
+                    //play music
+                    Menu menuref = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+                   // print("entrou ");
+                    if(menuref && currentMultipleOption)
+                    {
+                       // print("entrou sss");
+                        menuref.audioSource_Ref.Pause();
+                        if(currentMultipleOption.GetComponent<Song>().koreography);
+                        menuref.musicPlayer.LoadSong(currentMultipleOption.GetComponent<Song>().koreography, currentMultipleOption.GetComponent<Song>().koreography.SourceClip.samples / 3);
+                        menuref.setCurrentPlayingText(currentMultipleOption.GetComponent<Song>().songName, currentMultipleOption.GetComponent<Song>().artistsName);
+                       
+                       // menuref.musicPlayer.
+                    }
+
+
                 }
 
             }
@@ -136,6 +160,24 @@ public class MenuOption : MonoBehaviour
                 {
                     if (pulse)
                         pulse = false;
+                }
+
+                if(isMusicOption)
+                {
+                    //play music
+                    Menu menuref = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+
+                    if(menuref)
+                    {
+                        menuref.musicPlayer.Stop();
+                    
+                        menuref.audioSource_Ref.UnPause();
+                        menuref.setCurrentPlayingText(menuref.menuSong.songName, menuref.menuSong.artistsName);
+                       
+                       // menuref.musicPlayer.
+                    }
+
+
                 }
             }
         }
@@ -232,6 +274,7 @@ public class MenuOption : MonoBehaviour
 
     Tween punchScale;
 
+    public bool isMusicOption;
     public bool isToggleOption;
     public bool isMultipleOptions;
     public bool isHorizontal;
@@ -241,6 +284,13 @@ public class MenuOption : MonoBehaviour
     public List<GameObject> togglableOptionsOff;
     public GameObject currentMultipleOption;
 
+
+    private void Awake() {
+
+         if(!GetComponent<AudioSource>())
+        gameObject.AddComponent<AudioSource>();
+
+    }
     // Use this for initialization
     void Start ()
     {
@@ -257,7 +307,7 @@ public class MenuOption : MonoBehaviour
 
         if (pulse && pulseSelect == false)
         {
-            print ("FOI: pulse: " + pulse + " select: " + pulseSelect);
+           
             pulse = false;
             pulse = true;
         }
@@ -342,10 +392,13 @@ public class MenuOption : MonoBehaviour
     {
         if (optionsList.Any () && optionsList.Count > 1)
         {
+            
             if (currentMultipleOption)
                 currentMultipleOption.SetActive (false);
             else currentMultipleOption = optionsList[0];
 
+
+            //Play(transform.parent.GetComponent<MenuScreen> ().menu_Ref.nextOption_Sfx);
             int i = optionsList.FindIndex (x => x.gameObject.name == currentMultipleOption.name);
 
             // print ("before " + i);
@@ -362,7 +415,47 @@ public class MenuOption : MonoBehaviour
             currentMultipleOption = optionsList[i];
 
             currentMultipleOption.SetActive (true);
+
+            if(isMusicOption)
+                {
+                    //play music
+                    Menu menuref = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+                   
+                    if(menuref && currentMultipleOption)
+                    {
+                        
+                        menuref.audioSource_Ref.Pause();
+                        if(currentMultipleOption.GetComponent<Song>().koreography);
+                        menuref.musicPlayer.LoadSong(currentMultipleOption.GetComponent<Song>().koreography, currentMultipleOption.GetComponent<Song>().koreography.SourceClip.samples / 3);
+                        menuref.setCurrentPlayingText(currentMultipleOption.GetComponent<Song>().songName, currentMultipleOption.GetComponent<Song>().artistsName);
+                       // menuref.musicPlayer.
+                    }
+
+
+                }
+
         }
+    }
+
+    public void Play(AudioClip sfx)
+    {
+
+         if(!sfx)
+         {
+             print("sem sfx");
+             return;
+         }
+        
+
+        if(!GetComponent<AudioSource>())
+        gameObject.AddComponent<AudioSource>();
+
+       
+
+        //GetComponent<AudioSource>().clip = null;
+        //GetComponent<AudioSource>().clip = sfx;
+        //print("played" + GetComponent<AudioSource>().clip.name);
+        GetComponent<AudioSource>().PlayOneShot(sfx);
     }
 
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Aesthetics;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Cinemachine;
 
 public class MenuScreen : MonoBehaviour
 {
@@ -113,7 +115,7 @@ public class MenuScreen : MonoBehaviour
                     SetOptionsActive (true);
 
                 }
-                else if (name == "Stage Select Screen")
+                else if (name == "Song Select Screen")
                 {
                     MenuScreen scr = menu_Ref.screens.Find (screen => screen.name == "Item Screen");
 
@@ -185,11 +187,19 @@ public class MenuScreen : MonoBehaviour
                     }
 
                     print ("Item Setup size: " + menu_Ref.itemSetup.Count);
+                    SetOptionsActive (true);
 
                 }
                 else
                 {
                     SetOptionsActive (true);
+
+                }
+
+                MenuOption op = options.Find(opp => opp.isMultipleOptions);
+                if(op && options.Count == 1)
+                {
+                    op.isSelected = true;
 
                 }
 

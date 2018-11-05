@@ -5,6 +5,9 @@ using Aesthetics;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SonicBloom.Koreo;
+using SonicBloom.Koreo.Players;
+using TMPro;
 
 public class Menu : MonoBehaviour
 {
@@ -12,12 +15,31 @@ public class Menu : MonoBehaviour
     //[SerializeField]
     //List <Button>
 
+     [Header("Music/Sfx Settings")]
+     [SerializeField]
+     public AudioSource audioSource_Ref;
+     public SimpleMusicPlayer musicPlayer;
+
+     public Song menuSong;
+
+     public TextMeshProUGUI currentPlayingText;
+
+    public AudioClip confirm_Sfx;
+    public AudioClip back_Sfx;
+
+    public AudioClip nextOption_Sfx;
+
+    public List<AudioSource> audioSources;
+
+    [Header("Screen Settings")]
     public List<MenuScreen> screens;
 
     [SerializeField]
     MenuScreen currentScreen;
     int cameraAnimIdx = 0;
 
+
+    [Header("Input Settings")]
     [SerializeField]
     private Player.AxisState[] horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
 
@@ -30,12 +52,22 @@ public class Menu : MonoBehaviour
 
     public Vector2[] input = new Vector2[4];
 
+    [Header("Setup Settings")]
+
     // public List <Player.InputType> playerControllers = new List<Player.InputType>(4);
     public List<PlayerMenu> players = new List<PlayerMenu> (4);
 
     public List<System.Type> itemSetup = new List<System.Type> (11);
     public float itemFrequency = 50f;
 
+
+    private void Awake() {
+        for(int i = 0; i < 4; i++)
+        {
+            audioSources.Add(gameObject.AddComponent<AudioSource>());
+        }
+        setCurrentPlayingText(menuSong.songName, menuSong.artistsName);
+    }
     // Use this for initialization
     void Start ()
     {
@@ -50,12 +82,29 @@ public class Menu : MonoBehaviour
         p.name = "Player " + p.ID.ToString ();
         players.Add (p);
 
+
+        if(!audioSource_Ref.isPlaying)
+        {
+            audioSource_Ref.clip = menuSong.song;
+            audioSource_Ref.Play();
+        }
+
+
     }
 
     // Update is called once per frame
     void Update ()
     {
 
+
+        if(currentScreen.name == "Confirmation Screen")
+        {
+            print("entrei");
+            if(Camera.main.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+            {
+                SceneManager.LoadScene(1);
+            }
+        }
         /*
 			if(Input.GetKeyDown(KeyCode.D))
 		{
@@ -112,12 +161,17 @@ public class Menu : MonoBehaviour
                 {
                     if (currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                        GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i]);
+                        if(audioSources.Count >= i + 1)
+                        audioSources[i].PlayOneShot(nextOption_Sfx);
+
+                        GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i], true);
                     }
                     else
                     {
                         if (currentScreen.currentOptions[i].isHorizontal && currentScreen.currentOptions[i].isMultipleOptions)
                         {
+                              if(audioSources.Count >= i + 1)
+                                audioSources[i].PlayOneShot(nextOption_Sfx);
                             // move to next object
 
                             currentScreen.currentOptions[i].pulsateArrows (false, true);
@@ -129,7 +183,9 @@ public class Menu : MonoBehaviour
                 {
                     if (currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                        GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i]);
+                          if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                        GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i], false);
                     }
                     else
                     {
@@ -137,6 +193,8 @@ public class Menu : MonoBehaviour
                         {
                             // move to next object
 
+                             if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(nextOption_Sfx);
                             currentScreen.currentOptions[i].pulsateArrows (true, false);
                             currentScreen.currentOptions[i].GoToMultipleOption (false);
                         }
@@ -148,14 +206,17 @@ public class Menu : MonoBehaviour
                 {
                     if (!currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                        GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i]);
+                         if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                        GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i], true);
                     }
                     else
                     {
                         if (!currentScreen.currentOptions[i].isHorizontal && currentScreen.currentOptions[i].isMultipleOptions)
                         {
                             // move to next object
-
+                             if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(nextOption_Sfx);
                             currentScreen.currentOptions[i].pulsateArrows (false, true);
                             currentScreen.currentOptions[i].GoToMultipleOption (true);
                         }
@@ -163,18 +224,23 @@ public class Menu : MonoBehaviour
                 }
                 else if (verticalAxisState[i] == Player.AxisState.Down && input[i].y < 0) // down
                 {
+                    
                     if (!currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                        GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i]);
+                         if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                        GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i], false);
                     }
                     else
                     {
                         if (!currentScreen.currentOptions[i].isHorizontal && currentScreen.currentOptions[i].isMultipleOptions)
                         {
                             // move to next object
-
+                            if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(nextOption_Sfx);
                             currentScreen.currentOptions[i].pulsateArrows (true, false);
                             currentScreen.currentOptions[i].GoToMultipleOption (false);
+                            
                         }
                     }
                 }
@@ -190,6 +256,12 @@ public class Menu : MonoBehaviour
         if (Input.GetKeyDown (KeyCode.Escape))
         {
             Aesthetics.TheGrid.QuitGame ();
+
+        }
+
+        if (Input.GetKeyDown (KeyCode.R))
+        {
+            SceneManager.LoadScene(0);
 
         }
 
@@ -222,14 +294,20 @@ public class Menu : MonoBehaviour
                 {
                     if ((!currentScreen.currentOptions[i].isMultipleOptions) && (!currentScreen.currentOptions[i].isToggleOption))
                     {
+                         if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(confirm_Sfx);
                         DefaultEnter ();
                     }
                     else if (currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                        GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i]);
+                         if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(confirm_Sfx);
+                        GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i], true);
                     }
                     else if (currentScreen.currentOptions[i].isToggleOption)
                     {
+                          if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(confirm_Sfx);
                         currentScreen.currentOptions[i].isToggleOn ^= true;
                     }
 
@@ -239,11 +317,15 @@ public class Menu : MonoBehaviour
 
                     if ((!currentScreen.currentOptions[i].isMultipleOptions) && (!currentScreen.currentOptions[i].isToggleOption))
                     {
+                          if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(back_Sfx);
                         DefaultBack ();
                     }
                     else if (currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                        GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i]);
+                         if(audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot(back_Sfx);
+                        GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i], false);
                     }
                     else if (currentScreen.currentOptions[i].isToggleOption)
                     {
@@ -284,6 +366,7 @@ public class Menu : MonoBehaviour
     }
     void GoToScreen (MenuScreen Screen, string cameraState)
     {
+        if(!Screen && Screen!= null) return;
 
         currentScreen.isSelected = false;
 
@@ -294,7 +377,7 @@ public class Menu : MonoBehaviour
 
     }
 
-    public void GoToOption (MenuOption option, MenuOption lastCurrentOption)
+    public void GoToOption (MenuOption option, MenuOption lastCurrentOption, bool goNext)
     {
         if ((!option || option == null) && (!lastCurrentOption || lastCurrentOption == null)) return;
 
@@ -328,10 +411,22 @@ public class Menu : MonoBehaviour
 
             }
 
-            if (lastCurrentOption.previous == null)
-                GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
-            else if (lastCurrentOption.next == null)
+            if(goNext)
+            {
+                if (lastCurrentOption.next == null)
                 GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
+            }
+            else
+            {
+                if (lastCurrentOption.previous == null)
+                GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
+
+            }
+
+           // if (lastCurrentOption.previous == null)
+           //     GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
+           // else if (lastCurrentOption.next == null)
+           //     GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
             lastCurrentOption.isSelected = false;
             return;
         }
@@ -363,6 +458,7 @@ public class Menu : MonoBehaviour
             if (o && o.isSelected)
             {
                 print ("go to previous");
+                if(o.previousScreen && o.previousScreen != null)
                 GoToScreen (o.previousScreen, o.previousScreen.cameraState);
 
             }
@@ -443,6 +539,11 @@ public class Menu : MonoBehaviour
 
     }
 
+
+    public void setCurrentPlayingText(string songName, string artistsName)
+    {
+        currentPlayingText.text = "[playing " + songName + " by " + artistsName + " in the background]";
+    }
     void HandleAxisStateDPad (ref Player.AxisState state, string axi)
     {
 
