@@ -1069,15 +1069,27 @@ namespace Aesthetics
 
             Shader shader_ref = renderer_Ref.sharedMaterials[0].shader;
 
-                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorPrim1", colorPrim1);
-                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorPrim2", colorPrim2);
+                    renderer_Ref.materials[0].SetColor ("_ColorPrim1", colorPrim1);
+                    renderer_Ref.materials[0].SetColor ("_ColorPrim2", colorPrim2);
                     
-                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorSec1", colorSec1);
-                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorSec2", colorSec2);
+                    renderer_Ref.materials[0].SetColor ("_ColorSec1", colorSec1);
+                    renderer_Ref.materials[0].SetColor ("_ColorSec2", colorSec2);
 
                     renderer_Ref.sharedMaterials[0].SetColor ("_ColorTert1", colorTert1);
-                    renderer_Ref.sharedMaterials[0].SetColor ("_ColorTert2", colorTert2);
+                    renderer_Ref.materials[0].SetColor ("_ColorTert2", colorTert2);
         }
+
+        public void setModelColors(Color32[] prim, Color32[] sec, Color32[] tert)
+        {
+            if(!renderer_Ref) return;
+
+            colorPrim = prim;
+            colorSec =  sec;
+            colorTert = tert;
+
+            setShaderColors(colorPrim[0],colorPrim[1],colorSec[0], colorSec[1], colorTert[0], colorTert[1]);
+        }
+
 
         CameraScript.windRose? getDirectionFromInput ()
         {

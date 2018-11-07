@@ -68,7 +68,7 @@ GameObject:
   - component: {fileID: 114695690606320924}
   - component: {fileID: 114104998194430652}
   m_Layer: 12
-  m_Name: Statue Menu
+  m_Name: NewStatue Menu
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -511,6 +511,8 @@ MonoBehaviour:
     rgba: 4294172034
   renderer_Ref: {fileID: 137192825382365444}
   character: 1
+  gridblockColor: 0
+  blackGridblockColor: 0
 --- !u!137 &137192825382365444
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

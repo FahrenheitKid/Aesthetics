@@ -24,6 +24,14 @@ public static class CollectionsExtensions
     {
         return values.Select((b,i) => object.Equals(b, val) ? i : -1).Where(i => i != -1).ToArray();
     }
+
+   
+    public static List<T> Repeated<T>(this List <T> list, T value, int count)
+    {
+        List<T> ret = new List<T>(count);
+        ret.AddRange(Enumerable.Repeat(value, count));
+        return ret;
+    }
 }
 
 
@@ -74,5 +82,7 @@ public class UtilityTools
 
 
 }
+
+
 
 }

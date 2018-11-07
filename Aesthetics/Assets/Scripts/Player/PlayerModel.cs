@@ -6,14 +6,18 @@ public class PlayerModel : MonoBehaviour {
 
 
 	 	[SerializeField]
-        Color32 [] colorPrim = new Color32[2];
+        public Color32 [] colorPrim = new Color32[2];
         [SerializeField]
-        Color32 [] colorSec = new Color32[2];
+        public Color32 [] colorSec = new Color32[2];
         [SerializeField]
-        Color32 [] colorTert = new Color32[2];
+        public Color32 [] colorTert = new Color32[2];
 
 		public Renderer renderer_Ref;
                 public Aesthetics.Player.Character character;
+
+                public GridBlock.gridBlockColor gridblockColor;
+
+		public GridBlock.gridBlockColor blackGridblockColor;
 
 		
 	// Use this for initialization

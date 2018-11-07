@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.124342956, g: 0.17977946, b: 0.26298004, a: 1}
+  m_IndirectSpecularColor: {r: 0.124354675, g: 0.17978542, b: 0.26300237, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -494,7 +494,7 @@ Prefab:
         type: 2}
       propertyPath: playerPrefabList.Array.data[1]
       value: 
-      objectReference: {fileID: 1413307950984232, guid: 5dd0fea393bf2174b8230d17bd069e08,
+      objectReference: {fileID: 1032742635607490, guid: 776cbe41b6666ab48a54084b78abc120,
         type: 2}
     - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
         type: 2}
@@ -5035,7 +5035,7 @@ Prefab:
         type: 2}
       propertyPath: koreographyList.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: f60d89c8177067f40be8e81e7264b537,
+      objectReference: {fileID: 11400000, guid: 9c48d88c2c3880149b8f7cd945c923f4,
         type: 2}
     - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
         type: 2}

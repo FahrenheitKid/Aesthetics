@@ -39,11 +39,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 6a797ed9b4f67c545bccb6a558b1710a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8c1be4a741b73ed4eb601dae08d4f804, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask:
-        m_Texture: {fileID: 2800000, guid: fdcf3b31289253743b109c82d214586a, type: 3}
+        m_Texture: {fileID: 2800000, guid: f6e07603dc4f5344a9b470424468198c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -88,10 +88,10 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorPrim1: {r: 0.90588236, g: 0.8039216, b: 1, a: 1}
-    - _ColorPrim2: {r: 0.90588236, g: 0.8039216, b: 1, a: 1}
-    - _ColorSec1: {r: 0.90588236, g: 0.8039216, b: 1, a: 1}
-    - _ColorSec2: {r: 0.90588236, g: 0.8039216, b: 1, a: 1}
-    - _ColorTert1: {r: 0.6431373, g: 0.35686275, b: 0.8862745, a: 1}
-    - _ColorTert2: {r: 0.6431373, g: 0.35686275, b: 0.8862745, a: 1}
+    - _ColorPrim1: {r: 0.5647059, g: 1, b: 0.8352941, a: 1}
+    - _ColorPrim2: {r: 0.5647059, g: 1, b: 0.8352941, a: 1}
+    - _ColorSec1: {r: 0.03137255, g: 0.7176471, b: 0.45882353, a: 1}
+    - _ColorSec2: {r: 0.03137255, g: 0.7176471, b: 0.45882353, a: 1}
+    - _ColorTert1: {r: 0, g: 1, b: 0.62352943, a: 1}
+    - _ColorTert2: {r: 0.019607844, g: 1, b: 0.6313726, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

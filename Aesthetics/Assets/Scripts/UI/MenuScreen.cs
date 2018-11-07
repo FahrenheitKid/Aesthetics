@@ -89,9 +89,18 @@ public class MenuScreen : MonoBehaviour
                                 int playerID = (int) System.Char.GetNumericValue (scr.transform.GetChild (i).name[scr.transform.GetChild (i).name.Length - 1]) - 1;
 
                                 PlayerMenu pm = menu_Ref.players.Find (p => p.ID == playerID);
-                                if (pm && pm != null)
+                                if (pm && pm != null && scr.transform.GetChild (i).GetComponent<MenuOption> ().currentMultipleOption)
+                                {
                                     pm.character = scr.transform.GetChild (i).GetComponent<MenuOption> ().currentMultipleOption.GetComponent<PlayerModel> ().character;
-                            }
+
+                                    pm.colorPrim = scr.transform.GetChild (i).GetComponent<MenuOption> ().currentMultipleOption.GetComponent<PlayerModel> ().colorPrim;
+                                    pm.colorSec = scr.transform.GetChild (i).GetComponent<MenuOption> ().currentMultipleOption.GetComponent<PlayerModel> ().colorSec;
+                                    pm.colorTert = scr.transform.GetChild (i).GetComponent<MenuOption> ().currentMultipleOption.GetComponent<PlayerModel> ().colorTert;
+                                    pm.gridblockColor = scr.transform.GetChild (i).GetComponent<MenuOption> ().currentMultipleOption.GetComponent<PlayerModel> ().gridblockColor;
+                                    pm.blackGridblockColor = scr.transform.GetChild (i).GetComponent<MenuOption> ().currentMultipleOption.GetComponent<PlayerModel> ().blackGridblockColor;
+
+                                }
+                                   }
 
                             if (scr.transform.GetChild (i).name.ToLower ().Contains ("controlleroption p"))
                             {
@@ -189,6 +198,34 @@ public class MenuScreen : MonoBehaviour
                     print ("Item Setup size: " + menu_Ref.itemSetup.Count);
                     SetOptionsActive (true);
 
+                }
+                else if (name == "Confirmation Screen")
+                {
+
+                      MenuScreen scr = menu_Ref.screens.Find (screen => screen.name == "Stage Select Screen");
+
+                    if (scr && scr != null)
+                    {
+                        if(currentOptions.Length > 0)
+                        menu_Ref.stage = Instantiate(scr.currentOptions[0].currentMultipleOption.GetComponent<Stage>());
+
+                         DontDestroyOnLoad(menu_Ref.stage.gameObject);
+                            menu_Ref.stage.gameObject.SetActive(false);
+
+                    } 
+
+                        scr = menu_Ref.screens.Find (screen => screen.name == "Song Select Screen");
+                     if (scr && scr != null)
+                    {
+                        if(currentOptions.Length > 0)
+                        menu_Ref.gameSong = Instantiate(scr.currentOptions[0].currentMultipleOption.GetComponent<Song>());
+
+                         DontDestroyOnLoad(menu_Ref.gameSong.gameObject);
+                            menu_Ref.gameSong.gameObject.SetActive(false);
+
+                    } 
+
+                    
                 }
                 else
                 {

@@ -85,6 +85,9 @@ namespace Aesthetics
         private RhythmSystem rhythmSystem_ref;
 
         [SerializeField]
+        public Menu menu_ref;
+
+        [SerializeField]
         private List<GameObject> playerPrefabList = new List<GameObject> (4);
 
         [SerializeField]
@@ -227,8 +230,29 @@ namespace Aesthetics
 
         void Awake ()
         {
+
+              Menu menuaux = null;
+           if(GameObject.FindGameObjectWithTag("Menu"))
+             menuaux = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+
+            if(menuaux && menuaux != null )
+            {
+                menu_ref = menuaux;
+
+                playerList.Clear();
+                for(int i = 0; i < menu_ref.players.Count; i++) playerList.Add(null);
+
+                if(menuaux.stage.filename != null)
+                fileNameToLoad = menu_ref.stage.filename;
+                
+                RenderSettings.skybox = menu_ref.stage.skybox_mat;
+            }
+
+
             tiles = Load (Application.streamingAssetsPath + "\\" + fileNameToLoad);
             BuildMap ();
+
+           
 
             itemTimersAwake ();
             SpawnPlayers ();
@@ -771,12 +795,58 @@ namespace Aesthetics
                     initial_pos = GetGridBlock (mapWidth - 1, mapHeight - 1).gameObject.transform.position;
                     initial_pos.y = playerInitY;
                 }
-                GameObject player_prefab = Instantiate (playerPrefabList[i], initial_pos, Quaternion.identity) as GameObject;
-                player_prefab.GetComponent<Player> ().setGridRef (this);
-                player_prefab.GetComponent<Player> ().setRhythmSystemRef (rhythmSystem_ref);
+                
+                GameObject prefabToInstantiate = null;
+                if(menu_ref && menu_ref !=null)
+                {
+                    
+                switch(menu_ref.players[i].character)
+                {
+
+                    
+
+                    case Player.Character.David:
+                    prefabToInstantiate = playerPrefabList.Find(p => p.name.ToLower().Contains("statue"));
+
+                    break;
+
+                    case Player.Character.Skull:
+                    prefabToInstantiate = playerPrefabList.Find(p => p.name.ToLower().Contains("skull"));
+                    break;
+
+                    case Player.Character.Afro:
+                    prefabToInstantiate = playerPrefabList.Find(p => p.name.ToLower().Contains("blackpower"));
+                    break;
+
+                    case Player.Character.AnimeGirl:
+                    default:
+                    prefabToInstantiate = playerPrefabList.Find(p => p.name.ToLower().Contains("girl"));
+
+                    break;
+                }
+                }
+                
+
+                if(!prefabToInstantiate || prefabToInstantiate == null) prefabToInstantiate = playerPrefabList[1];
+
+                GameObject player_prefab = Instantiate (prefabToInstantiate, initial_pos, Quaternion.identity) as GameObject;
+                Player pp = player_prefab.GetComponent<Player> ();
+                pp.setGridRef (this);
+                pp.setRhythmSystemRef (rhythmSystem_ref);
+
+                if(menu_ref && menu_ref !=null)
+                {
+                pp.setModelColors(menu_ref.players[i].colorPrim, menu_ref.players[i].colorSec, menu_ref.players[i].colorTert);
+                pp.controllerType = menu_ref.players[i].controllerType;
+                pp.gridColor = menu_ref.players[i].gridblockColor;
+                pp.blackGridColor = menu_ref.players[i].blackGridblockColor;
+               }
+
                 playerList[i] = player_prefab.GetComponent<Player> ();
 
             }
+
+            
 
             setupPlayersInputIDs();
            

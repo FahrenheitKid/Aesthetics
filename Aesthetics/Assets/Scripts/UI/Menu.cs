@@ -57,11 +57,16 @@ public class Menu : MonoBehaviour
     // public List <Player.InputType> playerControllers = new List<Player.InputType>(4);
     public List<PlayerMenu> players = new List<PlayerMenu> (4);
 
+    public Stage stage;
+    public Song gameSong;
+
     public List<System.Type> itemSetup = new List<System.Type> (11);
     public float itemFrequency = 50f;
 
 
     private void Awake() {
+
+        DontDestroyOnLoad(this);
         for(int i = 0; i < 4; i++)
         {
             audioSources.Add(gameObject.AddComponent<AudioSource>());
@@ -70,7 +75,10 @@ public class Menu : MonoBehaviour
     }
     // Use this for initialization
     void Start ()
-    {
+    {   
+        if(stage && stage != null)
+        SceneManager.MoveGameObjectToScene(stage.gameObject, SceneManager.GetActiveScene());
+        
         horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         verticalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         //playerControllers = new List<Player.InputType>(4);
@@ -95,13 +103,21 @@ public class Menu : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-
+        if(SceneManager.GetActiveScene().name.ToLower().Contains("game")) return;
 
         if(currentScreen.name == "Confirmation Screen")
         {
             print("entrei");
             if(Camera.main.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
             {
+                //DontDestroyOnLoad(stage.gameObject);
+                //stage.gameObject.SetActive(false);
+                if(audioSource_Ref.isPlaying)
+                    {
+            
+                        audioSource_Ref.Stop();
+                    }
+
                 SceneManager.LoadScene(1);
             }
         }

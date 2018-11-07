@@ -228,7 +228,14 @@ public class RhythmSystem : MonoBehaviour
 
         int randomidx = UnityEngine.Random.Range(0,koreographyList.Count);
         //LoadKoreography (koreographyList[randomidx], 0, true);
-        LoadKoreography (koreographyList.Find (element => element.name == "MainKoreo"), 0, true);
+
+        string songName =null;
+        if(grid_ref.menu_ref && grid_ref.menu_ref !=null)
+        songName = getKoreoNameBySongName( grid_ref.menu_ref.gameSong.songName);
+        
+        if(songName == null) songName = "WalkKoreo";
+
+        LoadKoreography (koreographyList.Find (element => element.name == songName), 0, true);
 
     }
     void Start ()
@@ -284,6 +291,25 @@ public class RhythmSystem : MonoBehaviour
             //musicPlayer_ref.Play();
 
         }
+
+    }
+
+    string getKoreoNameBySongName(string songName)
+    {
+
+        if(songName.ToLower().Contains("Footsteps"))
+        {
+            return "MainKoreo";
+        }
+        else if(songName.ToLower().Contains("夏の準備は"))
+        {
+            return "LolaEdKoreo";
+        }else if(songName.ToLower().Contains("ウォーク·オン·バイ"))
+        {
+            return "WalkKoreo";
+        }
+
+        return null;
 
     }
 
