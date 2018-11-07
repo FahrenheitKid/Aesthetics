@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0.38
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 617d9be015db68348a623b01ea51a8c5, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: ceb0a3ed2cb53a94fa21843cc958c52b, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.19239527, g: 0.5928501, b: 0.77373916, a: 1}
+  m_IndirectSpecularColor: {r: 0.124342956, g: 0.17977946, b: 0.26298004, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -710,7 +710,7 @@ Prefab:
     - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
         type: 2}
       propertyPath: fileNameToLoad
-      value: map0.txt
+      value: Midnight Disco.txt
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f64a6e4eb9dbac74083b9665c74f6119, type: 2}
@@ -2283,6 +2283,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   _autoZoomAmount: 0.25
+  safeZoomOut: 0
   _xVerticalOffset: 0
   _zVerticalOffset: 0
   _xHorizontallOffset: 0.5
@@ -2562,7 +2563,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &742403364
 Transform:
   m_ObjectHideFlags: 0
@@ -5344,6 +5345,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ID: 0
+  _inputID: 0
+  _controllerType: 0
   horizontalAxisState: 0
   verticalAxisState: 0
   deadZone: 0.02

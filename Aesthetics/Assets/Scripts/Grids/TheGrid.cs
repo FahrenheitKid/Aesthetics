@@ -235,7 +235,7 @@ namespace Aesthetics
 
             Application.targetFrameRate = 60; // -1 uncapp
             typesOfItemList = ReflectiveEnumerator.GetEnumerableOfType<Item> ();
-
+            
         }
 
         // Use this for initialization
@@ -250,6 +250,11 @@ namespace Aesthetics
 #endif
 
             itemTimersStart ();
+
+            
+            //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
+
+           
 
             // print("ScoreMaker: " + getItemCurrentCount<ScoreMaker>() + " | " + getItemCurrentPercentage<ScoreMaker>());
 
@@ -1272,6 +1277,7 @@ namespace Aesthetics
             //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
 
             cameraScript.setViewBoundaries ();
+            
             cameraScript.ZoomOutLoopUntilSeen (100);
 
         }
