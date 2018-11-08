@@ -73,6 +73,66 @@ MonoBehaviour:
     mEndSample: 2229271
   - mStartSample: 2298903
     mEndSample: 2298903
+  - mStartSample: 2391745
+    mEndSample: 2391745
+  - mStartSample: 2414956
+    mEndSample: 2414956
+  - mStartSample: 2995219
+    mEndSample: 2995219
+  - mStartSample: 3018429
+    mEndSample: 3018429
+  - mStartSample: 3041640
+    mEndSample: 3041640
+  - mStartSample: 3088061
+    mEndSample: 3088061
+  - mStartSample: 3737956
+    mEndSample: 3737956
+  - mStartSample: 3761166
+    mEndSample: 3761166
+  - mStartSample: 3784377
+    mEndSample: 3784377
+  - mStartSample: 3830798
+    mEndSample: 3830798
+  - mStartSample: 3923640
+    mEndSample: 3923640
+  - mStartSample: 3993271
+    mEndSample: 3993271
+  - mStartSample: 4016482
+    mEndSample: 4016482
+  - mStartSample: 4039692
+    mEndSample: 4039692
+  - mStartSample: 4062903
+    mEndSample: 4062903
+  - mStartSample: 4109324
+    mEndSample: 4109324
+  - mStartSample: 4178956
+    mEndSample: 4178956
+  - mStartSample: 4202166
+    mEndSample: 4202166
+  - mStartSample: 4225377
+    mEndSample: 4225377
+  - mStartSample: 4248587
+    mEndSample: 4248587
+  - mStartSample: 4295008
+    mEndSample: 4295008
+  - mStartSample: 4364640
+    mEndSample: 4364640
+  - mStartSample: 4387850
+    mEndSample: 4387850
+  - mStartSample: 4411061
+    mEndSample: 4411061
+  - mStartSample: 4434271
+    mEndSample: 4434271
+  - mStartSample: 4480692
+    mEndSample: 4480692
+  - mStartSample: 4550324
+    mEndSample: 4550324
+  - mStartSample: 4573535
+    mEndSample: 4573535
+  - mStartSample: 4596745
+    mEndSample: 4596745
+  - mStartSample: 4666377
+    mEndSample: 4666377
   _SerializedPayloadTypes:
   - SonicBloom.Koreo.TextPayload
   _AssetPayloads: []
@@ -120,4 +180,34 @@ MonoBehaviour:
   - mTextVal: 1,0,8
   - mTextVal: 3,0,8
   - mTextVal: 1,0,8
-  _TextPayloadIdxs: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d000000
+  - mTextVal: 5,3,8
+  - mTextVal: 3,20,8
+  - mTextVal: 0,0,8
+  - mTextVal: 0,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 3,0,8
+  - mTextVal: 0,0,8
+  - mTextVal: 0,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 4,0,8
+  - mTextVal: 4,3,4
+  - mTextVal: 0,0,8
+  - mTextVal: 0,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 1,0,8
+  - mTextVal: 3,0,8
+  - mTextVal: 1,0,8
+  _TextPayloadIdxs: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d0000001e0000001f000000200000002100000022000000230000002400000025000000260000002700000028000000290000002a0000002b0000002c0000002d0000002e0000002f000000300000003100000032000000330000003400000035000000360000003700000038000000390000003a0000003b000000

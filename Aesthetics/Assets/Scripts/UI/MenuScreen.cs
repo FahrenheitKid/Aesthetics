@@ -128,7 +128,7 @@ public class MenuScreen : MonoBehaviour
                 {
                     MenuScreen scr = menu_Ref.screens.Find (screen => screen.name == "Item Screen");
 
-                    menu_Ref.itemSetup.Clear ();
+                    //menu_Ref.itemSetup.Clear();
 
                     //save items setup scheme
                     if (scr && scr != null)
@@ -136,66 +136,90 @@ public class MenuScreen : MonoBehaviour
                         for (int i = 0; i < scr.transform.childCount; i++)
                         {
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("arrow") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("arrow") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (Arrow));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("compact") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("compact") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (CompactDisk));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("3d") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("3d") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (Glasses3D));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("fast") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("fast") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (FastFoward));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("slomo") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("slomo") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (SloMo));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("rainbow") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("rainbow") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (RainbowLipstick));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("lock") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("lock") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (Lock));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("ray") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("ray") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (Ray));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("revolver") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("revolver") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (Revolver));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("sneakers") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("sneakers") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (Sneakers));
                             }
 
-                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("floppy") && scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("floppy") && !scr.transform.GetChild (i).GetComponent<MenuOption> ().isToggleOn)
                             {
                                 menu_Ref.itemSetup.Add (typeof (FloppyDisk));
+                            }
+
+                            if (scr.transform.GetChild (i).name.ToLower ().Contains ("frequency"))
+                            {
+
+                                if(scr.transform.GetChild (i).GetComponent<MenuOption>().currentMultipleOption.name.ToLower().Contains("high"))
+                                {
+                                    menu_Ref.itemFrequency = 3;
+
+                                }
+
+                                if(scr.transform.GetChild (i).GetComponent<MenuOption>().currentMultipleOption.name.ToLower().Contains("medium"))
+                                {
+                                    menu_Ref.itemFrequency = 5;
+
+                                }
+
+                                if(scr.transform.GetChild (i).GetComponent<MenuOption>().currentMultipleOption.name.ToLower().Contains("low"))
+                                {
+                                    menu_Ref.itemFrequency = 8;
+
+                                }
                             }
 
                         }
 
                     }
 
-                    print ("Item Setup size: " + menu_Ref.itemSetup.Count);
+                    
+                    //menu_Ref.itemSetup.ForEach(t => print( t.Name + "off"));
+
                     SetOptionsActive (true);
 
                 }

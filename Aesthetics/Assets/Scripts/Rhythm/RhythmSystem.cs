@@ -233,7 +233,7 @@ public class RhythmSystem : MonoBehaviour
         if(grid_ref.menu_ref && grid_ref.menu_ref !=null)
         songName = getKoreoNameBySongName( grid_ref.menu_ref.gameSong.songName);
         
-        if(songName == null) songName = "WalkKoreo";
+        if(songName == null) songName = "MainKoreo";
 
         LoadKoreography (koreographyList.Find (element => element.name == songName), 0, true);
 
@@ -297,7 +297,7 @@ public class RhythmSystem : MonoBehaviour
     string getKoreoNameBySongName(string songName)
     {
 
-        if(songName.ToLower().Contains("Footsteps"))
+        if(songName.ToLower().Contains("footsteps"))
         {
             return "MainKoreo";
         }

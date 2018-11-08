@@ -83,6 +83,17 @@ public class UtilityTools
 
 }
 
+private static bool HasGenericBase(System.Type myType, System.Type t) {
+    Debug.Assert(t.IsGenericTypeDefinition);
+    while (myType != typeof(object)) {
+        if (myType.IsGenericType && myType.GetGenericTypeDefinition() == t) {
+            return true;
+        }
+        myType = myType.BaseType;
+    }
+    return false;
+}
+
 
 
 }

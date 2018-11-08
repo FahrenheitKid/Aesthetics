@@ -107,7 +107,7 @@ public class Menu : MonoBehaviour
 
         if(currentScreen.name == "Confirmation Screen")
         {
-            print("entrei");
+            
             if(Camera.main.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
             {
                 //DontDestroyOnLoad(stage.gameObject);
@@ -135,8 +135,7 @@ public class Menu : MonoBehaviour
 			}
 
 			Camera.main.GetComponent<Animator>().SetBool(Camera.main.GetComponent<Animator>().parameters[cameraAnimIdx].name,true);
-			//print(Camera.main.GetComponent<Animator>().parameters[cameraAnimIdx].name + " " + Camera.main.GetComponent<Animator>().GetBool(cameraAnimIdx));
-		}
+			}
 
 		if(Input.GetKeyDown(KeyCode.A))
 		{
@@ -151,8 +150,7 @@ public class Menu : MonoBehaviour
 			}
 
 			Camera.main.GetComponent<Animator>().SetBool(Camera.main.GetComponent<Animator>().parameters[cameraAnimIdx].name,true);
-			//print(Camera.main.GetComponent<Animator>().parameters[cameraAnimIdx].name + " " + Camera.main.GetComponent<Animator>().GetBool(cameraAnimIdx));
-		}
+			}
 		 */
 
         handleAxisStates ();
@@ -473,7 +471,7 @@ public class Menu : MonoBehaviour
         {
             if (o && o.isSelected)
             {
-                print ("go to previous");
+                
                 if(o.previousScreen && o.previousScreen != null)
                 GoToScreen (o.previousScreen, o.previousScreen.cameraState);
 

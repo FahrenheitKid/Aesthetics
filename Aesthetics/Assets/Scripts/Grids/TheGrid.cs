@@ -120,7 +120,7 @@ namespace Aesthetics
         [SerializeField]
         public List<Item> itemList;
 
-        public IEnumerable<Item> typesOfItemList;
+        public ICollection<Item> typesOfItemList;
 
         [SerializeField]
         public List<FloatingText> floatingTextList;
@@ -230,8 +230,13 @@ namespace Aesthetics
 
         void Awake ()
         {
+            
 
+            typesOfItemList = ReflectiveEnumerator.GetEnumerableOfType<Item> ().ToList();
+
+            
               Menu menuaux = null;
+
            if(GameObject.FindGameObjectWithTag("Menu"))
              menuaux = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
 
@@ -246,6 +251,26 @@ namespace Aesthetics
                 fileNameToLoad = menu_ref.stage.filename;
                 
                 RenderSettings.skybox = menu_ref.stage.skybox_mat;
+
+                List<Item> typeClone =  new List<Item>();
+
+                typeClone = typesOfItemList.ToList();
+               
+               
+                    for(int j = menu_ref.itemSetup.Count -1; j >= 0; j--)
+                    {
+                        
+                        
+                        typeClone.RemoveAll( t => t.GetType().Name == menu_ref.itemSetup[j].Name );
+                        
+                    }
+                
+
+                typesOfItemList = typeClone;
+
+                itemBaseSpawnRatio = menu_ref.itemFrequency;
+
+               
             }
 
 
@@ -258,7 +283,8 @@ namespace Aesthetics
             SpawnPlayers ();
 
             Application.targetFrameRate = 60; // -1 uncapp
-            typesOfItemList = ReflectiveEnumerator.GetEnumerableOfType<Item> ();
+            
+            
             
         }
 
@@ -335,11 +361,17 @@ namespace Aesthetics
                 //print ("cabou tempo");
                 if (getItemCurrentCount<Item> () < maxItens)
                 {
-                    ReGamble:
+                    int count_max = 100;
+                    int count = 0;
 
-                        if (!GambleItemToSpawn ())
+                    ReGamble:
+                    count++;
+
+                        if (!GambleItemToSpawn () && count <= count_max)
                         {
                             print ("GAMBLE FAILED!");
+
+                            if(count <= count_max)
                             goto ReGamble;
                         }
                     else
