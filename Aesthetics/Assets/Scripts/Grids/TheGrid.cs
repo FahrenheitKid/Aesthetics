@@ -270,7 +270,8 @@ namespace Aesthetics
 
                 itemBaseSpawnRatio = menu_ref.itemFrequency;
 
-               
+             
+
             }
 
 
@@ -281,6 +282,13 @@ namespace Aesthetics
 
             itemTimersAwake ();
             SpawnPlayers ();
+
+            numberOfPlayers = playerList.Count;
+
+            for(int i = 0; i < GetPlayerUIList().Count; i++)
+            {
+                if(i > numberOfPlayers - 1) playerUIList[i].gameObject.SetActive(false);
+            }
 
             Application.targetFrameRate = 60; // -1 uncapp
             
