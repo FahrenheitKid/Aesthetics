@@ -22,11 +22,11 @@ public class RhythmSystem : MonoBehaviour
 
     [Tooltip ("The Event ID of the track to use for fall events.")]
     [EventID]
-    public string fallBeatID;
+    public List<string> fallBeatIDs = new List<string>();
 
     [Tooltip ("The Event ID of the track to use for block events.")]
     [EventID]
-    public string blockBeatID;
+    public List<string> blockBeatIDs = new List<string>();
 
     [Tooltip ("The number of milliseconds (both early and late) within which input will be detected as a Hit.")]
     [Range (8f, 150f)]
@@ -117,10 +117,10 @@ public class RhythmSystem : MonoBehaviour
     List<KoreographyEvent> beatEvents;
 
     // list with all fall events
-    List<KoreographyEvent> fallEvents;
+    List<List<KoreographyEvent>> fallEvents = new List<List<KoreographyEvent>>();
 
     // list with all fall events
-    List<KoreographyEvent> blockEvents;
+    List<List<KoreographyEvent>> blockEvents = new List<List<KoreographyEvent>>();
 
     // A Queue that contains all of the Note Objects currently active (on-screen) within this lane.  Input and
     //  lifetime validity checks are tracked with operations on this Queue.
@@ -295,9 +295,9 @@ public class RhythmSystem : MonoBehaviour
             //gets main beat track
             mainBeatID = Array.Find (koreo.GetEventIDs (), element => element.ToLower().Contains ("mainbeat"));
             //mainBeatID = Array.FindLast(koreo.GetEventIDs(),"MainBeat");
-            fallBeatID = Array.Find (koreo.GetEventIDs (), element => element.ToLower().Contains ("fallbeat"));
+            fallBeatIDs = Array.FindAll (koreo.GetEventIDs (), element => element.ToLower().Contains ("fallbeat")).ToList();
 
-            blockBeatID = Array.Find (koreo.GetEventIDs (), element => element.ToLower().Contains ("blockbeat"));
+            blockBeatIDs = Array.FindAll (koreo.GetEventIDs (), element => element.ToLower().Contains ("blockbeat")).ToList();
 
             //musicPlayer_ref.Play();
 
@@ -342,15 +342,44 @@ public class RhythmSystem : MonoBehaviour
 
         // Grab all the events out of the Koreography.
         KoreographyTrackBase rhythmTrack = playingKoreo.GetTrackByID (mainBeatID);
-        KoreographyTrackBase fallTrack = playingKoreo.GetTrackByID (fallBeatID);
-        KoreographyTrackBase blockTrack = playingKoreo.GetTrackByID (blockBeatID);
+
+        List<KoreographyTrackBase> fallTracks = new List<KoreographyTrackBase>();
+        
+        foreach(string lis in fallBeatIDs)
+        {
+            fallTracks.Add(playingKoreo.GetTrackByID (lis));
+            Koreographer.Instance.RegisterForEvents (lis, OnFallBeat);
+        
+        }
+
+        List<KoreographyTrackBase> blockTracks = new List<KoreographyTrackBase>();
+        
+        foreach(string lis in blockBeatIDs)
+        {
+            blockTracks.Add(playingKoreo.GetTrackByID (lis));
+            Koreographer.Instance.RegisterForEvents (lis, OnBlockBeat);
+        
+        }
+
 
         beatEvents = rhythmTrack.GetAllEvents ();
-        fallEvents = fallTrack.GetAllEvents ();
-        blockEvents = blockTrack.GetAllEvents ();
 
-        Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
-        Koreographer.Instance.RegisterForEvents (blockBeatID, OnBlockBeat);
+        for(int i = 0; i < fallTracks.Count; i++)
+        {
+            //if(fallTracks[i].GetAllEvents().Any())
+            fallEvents.Add(fallTracks[i].GetAllEvents());
+        }
+        
+        
+        for(int i = 0; i < blockTracks.Count; i++)
+        {
+            //if(blockTracks[i].GetAllEvents().Any())
+            blockEvents.Add(blockTracks[i].GetAllEvents());
+        }
+
+
+        //Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
+        //Koreographer.Instance.RegisterForEvents (blockBeatID, OnBlockBeat);
         Koreographer.Instance.RegisterForEvents (mainBeatID, OnMainBeat);
         /*------------------------------------------------------------- */
 
@@ -796,40 +825,46 @@ public class RhythmSystem : MonoBehaviour
 
     void OnMainBeat(KoreographyEvent evt)
     {
-        for(int i = 0; i < fallEvents.Count; i++)
+        for(int j = 0; j < fallEvents.Count; j++)
         {
-            int idx = getEquivalentEventIndex(beatEvents,fallEvents[i]);
-            idx -= getEventCountdown(fallEvents[i]);
-            if(!(idx > 0 && idx < beatEvents.Count) || getEventCountdown(fallEvents[i]) < 0) continue;
+        for(int i = 0; i < fallEvents[j].Count; i++)
+        {
+            int idx = getEquivalentEventIndex(beatEvents,fallEvents[j][i]);
+            idx -= getEventCountdown(fallEvents[j][i]);
+            if(!(idx > 0 && idx < beatEvents.Count) || getEventCountdown(fallEvents[j][i]) < 0) continue;
 
            
             if(hasSameStartSample(evt,beatEvents[idx]))
             {
                  //print("fall event id preEQ= " + getEquivalentEventIndex(beatEvents,fallEvents[i]) + " | beat Event id = " +  getEquivalentEventIndex(beatEvents,evt) + " | idx = " + idx);
-                 OnFallBeat(fallEvents[i], true);
+                 OnFallBeat(fallEvents[j][i], true);
 
             }
             
 
 
         }
+        }
 
-        for(int i = 0; i < blockEvents.Count; i++)
+        for(int j = 0; j < blockEvents.Count; j++)
         {
-            int idx = getEquivalentEventIndex(beatEvents,blockEvents[i]);
-            idx -= getEventCountdown(blockEvents[i]);
-            if(!(idx > 0 && idx < beatEvents.Count) || getEventCountdown(blockEvents[i]) < 0) continue;
+        for(int i = 0; i < blockEvents[j].Count; i++)
+        {
+            int idx = getEquivalentEventIndex(beatEvents,blockEvents[j][i]);
+            idx -= getEventCountdown(blockEvents[j][i]);
+            if(!(idx > 0 && idx < beatEvents.Count) || getEventCountdown(blockEvents[j][i]) < 0) continue;
 
            
             if(hasSameStartSample(evt,beatEvents[idx]))
             {
                  //print("fall event id preEQ= " + getEquivalentEventIndex(beatEvents,fallEvents[i]) + " | beat Event id = " +  getEquivalentEventIndex(beatEvents,evt) + " | idx = " + idx);
-                 OnBlockBeat(blockEvents[i], true);
+                 OnBlockBeat(blockEvents[j][i], true);
 
             }
             
 
 
+        }
         }
     }
 

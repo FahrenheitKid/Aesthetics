@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1223223985, guid: aa81bbec85a3f423193272a7c6154986, type: 3}
+  m_Name: LolaEDFallBeat1
+  m_EditorClassIdentifier: 
+  mEventID: FallBeat1
+  mEventList:
+  - mStartSample: 490791
+    mEndSample: 490791
+  - mStartSample: 832210
+    mEndSample: 832210
+  - mStartSample: 1173629
+    mEndSample: 1173629
+  - mStartSample: 1515049
+    mEndSample: 1515049
+  - mStartSample: 1856468
+    mEndSample: 1856468
+  - mStartSample: 1920484
+    mEndSample: 1920484
+  - mStartSample: 1941823
+    mEndSample: 1941823
+  - mStartSample: 1963162
+    mEndSample: 1963162
+  - mStartSample: 1984501
+    mEndSample: 1984501
+  _SerializedPayloadTypes:
+  - SonicBloom.Koreo.TextPayload
+  _AssetPayloads: []
+  _AssetPayloadIdxs: 
+  _ColorPayloads: []
+  _ColorPayloadIdxs: 
+  _CurvePayloads: []
+  _CurvePayloadIdxs: 
+  _FloatPayloads: []
+  _FloatPayloadIdxs: 
+  _GradientPayloads: []
+  _GradientPayloadIdxs: 
+  _IntPayloads: []
+  _IntPayloadIdxs: 
+  _SpectrumPayloads: []
+  _SpectrumPayloadIdxs: 
+  _TextPayloads:
+  - mTextVal: 5,8,3
+  - mTextVal: 5,8,3
+  - mTextVal: 5,8,3
+  - mTextVal: 5,8,3
+  - mTextVal: 5,8,3
+  - mTextVal: 1,5,3
+  - mTextVal: 1,4,3
+  - mTextVal: 1,3,3
+  - mTextVal: 1,2,3
+  _TextPayloadIdxs: 000000000100000002000000030000000400000005000000060000000700000008000000
