@@ -233,9 +233,9 @@ public class RhythmSystem : MonoBehaviour
         if(grid_ref.menu_ref && grid_ref.menu_ref !=null)
         songName = getKoreoNameBySongName( grid_ref.menu_ref.gameSong.songName);
         
-        if(songName == null) songName = "MainKoreo";
+        if(songName == null) songName = "LolaEdKoreo";
 
-        LoadKoreography (koreographyList.Find (element => element.name == songName), 0, true);
+        LoadKoreography (koreographyList.Find (element => element.name.ToLower().Contains(songName.ToLower())), 0, true);
 
     }
     void Start ()
@@ -245,8 +245,14 @@ public class RhythmSystem : MonoBehaviour
         
         InitializeLeadIn ();
 
+        string songName =null;
+        if(grid_ref.menu_ref && grid_ref.menu_ref !=null)
+        songName = getKoreoNameBySongName( grid_ref.menu_ref.gameSong.songName);
+        
+        if(songName == null) songName = "LolaEdKoreo";
+
         //load random or specific Koreo by name
-         LoadKoreography (koreographyList.Find (element => element.name == "MainKoreo"), 0, true);
+        LoadKoreography (koreographyList.Find (element => element.name.ToLower().Contains(songName.ToLower())), 0, true);
 
         //int randomidx = UnityEngine.Random.Range(0,koreographyList.Count);
         //LoadKoreography (koreographyList[randomidx], 0, true);
@@ -277,16 +283,21 @@ public class RhythmSystem : MonoBehaviour
 
     void LoadKoreography (Koreography koreo, int startSample, bool autoPlay)
     {
+            print("total tracks: "  + koreo.GetEventIDs().Length);
+            foreach(string s in koreo.GetEventIDs ())
+            {
+                print("eventID:" + s);
+            }
 
         if (!musicPlayer_ref.IsPlaying)
         {
             musicPlayer_ref.LoadSong (koreo, startSample, autoPlay);
             //gets main beat track
-            mainBeatID = Array.Find (koreo.GetEventIDs (), element => element.Equals ("MainBeat"));
+            mainBeatID = Array.Find (koreo.GetEventIDs (), element => element.ToLower().Contains ("mainbeat"));
             //mainBeatID = Array.FindLast(koreo.GetEventIDs(),"MainBeat");
-            fallBeatID = Array.Find (koreo.GetEventIDs (), element => element.Equals ("FallBeat"));
+            fallBeatID = Array.Find (koreo.GetEventIDs (), element => element.ToLower().Contains ("fallbeat"));
 
-            blockBeatID = Array.Find (koreo.GetEventIDs (), element => element.Equals ("BlockBeat"));
+            blockBeatID = Array.Find (koreo.GetEventIDs (), element => element.ToLower().Contains ("blockbeat"));
 
             //musicPlayer_ref.Play();
 
@@ -338,8 +349,8 @@ public class RhythmSystem : MonoBehaviour
         fallEvents = fallTrack.GetAllEvents ();
         blockEvents = blockTrack.GetAllEvents ();
 
-        //Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
-        //Koreographer.Instance.RegisterForEvents (blockBeatID, OnBlockBeat);
+        Koreographer.Instance.RegisterForEvents (fallBeatID, OnFallBeat);
+        Koreographer.Instance.RegisterForEvents (blockBeatID, OnBlockBeat);
         Koreographer.Instance.RegisterForEvents (mainBeatID, OnMainBeat);
         /*------------------------------------------------------------- */
 
@@ -789,13 +800,13 @@ public class RhythmSystem : MonoBehaviour
         {
             int idx = getEquivalentEventIndex(beatEvents,fallEvents[i]);
             idx -= getEventCountdown(fallEvents[i]);
-            if(!(idx > 0 && idx < beatEvents.Count)) continue;
+            if(!(idx > 0 && idx < beatEvents.Count) || getEventCountdown(fallEvents[i]) < 0) continue;
 
            
             if(hasSameStartSample(evt,beatEvents[idx]))
             {
                  //print("fall event id preEQ= " + getEquivalentEventIndex(beatEvents,fallEvents[i]) + " | beat Event id = " +  getEquivalentEventIndex(beatEvents,evt) + " | idx = " + idx);
-                 OnFallBeat(fallEvents[i]);
+                 OnFallBeat(fallEvents[i], true);
 
             }
             
@@ -807,13 +818,13 @@ public class RhythmSystem : MonoBehaviour
         {
             int idx = getEquivalentEventIndex(beatEvents,blockEvents[i]);
             idx -= getEventCountdown(blockEvents[i]);
-            if(!(idx > 0 && idx < beatEvents.Count)) continue;
+            if(!(idx > 0 && idx < beatEvents.Count) || getEventCountdown(blockEvents[i]) < 0) continue;
 
            
             if(hasSameStartSample(evt,beatEvents[idx]))
             {
                  //print("fall event id preEQ= " + getEquivalentEventIndex(beatEvents,fallEvents[i]) + " | beat Event id = " +  getEquivalentEventIndex(beatEvents,evt) + " | idx = " + idx);
-                 OnBlockBeat(blockEvents[i]);
+                 OnBlockBeat(blockEvents[i], true);
 
             }
             
@@ -823,7 +834,227 @@ public class RhythmSystem : MonoBehaviour
     }
 
     
+    
+//must only run with countdown negative (negative just to sinalize it is to start the "old" way not the predict one)
     void OnFallBeat (KoreographyEvent evt)
+    {
+
+        
+        int pattern = 0;
+        int countdown = 0;
+        int duration = 0;
+
+        string[] result;
+        string[] stringSeparators = new string[] { "," };
+        if (evt.Payload is TextPayload)
+        {
+            TextPayload tp = evt.Payload as TextPayload;
+            result = tp.TextVal.Split (stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+           if (result.Length == 3)
+            {
+                pattern = Convert.ToInt32 (result[0]);
+                if(pattern > Enum.GetNames(typeof(GridBlock.gridBlockPattern)).Length)
+                pattern = 0;
+                countdown = Convert.ToInt32 (result[1]);
+                duration = Convert.ToInt32 (result[2]);
+            }
+
+        if(countdown < 0)
+        {
+            countdown *= -1;
+        }
+        else
+        {
+            return;
+        }
+
+            GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
+            GridBlock.GridBlockStatus status = new GridBlock.GridBlockStatus(null, null, false, false, false, false, false);
+
+              List<GridBlock> patternBlocks = null;
+            int safecount = 0;
+
+
+            switch (pat)
+            {
+                    case GridBlock.gridBlockPattern.Cross: // 5
+                     RetryToFindCrossFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindCrossFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                    case GridBlock.gridBlockPattern.Triple_V: // 4
+
+                     
+                         
+                    RetryToFindTriple_VFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindTriple_VFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                case GridBlock.gridBlockPattern.Triple_H: // 3
+                         
+                        
+                    RetryToFindTriple_HFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindTriple_HFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+
+                    case GridBlock.gridBlockPattern.Double_V: // 2
+                         
+                        
+                    RetryToFindDouble_VFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindDouble_VFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+
+                    case GridBlock.gridBlockPattern.Double_H: // 1
+                         
+                        
+                    RetryToFindDouble_HFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindDouble_HFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                case GridBlock.gridBlockPattern.Single: // 0
+                default:
+                    DefaultFallPattern:
+                    GridBlock gb = grid_ref.GetRandomGridBlock (0, status);
+                    if (gb)
+                        gb.Fall (pat, countdown, duration);
+                    break;
+            }
+
+        }
+
+    }
+
+
+//must only run with countdown positive, it uses the predict one
+  void OnFallBeat (KoreographyEvent evt, bool void_)
     {
         int pattern = 0;
         int countdown = 0;
@@ -848,35 +1079,176 @@ public class RhythmSystem : MonoBehaviour
             GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
             GridBlock.GridBlockStatus status = new GridBlock.GridBlockStatus(null, null, false, false, false, false, false);
 
+              List<GridBlock> patternBlocks = null;
+            int safecount = 0;
+
+
             switch (pat)
             {
-
-                
-
-                case GridBlock.gridBlockPattern.Cross:
-                    break;
-                case GridBlock.gridBlockPattern.Triple_H:
-
-                    List<GridBlock> triplet = null;
-                    RetryToFindPattern:
-                    triplet = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
-
-                    if(triplet != null)
+                    case GridBlock.gridBlockPattern.Cross: // 5
+                     RetryToFindCrossFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
                     {
-                        foreach (GridBlock tri in triplet)
+                       
+                        foreach (GridBlock tri in patternBlocks)
                         {
                             if(tri) tri.Fall(pat,countdown,duration);
                         }
                     }
                     else
                     {
-                        goto RetryToFindPattern;
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindCrossFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
 
                     }
 
                     break;
-                case GridBlock.gridBlockPattern.Single:
+                    case GridBlock.gridBlockPattern.Triple_V: // 4
+
+                     
+                         
+                    RetryToFindTriple_VFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindTriple_VFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                case GridBlock.gridBlockPattern.Triple_H: // 3
+                         
+                        
+                    RetryToFindTriple_HFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindTriple_HFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+
+                    case GridBlock.gridBlockPattern.Double_V: // 2
+                         
+                        
+                    RetryToFindDouble_VFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindDouble_VFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+
+                    case GridBlock.gridBlockPattern.Double_H: // 1
+                         
+                        
+                    RetryToFindDouble_HFall:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Fall(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindDouble_HFall;
+                        }
+                        else
+                        {
+                            goto DefaultFallPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                case GridBlock.gridBlockPattern.Single: // 0
                 default:
+                    DefaultFallPattern:
                     GridBlock gb = grid_ref.GetRandomGridBlock (0, status);
                     if (gb)
                         gb.Fall (pat, countdown, duration);
@@ -887,7 +1259,226 @@ public class RhythmSystem : MonoBehaviour
 
     }
 
+//must only run with countdown negative (negative just to sinalize it is to start the "old" way not the predict one)
     void OnBlockBeat (KoreographyEvent evt)
+    {
+        int pattern = 0;
+        int countdown = 0;
+        int duration = 0;
+
+        string[] result;
+        string[] stringSeparators = new string[] { "," };
+        if (evt.Payload is TextPayload)
+        {
+            TextPayload tp = evt.Payload as TextPayload;
+            result = tp.TextVal.Split (stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            if (result.Length == 3)
+            {
+                pattern = Convert.ToInt32 (result[0]);
+                if(pattern > Enum.GetNames(typeof(GridBlock.gridBlockPattern)).Length)
+                pattern = 0;
+                countdown = Convert.ToInt32 (result[1]);
+                duration = Convert.ToInt32 (result[2]);
+            }
+
+
+        if(countdown < 0)
+        {
+            countdown *= -1;
+        }
+        else
+        {
+            return;
+        }
+
+             GridBlock.gridBlockPattern pat = (GridBlock.gridBlockPattern) pattern;
+            GridBlock.GridBlockStatus status = new GridBlock.GridBlockStatus(false, false, false, false, false, false, false);
+
+            List<GridBlock> patternBlocks = null;
+            int safecount = 0;
+
+            switch (pat)
+            {
+
+                
+
+                case GridBlock.gridBlockPattern.Cross: // 5
+                     RetryToFindCross:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindCross;
+                        }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                    case GridBlock.gridBlockPattern.Triple_V: // 4
+
+                     
+                         
+                    RetryToFindTriple_V:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindTriple_V;
+                        }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                case GridBlock.gridBlockPattern.Triple_H: // 3
+                         
+                        
+                    RetryToFindTriple_H:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindTriple_H;
+                        }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+
+                    case GridBlock.gridBlockPattern.Double_V: // 2
+                         
+                        
+                    RetryToFindDouble_V:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindDouble_V;
+                        }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+
+                    case GridBlock.gridBlockPattern.Double_H: // 1
+                         
+                        
+                    RetryToFindDouble_H:
+                    patternBlocks = grid_ref.GetRandomPatternGridBlocks(pat,0,status);
+                    
+                    if(patternBlocks != null)
+                    {
+                       
+                        foreach (GridBlock tri in patternBlocks)
+                        {
+                            if(tri) tri.Block(pat,countdown,duration);
+                        }
+                    }
+                    else
+                    {
+                        
+                        if(safecount < 100)
+                        {
+                            safecount++;
+                             goto RetryToFindDouble_H;
+                        }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
+                       
+                      // print("explodiu");
+
+                    }
+
+                    break;
+                case GridBlock.gridBlockPattern.Single: // 0
+                default:
+                    DefaultBlockPattern:
+                    GridBlock gb = grid_ref.GetRandomGridBlock (0, status);
+                    if (gb)
+                        gb.Block (pat, countdown, duration);
+                    break;
+            }
+
+        }
+
+    }
+
+//must only run with countdown positive, it uses the predict one
+    void OnBlockBeat (KoreographyEvent evt, bool void_)
     {
         int pattern = 0;
         int countdown = 0;
@@ -940,6 +1531,10 @@ public class RhythmSystem : MonoBehaviour
                             safecount++;
                              goto RetryToFindCross;
                         }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
                        
                       // print("explodiu");
 
@@ -969,6 +1564,10 @@ public class RhythmSystem : MonoBehaviour
                             safecount++;
                              goto RetryToFindTriple_V;
                         }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
                        
                       // print("explodiu");
 
@@ -996,6 +1595,10 @@ public class RhythmSystem : MonoBehaviour
                         {
                             safecount++;
                              goto RetryToFindTriple_H;
+                        }
+                        else
+                        {
+                            goto DefaultBlockPattern;
                         }
                        
                       // print("explodiu");
@@ -1026,6 +1629,10 @@ public class RhythmSystem : MonoBehaviour
                             safecount++;
                              goto RetryToFindDouble_V;
                         }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
                        
                       // print("explodiu");
 
@@ -1055,6 +1662,10 @@ public class RhythmSystem : MonoBehaviour
                             safecount++;
                              goto RetryToFindDouble_H;
                         }
+                        else
+                        {
+                            goto DefaultBlockPattern;
+                        }
                        
                       // print("explodiu");
 
@@ -1063,6 +1674,7 @@ public class RhythmSystem : MonoBehaviour
                     break;
                 case GridBlock.gridBlockPattern.Single: // 0
                 default:
+                    DefaultBlockPattern:
                     GridBlock gb = grid_ref.GetRandomGridBlock (0, status);
                     if (gb)
                         gb.Block (pat, countdown, duration);
@@ -1072,6 +1684,7 @@ public class RhythmSystem : MonoBehaviour
         }
 
     }
+
 
     #endregion
 

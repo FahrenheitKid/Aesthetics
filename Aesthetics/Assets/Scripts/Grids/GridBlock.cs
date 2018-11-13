@@ -758,27 +758,26 @@ public class GridBlock : MonoBehaviour
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().text = (result).ToString ();
 
-                Color col = new Color (1, 2, 3);
-                if (crossResult >= 66)
+                Color col = Color.green;
+                if (result <= 5 && result > 3)
                 {
                     //print("first mudei");
                     col = new Color (0.2f, 0.7f, 0.4f, 1.0f);
                     col = Color.yellow;
                 }
                 else
-                if (crossResult < 66 && crossResult >= 33)
+                if (result < 3 && result > 2 )
                 {
                     //print("second mudei");
                     col = new Color (0.8f, 0.7f, 0.4f, 1.0f);
                     col = Color.red;
                 }
-                else if (crossResult < 33)
+                else if (result <= 2)
                 {
                     //print("third mudei");
                     col = new Color (0.2f, 0.5f, 0.3f, 1.0f);
                     col = Color.red;
                 }
-
                 textCountdown_ref.GetComponent<TextMeshPro> ().color = col;
 
             }
@@ -849,21 +848,21 @@ public class GridBlock : MonoBehaviour
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().text = (result).ToString ();
 
-                Color col = new Color (1, 2, 3);
-                if (crossResult >= 66)
+                Color col = Color.green;
+                 if (result <= 5 && result > 3)
                 {
                     //print("first mudei");
                     col = new Color (0.2f, 0.7f, 0.4f, 1.0f);
                     col = Color.yellow;
                 }
                 else
-                if (crossResult < 66 && crossResult >= 33)
+                if (result < 3 && result > 2 )
                 {
                     //print("second mudei");
                     col = new Color (0.8f, 0.7f, 0.4f, 1.0f);
                     col = Color.red;
                 }
-                else if (crossResult < 33)
+                else if (result <= 2)
                 {
                     //print("third mudei");
                     col = new Color (0.2f, 0.5f, 0.3f, 1.0f);
