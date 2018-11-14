@@ -40,7 +40,7 @@ public class Revolver : Item
     public override void Use ()
     {
         //owner.Immune(owner.multiplier * immunity_multiplier);
-
+         base.Use();
         Shoot (shot_direction);
         //Kill(null);
     }

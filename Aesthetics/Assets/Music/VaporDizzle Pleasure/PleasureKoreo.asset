@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -2076007791, guid: aa81bbec85a3f423193272a7c6154986, type: 3}
+  m_Name: PleasureKoreo
+  m_EditorClassIdentifier: 
+  mSourceClip: {fileID: 8300000, guid: 152d830d4fa6a5944ad8ef8ebce1b2b5, type: 3}
+  mAudioFilePath: 
+  mSampleRate: 44100
+  mIgnoreLatencyOffset: 0
+  mTempoSections:
+  - sectionName: Default
+    startSample: 0
+    samplesPerBeat: 28760.86956521739
+    beatsPerMeasure: 4
+    bStartNewMeasure: 1
+  - sectionName: Main
+    startSample: 2214
+    samplesPerBeat: 28760.86956521739
+    beatsPerMeasure: 4
+    bStartNewMeasure: 1
+  mTracks:
+  - {fileID: 11400000, guid: 2bd688fb861797549ab0581293a331d7, type: 2}
+  - {fileID: 11400000, guid: 0f5330247bf929a438761b5eee78d177, type: 2}
+  - {fileID: 11400000, guid: 111d31d3f70c9144ca4fdbb77fe1f44a, type: 2}

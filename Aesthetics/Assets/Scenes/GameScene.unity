@@ -4952,7 +4952,7 @@ Prefab:
     - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
         type: 2}
       propertyPath: koreographyList.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4874827008885588, guid: 508dfb674d99c3143847fb9287641d89, type: 2}
       propertyPath: m_LocalPosition.x
@@ -5047,7 +5047,7 @@ Prefab:
         type: 2}
       propertyPath: koreographyList.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: 9e7bfd2cfb0fc7640b6b0ebf34461448,
+      objectReference: {fileID: 11400000, guid: 154e4cd596d0102499592adce923ed43,
         type: 2}
     - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
         type: 2}
@@ -5074,6 +5074,12 @@ Prefab:
       propertyPath: noteSpeed
       value: 2.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114978811728567184, guid: 508dfb674d99c3143847fb9287641d89,
+        type: 2}
+      propertyPath: koreographyList.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: efc8060bec3cac546adfdea4e96cfcbd,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 508dfb674d99c3143847fb9287641d89, type: 2}
   m_IsPrefabAsset: 0

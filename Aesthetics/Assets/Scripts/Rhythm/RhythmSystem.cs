@@ -233,7 +233,7 @@ public class RhythmSystem : MonoBehaviour
         if(grid_ref.menu_ref && grid_ref.menu_ref !=null)
         songName = getKoreoNameBySongName( grid_ref.menu_ref.gameSong.songName);
         
-        if(songName == null) songName = "LolaEdKoreo";
+        if(songName == null) songName = "mainkoreo";
 
         LoadKoreography (koreographyList.Find (element => element.name.ToLower().Contains(songName.ToLower())), 0, true);
 
@@ -249,7 +249,7 @@ public class RhythmSystem : MonoBehaviour
         if(grid_ref.menu_ref && grid_ref.menu_ref !=null)
         songName = getKoreoNameBySongName( grid_ref.menu_ref.gameSong.songName);
         
-        if(songName == null) songName = "WalkKoreo";
+        if(songName == null) songName = "mainkoreo";
 
         //load random or specific Koreo by name
         LoadKoreography (koreographyList.Find (element => element.name.ToLower().Contains(songName.ToLower())), 0, true);
@@ -317,7 +317,11 @@ public class RhythmSystem : MonoBehaviour
             return "LolaEdKoreo";
         }else if(songName.ToLower().Contains("ウォーク·オン·バイ"))
         {
-            return "WalkKoreo";
+            return "WalkOnByKoreo";
+        }
+        else if(songName.ToLower().Contains("Pleasure"))
+        {
+            return "PleasureKoreo";
         }
 
         return null;

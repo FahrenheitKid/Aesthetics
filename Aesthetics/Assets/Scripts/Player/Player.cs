@@ -601,7 +601,9 @@ namespace Aesthetics
             if (other.gameObject.CompareTag ("GridBlock"))
             {
                 GridBlock gb = other.GetComponent<GridBlock> ();
+                if(x != gb.X)
                 x = gb.X;
+                if(z != gb.Z)
                 z = gb.Z;
 
                 if (other.GetComponent<GridBlock> ().isFallen) //if stepped on fallen gridblock
@@ -643,6 +645,12 @@ namespace Aesthetics
 
             if (other.gameObject.CompareTag ("GridBlock"))
             {
+
+                 GridBlock gb = other.GetComponent<GridBlock> ();
+                 if(x != gb.X)
+                x = gb.X;
+                if(z != gb.Z)
+                z = gb.Z;
 
                 if (other.GetComponent<GridBlock> ().isFallen) //if stepped on fallen gridblock
                 {
@@ -866,10 +874,10 @@ namespace Aesthetics
 
         public void Immune (float duration)
         {
-            print ("imune duratino: " + duration + " | timeleft: " + immunityTimer.timeLeft);
+          
             if (duration == 0) return;
             if (immunityTimer.timeLeft >= duration && !immunityTimer.stop) return;
-            print ("imunityTrue applied");
+            
             isImmune = true;
             immunityTimer.startTimer (duration);
         }
@@ -1027,8 +1035,9 @@ namespace Aesthetics
             endGridBlock = getDestinationBlock (player_direction, 1);
 
             //if the player is with sneakers, need to move double
-            if (hasItem && item.GetType () == typeof (Sneakers))
+            if (hasItem && item.GetType ().Name == typeof (Sneakers).Name)
             {
+                print("item name is " + item.GetType ().Name);
                 // if both blocks are availaable, move to second, otherwise move only one.
                 if (isMyDestinationBlockAvailable (player_direction, 1) && isMyDestinationBlockAvailable (player_direction, 2))
                 {
@@ -1041,13 +1050,15 @@ namespace Aesthetics
             //if destination gridBlock is already occupied
             if (endGridBlock == null)
             {
+                if(ID <= 1)
+                print ("player " + ID + "direction = " + player_direction);
 
-                //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
                 return false;
 
             }
             else
             {
+                
                 endGridBlock.isOccupied = true;
 
                 endGridPosition = endGridBlock.transform.position;
@@ -1056,6 +1067,8 @@ namespace Aesthetics
                 isMoving = true;
                 transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
                 transform.DOLookAt (endGridPosition, 0.2f);
+                x = endGridBlock.X;
+                z = endGridBlock.Z;
                 return true;
 
             }
@@ -1331,12 +1344,18 @@ namespace Aesthetics
 
             endGridBlock = grid_ref.GetGridBlock ((int) endGridPosition.x, (int) endGridPosition.z);
 
-            if (!endGridBlock) return null;
+            if (!endGridBlock) 
+            {
+                if(ID<=1)
+                print("nao localizou block");
+                return null;
+            }
 
             //if destination gridBlock is already occupied
             if (endGridBlock.isOccupied || endGridBlock.isBlocked || endGridBlock.isRespawning)
             {
-
+                 if(ID<=1)
+                print("Block " + endGridBlock.X + ", " + endGridBlock.Z + " occupied");
                 //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
                 return null;
 

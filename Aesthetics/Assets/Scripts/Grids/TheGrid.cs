@@ -391,7 +391,7 @@ namespace Aesthetics
                 }
                 else
                 {
-                    print ("current items = " + getItemCurrentCount<Item> () + " | max: " + maxItens);
+                    //print ("current items = " + getItemCurrentCount<Item> () + " | max: " + maxItens);
                 }
 
             }
@@ -612,7 +612,7 @@ namespace Aesthetics
 
             }
 
-            print ("Sneakers chance: " + sneakers_currentRarity);
+           // print ("Sneakers chance: " + sneakers_currentRarity);
             float val = UnityEngine.Random.Range (0, chance_total);
 
             bool exitLoop = false;
@@ -755,7 +755,7 @@ namespace Aesthetics
                     case "Sneakers":
                         if (val <= sneakers_currentRarity && Sneakers.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                         
                             return SpawnItem<Sneakers> (defaultItemSpawnRange);
                             //exitLoop = true;
                         }
