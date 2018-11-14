@@ -171,7 +171,7 @@ public class Menu : MonoBehaviour
             if (currentScreen.currentOptions[i] && currentScreen.currentOptions[i] != null)
             {
 
-                if (horizontalAxisState[i] == Player.AxisState.Up && input[i].x > 0) // right
+                if (horizontalAxisState[i] == Player.AxisState.Down && input[i].x > 0) // right
                 {
                     if (currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
@@ -216,7 +216,7 @@ public class Menu : MonoBehaviour
                 }
 
                 // vertical
-                if (verticalAxisState[i] == Player.AxisState.Up && input[i].y > 0) // up
+                if (verticalAxisState[i] == Player.AxisState.Down && input[i].y > 0) // up
                 {
                     if (!currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
