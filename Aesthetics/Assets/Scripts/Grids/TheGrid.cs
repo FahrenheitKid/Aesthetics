@@ -919,10 +919,11 @@ namespace Aesthetics
         private ScoreMaker SpawnScoreMaker (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
-            if (gb.isOccupied || gb.hasItem) return null;
+                if(gb == null) return null;
+              if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
@@ -982,9 +983,10 @@ namespace Aesthetics
         private Arrow SpawnArrow (float range, Arrow.arrowType? typeOfArrow)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject prefab;
@@ -1038,9 +1040,10 @@ namespace Aesthetics
         private Ray SpawnRay (float range, Ray.rayType? typeOfRay)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject prefab;
@@ -1105,9 +1108,10 @@ namespace Aesthetics
         private Lock SpawnLock (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1122,9 +1126,10 @@ namespace Aesthetics
         private FastFoward SpawnFastFoward (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject ffPrefab = Instantiate (fastFoward_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1139,9 +1144,10 @@ namespace Aesthetics
         private SloMo SpawnSloMo (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject smPrefab = Instantiate (sloMo_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1156,9 +1162,10 @@ namespace Aesthetics
         private CompactDisk SpawnCompactDisk (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1172,9 +1179,10 @@ namespace Aesthetics
         private FloppyDisk SpawnFloppyDisk (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
-
+            
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject smPrefab = Instantiate (floppyDisk_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1189,9 +1197,10 @@ namespace Aesthetics
         private Glasses3D SpawnGlasses3D (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject spPrefab = Instantiate (glasses3D_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1206,9 +1215,10 @@ namespace Aesthetics
         private Sneakers SpawnSneakers (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject spPrefab = Instantiate (sneakers_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1223,9 +1233,10 @@ namespace Aesthetics
         private Revolver SpawnRevolver (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject spPrefab = Instantiate (revolver_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1240,9 +1251,10 @@ namespace Aesthetics
         private RainbowLipstick SpawnRainbowLipstick (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject spPrefab = Instantiate (rainbowLipstick_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
@@ -1848,7 +1860,7 @@ namespace Aesthetics
 
             if (pattern != GridBlock.gridBlockPattern.Single)
             {
-                if (availablePatterns != null)
+                if (availablePatterns != null && availablePatterns.Any())
                 {
 
                     list = availablePatterns[Random.Range (0, availablePatterns.Count)];
@@ -1856,6 +1868,7 @@ namespace Aesthetics
             }
             else //if(pattern == GridBlock.gridBlockPattern.Single)
             {
+                print("before");
                 list = GetRandomGridBlocks (range, status);
             }
 

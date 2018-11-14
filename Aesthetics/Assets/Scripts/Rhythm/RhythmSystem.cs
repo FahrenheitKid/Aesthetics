@@ -30,7 +30,7 @@ public class RhythmSystem : MonoBehaviour
 
     [Tooltip ("The number of milliseconds (both early and late) within which input will be detected as a Hit.")]
     [Range (8f, 150f)]
-    public float hitWindowRangeInMS = 80;
+    public float hitWindowRangeInMS = 150;
 
     [Tooltip ("The number of units traversed per second by Note Objects.")]
     public float noteSpeed = 1f;
@@ -249,7 +249,7 @@ public class RhythmSystem : MonoBehaviour
         if(grid_ref.menu_ref && grid_ref.menu_ref !=null)
         songName = getKoreoNameBySongName( grid_ref.menu_ref.gameSong.songName);
         
-        if(songName == null) songName = "LolaEdKoreo";
+        if(songName == null) songName = "WalkKoreo";
 
         //load random or specific Koreo by name
         LoadKoreography (koreographyList.Find (element => element.name.ToLower().Contains(songName.ToLower())), 0, true);
