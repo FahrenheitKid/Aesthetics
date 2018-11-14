@@ -1037,7 +1037,7 @@ namespace Aesthetics
             //if the player is with sneakers, need to move double
             if (hasItem && item.GetType ().Name == typeof (Sneakers).Name)
             {
-                print("item name is " + item.GetType ().Name);
+                
                 // if both blocks are availaable, move to second, otherwise move only one.
                 if (isMyDestinationBlockAvailable (player_direction, 1) && isMyDestinationBlockAvailable (player_direction, 2))
                 {
@@ -1050,8 +1050,7 @@ namespace Aesthetics
             //if destination gridBlock is already occupied
             if (endGridBlock == null)
             {
-                if(ID <= 1)
-                print ("player " + ID + "direction = " + player_direction);
+               
 
                 return false;
 
@@ -1346,16 +1345,14 @@ namespace Aesthetics
 
             if (!endGridBlock) 
             {
-                if(ID<=1)
-                print("nao localizou block");
+               
                 return null;
             }
 
             //if destination gridBlock is already occupied
             if (endGridBlock.isOccupied || endGridBlock.isBlocked || endGridBlock.isRespawning)
             {
-                 if(ID<=1)
-                print("Block " + endGridBlock.X + ", " + endGridBlock.Z + " occupied");
+               
                 //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
                 return null;
 
