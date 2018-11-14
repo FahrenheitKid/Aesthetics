@@ -703,7 +703,7 @@ namespace Aesthetics
                     case "RainbowLipstick":
                         if (val <= rainbow_currentRarity && RainbowLipstick.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                           // print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<RainbowLipstick> (defaultItemSpawnRange);
                             exitLoop = true;
                         }

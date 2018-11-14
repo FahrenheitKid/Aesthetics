@@ -41,10 +41,37 @@ public class MenuScreen : MonoBehaviour
                     string name = scr.options.Find (opt => opt.isSelected == true).name;
 
                     numberOfPlayers = (int) System.Char.GetNumericValue (name[name.Length - 1]);
+                    
+                    bool cleared = true;
 
-                    if (menu_Ref.players.Count < numberOfPlayers)
+                /*
+                
+                if(menu_Ref.players.Count > numberOfPlayers)
                     {
-                        menu_Ref.players.Clear ();
+                        cleared =true;
+                        for(int i = menu_Ref.players.Count - 1; i >= 0 ; i--)
+                        {
+                            if(menu_Ref.players.Count > numberOfPlayers)
+                            {
+                                 menu_Ref.players.RemoveAt(i);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                               
+                        }
+
+                    }
+
+                 */
+                    
+                    
+                    menu_Ref.players.Clear();
+
+                    if (menu_Ref.players.Count < numberOfPlayers || cleared)
+                    {
+                       
 
                         for (int i = 0; i < numberOfPlayers; i++)
                         {
@@ -52,7 +79,13 @@ public class MenuScreen : MonoBehaviour
                             PlayerMenu p = (PlayerMenu) ScriptableObject.CreateInstance (typeof (PlayerMenu));
                             p.ID = i;
                             p.inputID = i + 1;
+                            
+                            
                             p.controllerType = (Player.InputType) i;
+
+                            if(p.controllerType == Player.InputType.PS4) p.controllerType =Player.InputType.Xbox;
+                           
+
                             p.name = "Player " + i.ToString ();
                             menu_Ref.players.Add (p);
 

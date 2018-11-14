@@ -436,7 +436,7 @@ InputManager:
     invert: 0
     type: 2
     axis: 6
-    joyNum: 1
+    joyNum: 3
   - serializedVersion: 3
     m_Name: Vertical 4 Xbox
     descriptiveName: 

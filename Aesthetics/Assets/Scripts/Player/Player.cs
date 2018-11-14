@@ -1547,11 +1547,13 @@ namespace Aesthetics
                 case AxisState.Idle:
                     if (Input.GetAxis (axi) < -deadZone || Input.GetAxis (axi) > deadZone)
                     {
+                       
                         state = AxisState.Down;
                     }
                     break;
 
                 case AxisState.Down:
+                
                     state = AxisState.Held;
                     break;
 

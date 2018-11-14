@@ -319,7 +319,7 @@ public class RhythmSystem : MonoBehaviour
         {
             return "WalkOnByKoreo";
         }
-        else if(songName.ToLower().Contains("Pleasure"))
+        else if(songName.ToLower().Contains("pleasure"))
         {
             return "PleasureKoreo";
         }
