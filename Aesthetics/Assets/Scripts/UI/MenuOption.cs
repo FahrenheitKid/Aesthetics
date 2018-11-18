@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
-using TMPro;
-using UnityEngine;
 using SonicBloom.Koreo;
 using SonicBloom.Koreo.Players;
+using TMPro;
+using UnityEngine;
 
 public class MenuOption : MonoBehaviour
 {
@@ -54,7 +54,7 @@ public class MenuOption : MonoBehaviour
                 //scale and change colors
                 if (!isMultipleOptions && !isToggleOption)
                 {
-                    
+
                     transform.DOScale (selectedScale, 0.2f);
                     //text.fontMaterial.SetFloat ("_FaceDilate", 0.4f);
                     //text.fontMaterial.SetColor ("_FaceColor", selectedColor);
@@ -96,22 +96,21 @@ public class MenuOption : MonoBehaviour
                         pulse = true;
                 }
 
-                if(isMusicOption)
+                if (isMusicOption)
                 {
                     //play music
-                    Menu menuref = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
-                   // print("entrou ");
-                    if(menuref && currentMultipleOption)
+                    Menu menuref = GameObject.FindGameObjectWithTag ("Menu").GetComponent<Menu> ();
+                    // print("entrou ");
+                    if (menuref && currentMultipleOption)
                     {
-                       // print("entrou sss");
-                        menuref.audioSource_Ref.Pause();
-                        if(currentMultipleOption.GetComponent<Song>().koreography);
-                        menuref.musicPlayer.LoadSong(currentMultipleOption.GetComponent<Song>().koreography, currentMultipleOption.GetComponent<Song>().koreography.SourceClip.samples / 3);
-                        menuref.setCurrentPlayingText(currentMultipleOption.GetComponent<Song>().songName, currentMultipleOption.GetComponent<Song>().artistsName);
-                       
-                       // menuref.musicPlayer.
-                    }
+                        // print("entrou sss");
+                        menuref.audioSource_Ref.Pause ();
+                        if (currentMultipleOption.GetComponent<Song> ().koreography);
+                        menuref.musicPlayer.LoadSong (currentMultipleOption.GetComponent<Song> ().koreography, currentMultipleOption.GetComponent<Song> ().koreography.SourceClip.samples / 3);
+                        menuref.setCurrentPlayingText (currentMultipleOption.GetComponent<Song> ().songName, currentMultipleOption.GetComponent<Song> ().artistsName);
 
+                        // menuref.musicPlayer.
+                    }
 
                 }
 
@@ -162,21 +161,20 @@ public class MenuOption : MonoBehaviour
                         pulse = false;
                 }
 
-                if(isMusicOption)
+                if (isMusicOption)
                 {
                     //play music
-                    Menu menuref = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+                    Menu menuref = GameObject.FindGameObjectWithTag ("Menu").GetComponent<Menu> ();
 
-                    if(menuref)
+                    if (menuref)
                     {
-                        menuref.musicPlayer.Stop();
-                    
-                        menuref.audioSource_Ref.UnPause();
-                        menuref.setCurrentPlayingText(menuref.menuSong.songName, menuref.menuSong.artistsName);
-                       
-                       // menuref.musicPlayer.
-                    }
+                        menuref.musicPlayer.Stop ();
 
+                        menuref.audioSource_Ref.UnPause ();
+                        menuref.setCurrentPlayingText (menuref.menuSong.songName, menuref.menuSong.artistsName);
+
+                        // menuref.musicPlayer.
+                    }
 
                 }
             }
@@ -284,11 +282,11 @@ public class MenuOption : MonoBehaviour
     public List<GameObject> togglableOptionsOff;
     public GameObject currentMultipleOption;
 
+    private void Awake ()
+    {
 
-    private void Awake() {
-
-         if(!GetComponent<AudioSource>())
-        gameObject.AddComponent<AudioSource>();
+        if (!GetComponent<AudioSource> ())
+            gameObject.AddComponent<AudioSource> ();
 
     }
     // Use this for initialization
@@ -307,7 +305,7 @@ public class MenuOption : MonoBehaviour
 
         if (pulse && pulseSelect == false)
         {
-           
+
             pulse = false;
             pulse = true;
         }
@@ -392,11 +390,10 @@ public class MenuOption : MonoBehaviour
     {
         if (optionsList.Any () && optionsList.Count > 1)
         {
-            
+
             if (currentMultipleOption)
                 currentMultipleOption.SetActive (false);
             else currentMultipleOption = optionsList[0];
-
 
             //Play(transform.parent.GetComponent<MenuScreen> ().menu_Ref.nextOption_Sfx);
             int i = optionsList.FindIndex (x => x.gameObject.name == currentMultipleOption.name);
@@ -416,46 +413,42 @@ public class MenuOption : MonoBehaviour
 
             currentMultipleOption.SetActive (true);
 
-            if(isMusicOption)
+            if (isMusicOption)
+            {
+                //play music
+                Menu menuref = GameObject.FindGameObjectWithTag ("Menu").GetComponent<Menu> ();
+
+                if (menuref && currentMultipleOption)
                 {
-                    //play music
-                    Menu menuref = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
-                   
-                    if(menuref && currentMultipleOption)
-                    {
-                        
-                        menuref.audioSource_Ref.Pause();
-                        if(currentMultipleOption.GetComponent<Song>().koreography);
-                        menuref.musicPlayer.LoadSong(currentMultipleOption.GetComponent<Song>().koreography, currentMultipleOption.GetComponent<Song>().koreography.SourceClip.samples / 3);
-                        menuref.setCurrentPlayingText(currentMultipleOption.GetComponent<Song>().songName, currentMultipleOption.GetComponent<Song>().artistsName);
-                       // menuref.musicPlayer.
-                    }
 
-
+                    menuref.audioSource_Ref.Pause ();
+                    if (currentMultipleOption.GetComponent<Song> ().koreography);
+                    menuref.musicPlayer.LoadSong (currentMultipleOption.GetComponent<Song> ().koreography, currentMultipleOption.GetComponent<Song> ().koreography.SourceClip.samples / 3);
+                    menuref.setCurrentPlayingText (currentMultipleOption.GetComponent<Song> ().songName, currentMultipleOption.GetComponent<Song> ().artistsName);
+                    // menuref.musicPlayer.
                 }
+
+            }
 
         }
     }
 
-    public void Play(AudioClip sfx)
+    public void Play (AudioClip sfx)
     {
 
-         if(!sfx)
-         {
-             print("sem sfx");
-             return;
-         }
-        
+        if (!sfx)
+        {
+            print ("sem sfx");
+            return;
+        }
 
-        if(!GetComponent<AudioSource>())
-        gameObject.AddComponent<AudioSource>();
-
-       
+        if (!GetComponent<AudioSource> ())
+            gameObject.AddComponent<AudioSource> ();
 
         //GetComponent<AudioSource>().clip = null;
         //GetComponent<AudioSource>().clip = sfx;
         //print("played" + GetComponent<AudioSource>().clip.name);
-        GetComponent<AudioSource>().PlayOneShot(sfx);
+        GetComponent<AudioSource> ().PlayOneShot (sfx);
     }
 
 }

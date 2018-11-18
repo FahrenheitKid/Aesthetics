@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using TMPro;
 using Aesthetics;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -98,6 +99,11 @@ namespace Aesthetics
 
          [SerializeField]
         public List<Color> stageHighlightColors = new List<Color>(3);
+
+        [SerializeField]
+        public TextMeshProUGUI winnerText = new TextMeshProUGUI();
+        [SerializeField]
+        public TextMeshProUGUI endGameText = new TextMeshProUGUI();
 
         [SerializeField]
         private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
@@ -779,13 +785,16 @@ namespace Aesthetics
 
             amountScoreMaker = getItemCurrentCount<ScoreMaker> ();
             amountItens = getItemCurrentCount<Item> ();
-            if (Input.GetKeyDown (KeyCode.Escape))
+
+             if (Input.GetKeyDown (KeyCode.Escape))
             {
-                QuitGame ();
+                UtilityTools.QuitGame ();
             }
 
             if (Input.GetKeyDown (KeyCode.R))
             {
+                if(SceneManager.GetActiveScene ().buildIndex == 0)
+                SceneManager.MoveGameObjectToScene(menu_ref.gameObject, SceneManager.GetActiveScene());
 
                SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
             
@@ -793,15 +802,18 @@ namespace Aesthetics
 
              if (Input.GetKeyDown (KeyCode.T))
             {
-
+                 if(SceneManager.GetActiveScene ().buildIndex != 0)
+                 {
+                     SceneManager.MoveGameObjectToScene(menu_ref.gameObject, SceneManager.GetActiveScene());
+                     SceneManager.MoveGameObjectToScene(menu_ref.stage.gameObject, SceneManager.GetActiveScene());
+                     SceneManager.MoveGameObjectToScene(menu_ref.gameSong.gameObject, SceneManager.GetActiveScene());
+                 }
+                
              
                SceneManager.LoadScene (0);
             }
 
-            if (Input.GetKeyDown (KeyCode.G))
-            {
-                playerList[0].Stun (4);
-            }
+ 
 
             itemTimersUpdate ();
 
@@ -2105,16 +2117,6 @@ namespace Aesthetics
             }
 
         }
-        public static void QuitGame ()
-        {
-            // save any game data here
-#if UNITY_EDITOR
-            // Application.Quit() does not work in the editor so
-            // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit ();
-#endif
-        }
+        
     }
 }

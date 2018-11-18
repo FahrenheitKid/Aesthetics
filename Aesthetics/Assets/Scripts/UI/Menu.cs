@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Aesthetics;
 using DG.Tweening;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using SonicBloom.Koreo;
 using SonicBloom.Koreo.Players;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
@@ -15,14 +15,14 @@ public class Menu : MonoBehaviour
     //[SerializeField]
     //List <Button>
 
-     [Header("Music/Sfx Settings")]
-     [SerializeField]
-     public AudioSource audioSource_Ref;
-     public SimpleMusicPlayer musicPlayer;
+    [Header ("Music/Sfx Settings")]
+    [SerializeField]
+    public AudioSource audioSource_Ref;
+    public SimpleMusicPlayer musicPlayer;
 
-     public Song menuSong;
+    public Song menuSong;
 
-     public TextMeshProUGUI currentPlayingText;
+    public TextMeshProUGUI currentPlayingText;
 
     public AudioClip confirm_Sfx;
     public AudioClip back_Sfx;
@@ -31,15 +31,14 @@ public class Menu : MonoBehaviour
 
     public List<AudioSource> audioSources;
 
-    [Header("Screen Settings")]
+    [Header ("Screen Settings")]
     public List<MenuScreen> screens;
 
     [SerializeField]
     MenuScreen currentScreen;
     int cameraAnimIdx = 0;
 
-
-    [Header("Input Settings")]
+    [Header ("Input Settings")]
     [SerializeField]
     private Player.AxisState[] horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
 
@@ -52,7 +51,7 @@ public class Menu : MonoBehaviour
 
     public Vector2[] input = new Vector2[4];
 
-    [Header("Setup Settings")]
+    [Header ("Setup Settings")]
 
     // public List <Player.InputType> playerControllers = new List<Player.InputType>(4);
     public List<PlayerMenu> players = new List<PlayerMenu> (4);
@@ -63,22 +62,22 @@ public class Menu : MonoBehaviour
     public List<System.Type> itemSetup = new List<System.Type> (11);
     public float itemFrequency = 50f;
 
+    private void Awake ()
+    {
 
-    private void Awake() {
-
-        DontDestroyOnLoad(this);
-        for(int i = 0; i < 4; i++)
+        DontDestroyOnLoad (this);
+        for (int i = 0; i < 4; i++)
         {
-            audioSources.Add(gameObject.AddComponent<AudioSource>());
+            audioSources.Add (gameObject.AddComponent<AudioSource> ());
         }
-        setCurrentPlayingText(menuSong.songName, menuSong.artistsName);
+        setCurrentPlayingText (menuSong.songName, menuSong.artistsName);
     }
     // Use this for initialization
     void Start ()
-    {   
-        if(stage && stage != null)
-        SceneManager.MoveGameObjectToScene(stage.gameObject, SceneManager.GetActiveScene());
-        
+    {
+        if (stage && stage != null)
+            SceneManager.MoveGameObjectToScene (stage.gameObject, SceneManager.GetActiveScene ());
+
         horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         verticalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         //playerControllers = new List<Player.InputType>(4);
@@ -90,35 +89,123 @@ public class Menu : MonoBehaviour
         p.name = "Player " + p.ID.ToString ();
         players.Add (p);
 
-
-        if(!audioSource_Ref.isPlaying)
+        if (!audioSource_Ref.isPlaying)
         {
             audioSource_Ref.clip = menuSong.song;
-            audioSource_Ref.Play();
+            audioSource_Ref.Play ();
         }
 
+        setupInitControllers ();
+    }
+
+    void setupInitControllers ()
+    {
+        List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => name.ToLower ().Contains ("xbox"));
+        List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => !name.ToLower ().Contains ("xbox") && name != "");
+
+        MenuScreen playerSelec = screens.Find (sc => sc.name.ToLower ().Contains ("player select"));
+
+        //if no ps4 joysticks connected, set P3 and P4 as xbox
+        if (!ps4Joysticks.Any ())
+        {
+            print ("no ps4s");
+            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p3") || op.name.ToLower ().Contains ("controlleroption p4"));
+
+            foreach (MenuOption option in controllerOptions)
+            {
+                if (option.currentMultipleOption)
+                    option.currentMultipleOption.SetActive (false);
+
+                option.currentMultipleOption = option.optionsList.Find (op => op.name.ToLower ().Contains ("xbox"));
+
+                if (option.currentMultipleOption)
+                    option.currentMultipleOption.SetActive (true);
+            }
+
+            return;
+        }
+        else
+        if (!xboxJoysticks.Any ())
+        {
+            print ("no xbox");
+            print (Input.GetJoystickNames ().ToList ().First ());
+            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p3") || op.name.ToLower ().Contains ("controlleroption p4"));
+
+            foreach (MenuOption option in controllerOptions)
+            {
+                if (option.currentMultipleOption)
+                    option.currentMultipleOption.SetActive (false);
+
+                option.currentMultipleOption = option.optionsList.Find (op => op.name.ToLower ().Contains ("ps4"));
+
+                if (option.currentMultipleOption)
+                    option.currentMultipleOption.SetActive (true);
+            }
+
+            return;
+        }
+        else
+        if (xboxJoysticks.Count >= 2)
+        {
+            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p3") || op.name.ToLower ().Contains ("controlleroption p4"));
+
+            for (int i = 0; i < controllerOptions.Count; i++)
+            {
+                if (controllerOptions[i].currentMultipleOption)
+                    controllerOptions[i].currentMultipleOption.SetActive (false);
+
+                controllerOptions[i].currentMultipleOption = controllerOptions[i].optionsList.Find (op => op.name.ToLower ().Contains ("xbox"));
+
+                if (controllerOptions[i].currentMultipleOption)
+                    controllerOptions[i].currentMultipleOption.SetActive (true);
+            }
+
+            return;
+
+        }
+        else
+        {
+            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p3") || op.name.ToLower ().Contains ("controlleroption p4"));
+
+            for (int i = 0; i < controllerOptions.Count; i++)
+            {
+                if (controllerOptions[i].currentMultipleOption)
+                    controllerOptions[i].currentMultipleOption.SetActive (false);
+
+                if (i % 2 == 0)
+                    controllerOptions[i].currentMultipleOption = controllerOptions[i].optionsList.Find (op => op.name.ToLower ().Contains ("xbox"));
+                else
+                    controllerOptions[i].currentMultipleOption = controllerOptions[i].optionsList.Find (op => op.name.ToLower ().Contains ("ps4"));
+
+                if (controllerOptions[i].currentMultipleOption)
+                    controllerOptions[i].currentMultipleOption.SetActive (true);
+            }
+
+            return;
+
+        }
 
     }
 
     // Update is called once per frame
     void Update ()
     {
-        if(SceneManager.GetActiveScene().name.ToLower().Contains("game")) return;
+        if (SceneManager.GetActiveScene ().name.ToLower ().Contains ("game")) return;
 
-        if(currentScreen.name == "Confirmation Screen")
+        if (currentScreen.name == "Confirmation Screen")
         {
-            
-            if(Camera.main.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+
+            if (Camera.main.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).normalizedTime >= 1)
             {
                 //DontDestroyOnLoad(stage.gameObject);
                 //stage.gameObject.SetActive(false);
-                if(audioSource_Ref.isPlaying)
-                    {
-            
-                        audioSource_Ref.Stop();
-                    }
+                if (audioSource_Ref.isPlaying)
+                {
 
-                SceneManager.LoadScene(1);
+                    audioSource_Ref.Stop ();
+                }
+
+                SceneManager.LoadScene (1);
             }
         }
         /*
@@ -160,11 +247,7 @@ public class Menu : MonoBehaviour
 
     void handleInput ()
     {
-        if (Input.GetKeyDown (KeyCode.Q))
-        {
-            SceneManager.LoadScene (1);
-
-        }
+  
 
         for (int i = 0; i < currentScreen.currentOptions.Length; i++)
         {
@@ -175,8 +258,8 @@ public class Menu : MonoBehaviour
                 {
                     if (currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                        if(audioSources.Count >= i + 1)
-                        audioSources[i].PlayOneShot(nextOption_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (nextOption_Sfx);
 
                         GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i], true);
                     }
@@ -184,8 +267,8 @@ public class Menu : MonoBehaviour
                     {
                         if (currentScreen.currentOptions[i].isHorizontal && currentScreen.currentOptions[i].isMultipleOptions)
                         {
-                              if(audioSources.Count >= i + 1)
-                                audioSources[i].PlayOneShot(nextOption_Sfx);
+                            if (audioSources.Count >= i + 1)
+                                audioSources[i].PlayOneShot (nextOption_Sfx);
                             // move to next object
 
                             currentScreen.currentOptions[i].pulsateArrows (false, true);
@@ -197,8 +280,8 @@ public class Menu : MonoBehaviour
                 {
                     if (currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                          if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (nextOption_Sfx);
                         GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i], false);
                     }
                     else
@@ -207,8 +290,8 @@ public class Menu : MonoBehaviour
                         {
                             // move to next object
 
-                             if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                            if (audioSources.Count >= i + 1)
+                                audioSources[i].PlayOneShot (nextOption_Sfx);
                             currentScreen.currentOptions[i].pulsateArrows (true, false);
                             currentScreen.currentOptions[i].GoToMultipleOption (false);
                         }
@@ -220,8 +303,8 @@ public class Menu : MonoBehaviour
                 {
                     if (!currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                         if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (nextOption_Sfx);
                         GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i], true);
                     }
                     else
@@ -229,8 +312,8 @@ public class Menu : MonoBehaviour
                         if (!currentScreen.currentOptions[i].isHorizontal && currentScreen.currentOptions[i].isMultipleOptions)
                         {
                             // move to next object
-                             if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                            if (audioSources.Count >= i + 1)
+                                audioSources[i].PlayOneShot (nextOption_Sfx);
                             currentScreen.currentOptions[i].pulsateArrows (false, true);
                             currentScreen.currentOptions[i].GoToMultipleOption (true);
                         }
@@ -238,11 +321,11 @@ public class Menu : MonoBehaviour
                 }
                 else if (verticalAxisState[i] == Player.AxisState.Down && input[i].y < 0) // down
                 {
-                    
+
                     if (!currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                         if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (nextOption_Sfx);
                         GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i], false);
                     }
                     else
@@ -250,11 +333,11 @@ public class Menu : MonoBehaviour
                         if (!currentScreen.currentOptions[i].isHorizontal && currentScreen.currentOptions[i].isMultipleOptions)
                         {
                             // move to next object
-                            if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(nextOption_Sfx);
+                            if (audioSources.Count >= i + 1)
+                                audioSources[i].PlayOneShot (nextOption_Sfx);
                             currentScreen.currentOptions[i].pulsateArrows (true, false);
                             currentScreen.currentOptions[i].GoToMultipleOption (false);
-                            
+
                         }
                     }
                 }
@@ -267,18 +350,27 @@ public class Menu : MonoBehaviour
         }
          */
 
-        if (Input.GetKeyDown (KeyCode.Escape))
-        {
-            Aesthetics.TheGrid.QuitGame ();
+            if (Input.GetKeyDown (KeyCode.Escape))
+            {
+                UtilityTools.QuitGame ();
+            }
 
-        }
+            if (Input.GetKeyDown (KeyCode.R))
+            {
+                if(SceneManager.GetActiveScene ().buildIndex == 0)
+                SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetActiveScene());
 
-        if (Input.GetKeyDown (KeyCode.R))
-        {
-            SceneManager.LoadScene(0);
+               SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
+            
+            }
 
-        }
-
+             if (Input.GetKeyDown (KeyCode.T))
+            {
+                 if(SceneManager.GetActiveScene ().buildIndex == 0)
+                SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetActiveScene());
+             
+               SceneManager.LoadScene (0);
+            }
         /*
         if (Input.GetButtonDown ("ActionA1"))
         {
@@ -308,20 +400,20 @@ public class Menu : MonoBehaviour
                 {
                     if ((!currentScreen.currentOptions[i].isMultipleOptions) && (!currentScreen.currentOptions[i].isToggleOption))
                     {
-                         if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(confirm_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (confirm_Sfx);
                         DefaultEnter ();
                     }
                     else if (currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                         if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(confirm_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (confirm_Sfx);
                         GoToOption (currentScreen.currentOptions[i].next, currentScreen.currentOptions[i], true);
                     }
                     else if (currentScreen.currentOptions[i].isToggleOption)
                     {
-                          if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(confirm_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (confirm_Sfx);
                         currentScreen.currentOptions[i].isToggleOn ^= true;
                     }
 
@@ -331,14 +423,14 @@ public class Menu : MonoBehaviour
 
                     if ((!currentScreen.currentOptions[i].isMultipleOptions) && (!currentScreen.currentOptions[i].isToggleOption))
                     {
-                          if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(back_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (back_Sfx);
                         DefaultBack ();
                     }
                     else if (currentScreen.currentOptions[i].isMultipleOptions)
                     {
-                         if(audioSources.Count >= i + 1)
-                            audioSources[i].PlayOneShot(back_Sfx);
+                        if (audioSources.Count >= i + 1)
+                            audioSources[i].PlayOneShot (back_Sfx);
                         GoToOption (currentScreen.currentOptions[i].previous, currentScreen.currentOptions[i], false);
                     }
                     else if (currentScreen.currentOptions[i].isToggleOption)
@@ -380,7 +472,7 @@ public class Menu : MonoBehaviour
     }
     void GoToScreen (MenuScreen Screen, string cameraState)
     {
-        if(!Screen && Screen!= null) return;
+        if (!Screen && Screen != null) return;
 
         currentScreen.isSelected = false;
 
@@ -425,22 +517,22 @@ public class Menu : MonoBehaviour
 
             }
 
-            if(goNext)
+            if (goNext)
             {
                 if (lastCurrentOption.next == null)
-                GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
+                    GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
             }
             else
             {
                 if (lastCurrentOption.previous == null)
-                GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
+                    GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
 
             }
 
-           // if (lastCurrentOption.previous == null)
-           //     GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
-           // else if (lastCurrentOption.next == null)
-           //     GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
+            // if (lastCurrentOption.previous == null)
+            //     GoToScreen (lastCurrentOption.previousScreen, lastCurrentOption.previousScreen.cameraState);
+            // else if (lastCurrentOption.next == null)
+            //     GoToScreen (lastCurrentOption.nextScreen, lastCurrentOption.nextScreen.cameraState);
             lastCurrentOption.isSelected = false;
             return;
         }
@@ -471,9 +563,9 @@ public class Menu : MonoBehaviour
         {
             if (o && o.isSelected)
             {
-                
-                if(o.previousScreen && o.previousScreen != null)
-                GoToScreen (o.previousScreen, o.previousScreen.cameraState);
+
+                if (o.previousScreen && o.previousScreen != null)
+                    GoToScreen (o.previousScreen, o.previousScreen.cameraState);
 
             }
         }
@@ -553,8 +645,7 @@ public class Menu : MonoBehaviour
 
     }
 
-
-    public void setCurrentPlayingText(string songName, string artistsName)
+    public void setCurrentPlayingText (string songName, string artistsName)
     {
         currentPlayingText.text = "[playing " + songName + " by " + artistsName + " in the background]";
     }

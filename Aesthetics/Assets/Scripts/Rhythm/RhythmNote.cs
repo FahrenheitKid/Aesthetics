@@ -2,12 +2,11 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Aesthetics;
 using SonicBloom.Koreo;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
-
-using Aesthetics;
 public class RhythmNote : MonoBehaviour
 {
 
