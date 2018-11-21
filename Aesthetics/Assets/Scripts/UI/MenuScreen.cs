@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Aesthetics;
 using Cinemachine;
 using TMPro;
@@ -70,6 +71,28 @@ public class MenuScreen : MonoBehaviour
 
                     if (menu_Ref.players.Count < numberOfPlayers || cleared)
                     {
+                        List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (namee => namee.ToLower ().Contains ("xbox"));
+                        List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (namee => !namee.ToLower ().Contains ("xbox") && namee != "");
+
+                         bool onlyPS4 = false;
+                         bool onlyXbox = false;
+                         bool onlyKeyboard = false;
+
+                         bool WASD = false;
+                         bool Arrows = false;
+
+                         if(ps4Joysticks.Any() && !xboxJoysticks.Any())
+                         {
+                             onlyPS4 = true;
+                         }
+                         else if(!ps4Joysticks.Any() && xboxJoysticks.Any())
+                         {
+                             onlyXbox = true;
+                         }
+                         else if(!ps4Joysticks.Any() && !xboxJoysticks.Any())
+                         {
+                             onlyKeyboard = true;
+                         }
 
                         for (int i = 0; i < numberOfPlayers; i++)
                         {
@@ -80,13 +103,104 @@ public class MenuScreen : MonoBehaviour
 
                             p.controllerType = (Player.InputType) i;
 
-                            if (p.controllerType == Player.InputType.PS4) p.controllerType = Player.InputType.Xbox;
+                            
+                           if(onlyPS4)
+                           {
+                               if(ps4Joysticks.Any())
+                               {
+                                   p.controllerType = Player.InputType.PS4;
+                                   ps4Joysticks.Remove(ps4Joysticks.Last());
+                               }
+                               else
+                               {
+                                  if(!WASD)
+                                    {
+                                        p.controllerType = Player.InputType.WASD;
+                                        WASD = true;
+                                    } 
+                                  else if(!Arrows)
+                                  {
+                                      Arrows = true;
+                                      p.controllerType = Player.InputType.Arrows;
+                                  }
+
+                                  else p.controllerType = Player.InputType.PS4;
+                               }
+                           }
+                           else if(onlyXbox)
+                           {
+                               if(xboxJoysticks.Any())
+                               {
+                                   p.controllerType = Player.InputType.Xbox;
+                                   xboxJoysticks.Remove(xboxJoysticks.Last());
+                               }
+                               else
+                               {
+                                 if(!WASD)
+                                    {
+                                        p.controllerType = Player.InputType.WASD;
+                                        WASD = true;
+                                    } 
+                                  else if(!Arrows)
+                                  {
+                                      Arrows = true;
+                                      p.controllerType = Player.InputType.Arrows;
+                                  }
+                                  else p.controllerType = Player.InputType.Xbox;
+                               }
+                           }
+                           else if(onlyKeyboard)
+                           {
+                                    if(!WASD)
+                                    {
+                                        p.controllerType = Player.InputType.WASD;
+                                        WASD = true;
+                                    } 
+                                  else if(!Arrows)
+                                  {
+                                      Arrows = true;
+                                      p.controllerType = Player.InputType.Arrows;
+                                  }
+
+                                  else p.controllerType = Player.InputType.Xbox;
+
+                           }
+                           else
+                           {
+                                if(xboxJoysticks.Any())
+                               {
+                                   p.controllerType = Player.InputType.Xbox;
+                                   xboxJoysticks.Remove(xboxJoysticks.Last());
+                               }
+                               else if(ps4Joysticks.Any())
+                               {
+                                   p.controllerType = Player.InputType.PS4;
+                                   ps4Joysticks.Remove(ps4Joysticks.Last());
+                               }
+                               else{
+
+                                    if(!WASD)
+                                    {
+                                        p.controllerType = Player.InputType.WASD;
+                                        WASD = true;
+                                    } 
+                                  else if(!Arrows)
+                                  {
+                                      Arrows = true;
+                                      p.controllerType = Player.InputType.Arrows;
+                                  }
+                                  else p.controllerType = Player.InputType.Xbox;
+
+                               }
+                           }
 
                             p.name = "Player " + i.ToString ();
                             menu_Ref.players.Add (p);
 
                         }
 
+                        menu_Ref.setupPlayersInputIDs ();
+                        
                     }
                     else
                     {
@@ -100,7 +214,11 @@ public class MenuScreen : MonoBehaviour
                             options[i].gameObject.SetActive (true);
                     }
 
+                     
                     menu_Ref.setupPlayersInputIDs ();
+                    menu_Ref.correctActiveControllerOptionUIs();
+                    
+                   
 
                 }
                 else if (name == "Item Screen")

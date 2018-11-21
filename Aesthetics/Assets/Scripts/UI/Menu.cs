@@ -80,12 +80,43 @@ public class Menu : MonoBehaviour
 
         horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
         verticalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+
+                        List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (namee => namee.ToLower ().Contains ("xbox"));
+                        List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (namee => !namee.ToLower ().Contains ("xbox") && namee != "");
+
+                         bool onlyPS4 = false;
+                         bool onlyXbox = false;
+                         bool onlyKeyboard = false;
+
+                         bool WASD = false;
+                         bool Arrows = false;
+
+                         if(ps4Joysticks.Any() && !xboxJoysticks.Any())
+                         {
+                             onlyPS4 = true;
+                         }
+                         else if(!ps4Joysticks.Any() && xboxJoysticks.Any())
+                         {
+                             onlyXbox = true;
+                         }
+                         else if(!ps4Joysticks.Any() && !xboxJoysticks.Any())
+                         {
+                             onlyKeyboard = true;
+                         }
+
         //playerControllers = new List<Player.InputType>(4);
 
         PlayerMenu p = (PlayerMenu) ScriptableObject.CreateInstance (typeof (PlayerMenu));
         p.ID = 0;
         p.inputID = 1;
+
+        
         p.controllerType = (Player.InputType) 0;
+
+        if(!onlyKeyboard && onlyPS4) p.controllerType = Player.InputType.PS4;
+        else if (!onlyKeyboard && (onlyXbox || (!onlyPS4 && !onlyPS4)) ) p.controllerType = Player.InputType.Xbox;
+
+
         p.name = "Player " + p.ID.ToString ();
         players.Add (p);
 
@@ -95,7 +126,84 @@ public class Menu : MonoBehaviour
             audioSource_Ref.Play ();
         }
 
-        setupInitControllers ();
+        setupPlayersInputIDs ();
+    }
+
+
+    public void correctActiveControllerOptionUIs()
+    {
+       
+              MenuScreen playerSelec = screens.Find (sc => sc.name.ToLower ().Contains ("player select"));
+
+              foreach(PlayerMenu p in players)
+              {
+                  int idd = p.ID + 1;
+                   MenuOption controllerOption = playerSelec.options.Find(op => op.name.ToLower ().Contains ("controlleroption p" + idd.ToString()));
+
+                   if(controllerOption)
+                   {
+                       print("entrou");
+
+                             if (controllerOption.currentMultipleOption)
+                                controllerOption.currentMultipleOption.SetActive (false);
+
+                                switch (p.controllerType)
+                                {
+                                    
+
+                                    case Player.InputType.Arrows:
+                                     controllerOption.currentMultipleOption = controllerOption.optionsList.Find (op => op.name.ToLower ().Contains ("arrows"));
+                                    break;
+
+                                    case Player.InputType.Xbox:
+                                     controllerOption.currentMultipleOption = controllerOption.optionsList.Find (op => op.name.ToLower ().Contains ("xbox"));
+                                    break;
+
+                                    case Player.InputType.PS4:
+                                     controllerOption.currentMultipleOption = controllerOption.optionsList.Find (op => op.name.ToLower ().Contains ("ps4"));
+                                    break;
+
+                                    case Player.InputType.WASD:
+                                    default:
+                                         controllerOption.currentMultipleOption = controllerOption.optionsList.Find (op => op.name.ToLower ().Contains ("wasd"));
+
+                                    break;
+
+                                    
+                                }
+                             
+
+                             if (controllerOption.currentMultipleOption)
+                                  controllerOption.currentMultipleOption.SetActive (true);
+                        
+                   }
+
+                   MenuOption characterOption = playerSelec.options.Find(op => op.name.ToLower ().Contains ("characteroption p" + idd.ToString()));
+
+                   if(characterOption)
+                   {
+                        if(!characterOption.isSelected)
+                        {
+                              print("player " + idd + "nao selected");
+                            characterOption.isSelected = true;
+                        }else
+                        {
+                             print(characterOption.gameObject.name + " is selected");
+                        }
+                   }
+                   else
+                   {
+                       print("player " + idd + "sem character");
+                   }
+
+                 
+                   
+
+
+
+
+              }
+
     }
 
     void setupInitControllers ()
@@ -103,13 +211,16 @@ public class Menu : MonoBehaviour
         List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => name.ToLower ().Contains ("xbox"));
         List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => !name.ToLower ().Contains ("xbox") && name != "");
 
+        
+         //Input.GetJoystickNames ().ToList.foreach().
+
         MenuScreen playerSelec = screens.Find (sc => sc.name.ToLower ().Contains ("player select"));
 
         //if no ps4 joysticks connected, set P3 and P4 as xbox
         if (!ps4Joysticks.Any ())
         {
             print ("no ps4s");
-            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p3") || op.name.ToLower ().Contains ("controlleroption p4"));
+            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p1"));
 
             foreach (MenuOption option in controllerOptions)
             {
@@ -129,7 +240,7 @@ public class Menu : MonoBehaviour
         {
             print ("no xbox");
             print (Input.GetJoystickNames ().ToList ().First ());
-            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p3") || op.name.ToLower ().Contains ("controlleroption p4"));
+            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p1"));
 
             foreach (MenuOption option in controllerOptions)
             {
@@ -147,7 +258,7 @@ public class Menu : MonoBehaviour
         else
         if (xboxJoysticks.Count >= 2)
         {
-            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p3") || op.name.ToLower ().Contains ("controlleroption p4"));
+            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p1"));
 
             for (int i = 0; i < controllerOptions.Count; i++)
             {
@@ -165,7 +276,8 @@ public class Menu : MonoBehaviour
         }
         else
         {
-            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p3") || op.name.ToLower ().Contains ("controlleroption p4"));
+            print("um de cada");
+            List<MenuOption> controllerOptions = playerSelec.options.FindAll (op => op.name.ToLower ().Contains ("controlleroption p1"));
 
             for (int i = 0; i < controllerOptions.Count; i++)
             {
@@ -608,7 +720,7 @@ public class Menu : MonoBehaviour
         List<PlayerMenu> keyboards = players.FindAll (p => p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4);
 
         List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => name.ToLower ().Contains ("xbox"));
-        List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => !name.ToLower ().Contains ("xbox"));
+        List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => !name.ToLower ().Contains ("xbox") && name!= "");
 
         List<int> possibleIDs = new List<int> ();
 

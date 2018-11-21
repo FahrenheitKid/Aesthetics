@@ -94,6 +94,17 @@ private static bool HasGenericBase(System.Type myType, System.Type t) {
     return false;
 }
 
+int getRealConnectedJoysticksCount()
+{
+    int count = 0;
+
+    foreach(string t in Input.GetJoystickNames())
+    {
+        if(t != "") count++;
+    }
+
+    return count;
+}
 
 public static void QuitGame ()
         {

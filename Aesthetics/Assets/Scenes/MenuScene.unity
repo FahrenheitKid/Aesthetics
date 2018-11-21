@@ -15498,7 +15498,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4288806661
   m_fontColor: {r: 0.019607844, g: 1, b: 0.6313726, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -15565,7 +15565,7 @@ MonoBehaviour:
     lineCount: 2
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
@@ -22931,7 +22931,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1660597107782278, guid: 78c697dc469e5c24192f99a274b18a77, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114797303680229502, guid: 78c697dc469e5c24192f99a274b18a77,
         type: 2}
