@@ -291,10 +291,7 @@ namespace Aesthetics
 
             numberOfPlayers = playerList.Count;
 
-            for(int i = 0; i < GetPlayerUIList().Count; i++)
-            {
-                if(i > numberOfPlayers - 1) playerUIList[i].gameObject.SetActive(false);
-            }
+            
 
             Application.targetFrameRate = 60; // -1 uncapp
             
@@ -315,6 +312,14 @@ namespace Aesthetics
 
             itemTimersStart ();
 
+            for(int i = 0; i < numberOfPlayers; i++)
+            {
+                //if(i > numberOfPlayers - 1) playerUIList[i].gameObject.SetActive(false);
+               
+                PlayerUI pu = Resources.FindObjectsOfTypeAll<PlayerUI>().ToList().Find( p=> p.gameObject.name.ToLower().Contains("player " + (i + 1) + " ui"));
+                pu.gameObject.SetActive(true);
+                GetPlayerUIList().Add(pu);
+            }
             
             //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
 
@@ -381,7 +386,7 @@ namespace Aesthetics
                     ReGamble:
                     count++;
 
-                        if (!GambleItemToSpawn () && count <= count_max)
+                        if (!GambleItemToSpawn () && count <= count_max && typesOfItemList.Count > 1)
                         {
                             print ("GAMBLE FAILED!");
 
@@ -885,6 +890,7 @@ namespace Aesthetics
                 Player pp = player_prefab.GetComponent<Player> ();
                 pp.setGridRef (this);
                 pp.setRhythmSystemRef (rhythmSystem_ref);
+                pp.ID = i;
 
                 if(menu_ref && menu_ref !=null)
                 {
@@ -894,7 +900,7 @@ namespace Aesthetics
                 pp.blackGridColor = menu_ref.players[i].blackGridblockColor;
                }
 
-                playerList[i] = player_prefab.GetComponent<Player> ();
+                playerList[i] = pp;
 
             }
 
@@ -1504,7 +1510,7 @@ namespace Aesthetics
             List <Player> keyboards = GetPlayerList().FindAll(p => p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4);
 
             List <int> xboxJoysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => name.ToLower().Contains("xbox"));
-            List <int> ps4Joysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => !name.ToLower().Contains("xbox"));
+            List <int> ps4Joysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => !name.ToLower().Contains("xbox") && name != "");
 
             List <int> possibleIDs = new List<int>();
 

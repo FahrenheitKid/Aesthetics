@@ -253,6 +253,36 @@ public class MenuOption : MonoBehaviour
                     go.SetActive (false);
                 }
 
+                if (needToToggleOnList.Any ())
+                {
+
+                    foreach (MenuOption go in needToToggleOnList)
+                    {
+                        if (go.isToggleOption)
+                        {
+                            if (!go.isToggleOn)
+                                go.isToggleOn = true;
+                        }
+
+                    }
+
+                }
+
+                if (needToToggleOffList.Any ())
+                {
+
+                    foreach (MenuOption go in needToToggleOffList)
+                    {
+                        if (go.isToggleOption)
+                        {
+                            if (go.isToggleOn)
+                                go.isToggleOn = false;
+                        }
+
+                    }
+
+                }
+
             }
             else
             {
@@ -274,6 +304,8 @@ public class MenuOption : MonoBehaviour
 
     public bool isMusicOption;
     public bool isToggleOption;
+    public List<MenuOption> needToToggleOnList;
+    public List<MenuOption> needToToggleOffList;
     public bool isMultipleOptions;
     public bool isHorizontal;
     public List<GameObject> optionsList;

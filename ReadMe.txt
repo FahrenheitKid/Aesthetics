@@ -54,7 +54,7 @@ as a shield for the player. Once any negative effect affects the player, the dis
 
 
 Controls:
-The game sets Players 1 and 2 to keyboard by default. So you'll always have to navigate the menu with the keyboard when you start it. Only the Player 1 can navigate the menu (except for the charcter selection screen)
+The game gives preference to controllers, so if any is plugged, is gonna set them as default, and the remaining players with the keyboard. Only the Player 1 can navigate the menu (except for the charcter selection screen)
 The game supports Xbox and PS4 controllers.
 
 

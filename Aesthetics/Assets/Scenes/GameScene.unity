@@ -666,7 +666,7 @@ Prefab:
     - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
         type: 2}
       propertyPath: playerUIList.Array.size
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114747146036917952, guid: f64a6e4eb9dbac74083b9665c74f6119,
         type: 2}
@@ -1502,11 +1502,11 @@ GameObject:
   - component: {fileID: 299435570}
   m_Layer: 5
   m_Name: Player 4 UI
-  m_TagString: Player 2 UI
+  m_TagString: Player 4 UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &299435569
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3058,7 +3058,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &861403462
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4285,7 +4285,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1542080395
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4996,11 +4996,11 @@ GameObject:
   - component: {fileID: 1896774749}
   m_Layer: 5
   m_Name: Player 3 UI
-  m_TagString: Player 1 UI
+  m_TagString: Player 3 UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1896774748
 RectTransform:
   m_ObjectHideFlags: 0

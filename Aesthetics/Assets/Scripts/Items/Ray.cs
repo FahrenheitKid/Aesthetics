@@ -57,10 +57,45 @@ public class Ray : Item
         if (ray_type == Ray.rayType.Vray)
         {
 
-            Vector3 start, end;
+           Vector3 start = Vector3.zero;
+              Vector3 end = Vector3.zero;
 
-            start = grid_ref.getGridBlockPosition (owner.x, 0, 1f);
-            end = grid_ref.getGridBlockPosition (owner.x, grid_ref.mapHeight - 1, 1f);
+              bool isX = false;
+
+                switch(Camera.main.GetComponent<CameraScript>().orientation)
+                {
+                     case CameraScript.windRose.North:
+
+                    isX = true;
+
+                break;
+
+                case CameraScript.windRose.South:
+                 isX = true;
+
+                break;
+
+                case CameraScript.windRose.West:
+
+                 isX = false;
+                break;
+
+                case CameraScript.windRose.East:
+
+                isX = false;
+                break;
+                }
+
+            if(!isX)
+            {
+                start = grid_ref.getGridBlockPosition (0, owner.z, 1f);
+                end = grid_ref.getGridBlockPosition (grid_ref.mapWidth - 1, owner.z, 1f);
+            }
+            else
+            {
+                start = grid_ref.getGridBlockPosition (owner.x, 0, 1f);
+                end = grid_ref.getGridBlockPosition (owner.x, grid_ref.mapHeight - 1, 1f);
+            }
 
             lineRend.SetPosition (0, start);
             lineRend.SetPosition (1, end);
@@ -68,10 +103,23 @@ public class Ray : Item
             foreach (Player p in grid_ref.GetPlayerList ())
             {
                 if (p == owner) continue;
-                if (p.x == owner.x)
+
+                
+                if(isX)
+                {
+                     if (p.x == owner.x)
                 {
                     p.Stun (stunDuration);
                 }
+                }
+                else
+                {
+                    if (p.z == owner.z)
+                {
+                    p.Stun (stunDuration);
+                }
+                }
+               
             }
 
             lineRend.enabled = true;
@@ -79,10 +127,46 @@ public class Ray : Item
         }
         else if (ray_type == Ray.rayType.HRay)
         {
-            Vector3 start, end;
+            Vector3 start = Vector3.zero;
+              Vector3 end = Vector3.zero;
 
-            start = grid_ref.getGridBlockPosition (0, owner.z, 1f);
-            end = grid_ref.getGridBlockPosition (grid_ref.mapWidth - 1, owner.z, 1f);
+            bool isX = false;
+
+                switch(Camera.main.GetComponent<CameraScript>().orientation)
+                {
+                     case CameraScript.windRose.North:
+
+                    isX = false;
+
+                break;
+
+                case CameraScript.windRose.South:
+                 isX = false;
+
+                break;
+
+                case CameraScript.windRose.West:
+
+                 isX = true;
+                break;
+
+                case CameraScript.windRose.East:
+
+                isX = true;
+                break;
+                }
+
+            if(!isX)
+            {
+                start = grid_ref.getGridBlockPosition (0, owner.z, 1f);
+                end = grid_ref.getGridBlockPosition (grid_ref.mapWidth - 1, owner.z, 1f);
+            }
+            else
+            {
+                start = grid_ref.getGridBlockPosition (owner.x, 0, 1f);
+                end = grid_ref.getGridBlockPosition (owner.x, grid_ref.mapHeight - 1, 1f);
+            }
+            
 
             lineRend.SetPosition (0, start);
             lineRend.SetPosition (1, end);
@@ -90,9 +174,22 @@ public class Ray : Item
             foreach (Player p in grid_ref.GetPlayerList ())
             {
                 if (p == owner) continue;
-                if (p.z == owner.z)
+
+                 
+                
+                if(isX)
+                {
+                     if (p.x == owner.x)
                 {
                     p.Stun (stunDuration);
+                }
+                }
+                else
+                {
+                    if (p.z == owner.z)
+                {
+                    p.Stun (stunDuration);
+                }
                 }
             }
 

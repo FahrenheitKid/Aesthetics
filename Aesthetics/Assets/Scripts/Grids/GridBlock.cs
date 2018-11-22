@@ -654,7 +654,11 @@ public class GridBlock : MonoBehaviour
 
             if (haveBlockStunned == false && isBlocked)
             {
-                haveBlockStunned = p.Stun (grid_ref.blockStunDuration);
+                haveBlockStunned = p.Stun (grid_ref.blockStunDuration,true);
+                if(p.x != this.X || p.z != this.Z)
+                {
+                    p.Move(this,0.1f);
+                }
                 //haveBlockStunned = true;
             }
 
