@@ -102,8 +102,12 @@ namespace Aesthetics
 
         [SerializeField]
         public TextMeshProUGUI winnerText = new TextMeshProUGUI();
+        
         [SerializeField]
         public TextMeshProUGUI endGameText = new TextMeshProUGUI();
+
+         [SerializeField]
+        public GameObject pauseImage;
 
         [SerializeField]
         private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
@@ -818,10 +822,33 @@ namespace Aesthetics
                SceneManager.LoadScene (0);
             }
 
+            if(Input.GetKeyDown(KeyCode.P))
+		{
+			Pause();
+		}
+
  
 
             itemTimersUpdate ();
 
+        }
+
+        public void Pause()
+        {
+            if(Time.timeScale == 1)
+			{
+				Time.timeScale = 0;
+                pauseImage.SetActive(true);
+                
+				
+			} else if (Time.timeScale == 0){
+				
+				Time.timeScale = 1;
+                 pauseImage.SetActive(false);
+				
+			}
+
+            rhythmSystem_ref.Pause();
         }
 
         //Spawn Players (currrently 2)

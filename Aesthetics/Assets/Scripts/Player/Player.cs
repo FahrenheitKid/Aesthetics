@@ -923,6 +923,21 @@ namespace Aesthetics
                     }
 
                 }
+
+                if(controllerType != Player.InputType.Arrows && controllerType != Player.InputType.WASD)
+                {
+                     if (Input.GetButtonDown ("Pause " + inputID + " " + controllerType) &&
+                    ((verticalAxisState == AxisState.Idle) &&
+                        (horizontalAxisState == AxisState.Idle)))
+                {
+
+                    grid_ref.Pause();
+                }
+
+                }
+               
+
+
             }
 
         }

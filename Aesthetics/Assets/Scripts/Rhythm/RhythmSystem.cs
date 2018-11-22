@@ -232,7 +232,7 @@ namespace Aesthetics
             if (grid_ref.menu_ref && grid_ref.menu_ref != null)
                 songName = getKoreoNameBySongName (grid_ref.menu_ref.gameSong.songName);
 
-            if (songName == null) songName = "Pleasure";
+            if (songName == null) songName = "LolaEdKoreo";
 
             LoadKoreography (koreographyList.Find (element => element.name.ToLower ().Contains (songName.ToLower ())), 0, true);
 
@@ -277,6 +277,22 @@ namespace Aesthetics
                 //  zero so this is not an issue.
                 audioCom.time = -leadInTime;
                 musicPlayer_ref.Play ();
+            }
+        }
+
+        public void Pause()
+        {
+              List<Koreography> loaded = new List<Koreography> ();
+                Koreographer.Instance.GetAllLoadedKoreography (loaded);
+
+            if(!musicPlayer_ref.IsPlaying && Time.timeScale == 1)
+            {
+                musicPlayer_ref.Play();
+            }
+            else
+            {
+
+                 musicPlayer_ref.Pause();
             }
         }
 
@@ -405,7 +421,10 @@ namespace Aesthetics
                     if (beatEvents.Last ().EndSample <= loaded.First ().GetLatestSampleTime () && !grid_ref.winnerText.gameObject.activeSelf)
                     {
                         //get the name of highest score player
-                        PlayerUI winnerUI = grid_ref.GetPlayerUIList ().Find (ui => ui.name.ToLower ().Contains (grid_ref.GetPlayerList ().OrderByDescending (item => item.score).First ().ID.ToString ()));
+                        int winnerID = grid_ref.GetPlayerList ().OrderByDescending (item => item.score).First ().ID + 1;
+                        
+                        print("winner id " + winnerID);
+                        PlayerUI winnerUI = grid_ref.GetPlayerUIList ().Find (ui => ui.name.ToLower ().Contains (winnerID.ToString ()));
                         grid_ref.winnerText.text = winnerUI.playerName.text + " is the Winner!!! ";
                         grid_ref.winnerText.color = winnerUI.playerName.color;
                         grid_ref.winnerText.gameObject.SetActive (true);
@@ -458,10 +477,13 @@ namespace Aesthetics
             //  configured within the Inspector on the buttons themselves, using the same functions as
             //  what is found here.  Touch input does not have a built-in concept of "Held", so it is not
             //  currently supported.
-            if (Input.GetKeyDown (KeyCode.W) || Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.S) || Input.GetKeyDown (KeyCode.D))
+            if (Input.GetKeyDown (KeyCode.K) )
             {
                 // CheckNoteHit ();
                 //SetScalePress();
+                #if UNITY_EDITOR
+                musicPlayer_ref.SeekToSample(beatEvents.Last ().EndSample);
+                #endif
             }
             else if (Input.GetKey (keyboardButton))
             {
