@@ -30,7 +30,12 @@ public class Glasses3D : Item
         //owner.isShielded = true;
         //gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
         base.Activate ();
-        owner.multiplierCombo = ((owner.multiplier + 3) * 10);
+        if(owner.multiplier <=1)
+        owner.multiplierCombo = ((owner.multiplier + 2) * 10);
+        else
+        {
+             owner.multiplierCombo = ((owner.multiplier + 3) * 10);
+        }
         //owner.multiplier += 3;
         
         grid_ref.GetCameraScript ().Rotate ((Random.value > 0.5f));

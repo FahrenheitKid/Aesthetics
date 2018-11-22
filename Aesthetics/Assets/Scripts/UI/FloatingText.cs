@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Aesthetics;
 using TMPro;
 using UnityEngine;
-
-using Aesthetics;
 public class FloatingText : MonoBehaviour
 {
     public Font TheFont;
@@ -26,7 +25,7 @@ public class FloatingText : MonoBehaviour
 
     [Range (0.1f, 3f)]
     public float duration;
-	[Range (1f, 72f)]
+    [Range (1f, 72f)]
     public float fontSize = 10;
     //private int m_frame = 0;
 

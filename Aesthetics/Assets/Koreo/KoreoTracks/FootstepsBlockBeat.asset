@@ -3,7 +3,7 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -17,22 +17,6 @@ MonoBehaviour:
     mEndSample: 24271
   - mStartSample: 47482
     mEndSample: 47482
-  - mStartSample: 627745
-    mEndSample: 627745
-  - mStartSample: 650955
-    mEndSample: 650955
-  - mStartSample: 674166
-    mEndSample: 674166
-  - mStartSample: 720587
-    mEndSample: 720587
-  - mStartSample: 1370482
-    mEndSample: 1370482
-  - mStartSample: 1393692
-    mEndSample: 1393692
-  - mStartSample: 1416903
-    mEndSample: 1416903
-  - mStartSample: 1463324
-    mEndSample: 1463324
   - mStartSample: 1556166
     mEndSample: 1556166
   - mStartSample: 1625797
@@ -47,32 +31,90 @@ MonoBehaviour:
     mEndSample: 1741850
   - mStartSample: 1811482
     mEndSample: 1811482
-  - mStartSample: 1834692
-    mEndSample: 1834692
+  - mStartSample: 1834693
+    mEndSample: 1834693
   - mStartSample: 1857903
     mEndSample: 1857903
-  - mStartSample: 1881113
-    mEndSample: 1881113
-  - mStartSample: 1927534
-    mEndSample: 1927534
+  - mStartSample: 1881114
+    mEndSample: 1881114
+  - mStartSample: 1927535
+    mEndSample: 1927535
   - mStartSample: 1997166
     mEndSample: 1997166
-  - mStartSample: 2020376
-    mEndSample: 2020376
+  - mStartSample: 2020377
+    mEndSample: 2020377
   - mStartSample: 2043587
     mEndSample: 2043587
-  - mStartSample: 2066797
-    mEndSample: 2066797
-  - mStartSample: 2113218
-    mEndSample: 2113218
+  - mStartSample: 2066798
+    mEndSample: 2066798
+  - mStartSample: 2113219
+    mEndSample: 2113219
   - mStartSample: 2182850
     mEndSample: 2182850
-  - mStartSample: 2206061
-    mEndSample: 2206061
+  - mStartSample: 2206060
+    mEndSample: 2206060
   - mStartSample: 2229271
     mEndSample: 2229271
+  - mStartSample: 2252482
+    mEndSample: 2252482
+  - mStartSample: 2275693
+    mEndSample: 2275693
   - mStartSample: 2298903
     mEndSample: 2298903
+  - mStartSample: 2368534
+    mEndSample: 2368534
+  - mStartSample: 2391745
+    mEndSample: 2391745
+  - mStartSample: 2414955
+    mEndSample: 2414955
+  - mStartSample: 2484587
+    mEndSample: 2484587
+  - mStartSample: 2554218
+    mEndSample: 2554218
+  - mStartSample: 2577429
+    mEndSample: 2577429
+  - mStartSample: 2600639
+    mEndSample: 2600639
+  - mStartSample: 2670271
+    mEndSample: 2670271
+  - mStartSample: 2739903
+    mEndSample: 2739903
+  - mStartSample: 2763114
+    mEndSample: 2763114
+  - mStartSample: 2786324
+    mEndSample: 2786324
+  - mStartSample: 2855956
+    mEndSample: 2855956
+  - mStartSample: 2948797
+    mEndSample: 2948797
+  - mStartSample: 3041639
+    mEndSample: 3041639
+  - mStartSample: 3111271
+    mEndSample: 3111271
+  - mStartSample: 3134482
+    mEndSample: 3134482
+  - mStartSample: 3157692
+    mEndSample: 3157692
+  - mStartSample: 3227324
+    mEndSample: 3227324
+  - mStartSample: 3296955
+    mEndSample: 3296955
+  - mStartSample: 3320166
+    mEndSample: 3320166
+  - mStartSample: 3343376
+    mEndSample: 3343376
+  - mStartSample: 3413008
+    mEndSample: 3413008
+  - mStartSample: 3482639
+    mEndSample: 3482639
+  - mStartSample: 3505850
+    mEndSample: 3505850
+  - mStartSample: 3529060
+    mEndSample: 3529060
+  - mStartSample: 3598692
+    mEndSample: 3598692
+  - mStartSample: 3691534
+    mEndSample: 3691534
   _SerializedPayloadTypes:
   - SonicBloom.Koreo.TextPayload
   _AssetPayloads: []
@@ -90,34 +132,55 @@ MonoBehaviour:
   _SpectrumPayloads: []
   _SpectrumPayloadIdxs: 
   _TextPayloads:
-  - mTextVal: 5,3,8
-  - mTextVal: 3,20,8
-  - mTextVal: 0,0,8
-  - mTextVal: 0,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 3,0,8
-  - mTextVal: 0,0,8
-  - mTextVal: 0,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 4,0,8
-  - mTextVal: 4,3,4
-  - mTextVal: 0,0,8
-  - mTextVal: 0,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 1,0,8
-  - mTextVal: 3,0,8
-  - mTextVal: 1,0,8
-  _TextPayloadIdxs: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d000000
+  - mTextVal: 5,-5,4
+  - mTextVal: 5,-5,4
+  - mTextVal: 1,4,8
+  - mTextVal: 2,-5,4
+  - mTextVal: 1,-4,4
+  - mTextVal: 2,-3,4
+  - mTextVal: 1,-2,4
+  - mTextVal: 2,-5,4
+  - mTextVal: 2,-5,4
+  - mTextVal: 1,-4,4
+  - mTextVal: 2,-3,4
+  - mTextVal: 1,-2,4
+  - mTextVal: 2,2,4
+  - mTextVal: 2,-5,4
+  - mTextVal: 1,-4,4
+  - mTextVal: 2,-3,4
+  - mTextVal: 1,-2,4
+  - mTextVal: 2,2,4
+  - mTextVal: 1,-4,4
+  - mTextVal: 2,-3,4
+  - mTextVal: 1,-2,4
+  - mTextVal: 5,-5,4
+  - mTextVal: 5,-5,4
+  - mTextVal: 
+  - mTextVal: 2,2,4
+  - mTextVal: 1,2,4
+  - mTextVal: 2,2,4
+  - mTextVal: 3,-6,4
+  - mTextVal: 2,2,4
+  - mTextVal: 1,2,4
+  - mTextVal: 2,2,4
+  - mTextVal: 4,-6,4
+  - mTextVal: 2,2,4
+  - mTextVal: 1,2,4
+  - mTextVal: 2,2,4
+  - mTextVal: 3,-6,4
+  - mTextVal: 5,4,4
+  - mTextVal: 3,-6,4
+  - mTextVal: 2,2,4
+  - mTextVal: 1,2,4
+  - mTextVal: 2,2,4
+  - mTextVal: 3,-6,4
+  - mTextVal: 2,2,4
+  - mTextVal: 1,2,4
+  - mTextVal: 2,2,4
+  - mTextVal: 3,-6,4
+  - mTextVal: 2,2,4
+  - mTextVal: 1,2,4
+  - mTextVal: 2,2,4
+  - mTextVal: 3,-6,4
+  - mTextVal: 3,-6,4
+  _TextPayloadIdxs: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d0000001e0000001f000000200000002100000022000000230000002400000025000000260000002700000028000000290000002a0000002b0000002c0000002d0000002e0000002f000000300000003100000032000000

@@ -6,7 +6,7 @@ using UnityEngine;
 public class FloppyDisk : Item
 {
 
-    public static new float rarity = 40.04f;
+    public static new float rarity = 20.04f;
 
     // Use this for initialization
     void Start ()

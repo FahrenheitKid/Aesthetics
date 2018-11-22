@@ -254,7 +254,7 @@ public class Arrow : Item
                 {
                     if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
                     {
-                        if (gb.isLocked == false)
+                        if (gb.isLocked == false && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                         {
 
                             gb.changeColor (owner.blackGridColor);
@@ -270,7 +270,7 @@ public class Arrow : Item
 
                         if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
                         {
-                            if (!gb.isLocked)
+                            if (!gb.isLocked && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                             {
 
                                
@@ -291,7 +291,7 @@ public class Arrow : Item
                     }
                     else
                     {
-                        if (gb.isLocked == false)
+                        if (gb.isLocked == false && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                         {
                             gb.changeColor (owner.gridColor);
                             gb.changeOwner (owner);
@@ -308,7 +308,7 @@ public class Arrow : Item
                 {
                     if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
                     {
-                        if (gb.isLocked == false)
+                        if (gb.isLocked == false && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                         {
 
                             gb.changeColor (owner.blackGridColor);
@@ -324,7 +324,7 @@ public class Arrow : Item
 
                         if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
                         {
-                            if (!gb.isLocked)
+                            if (!gb.isLocked && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                             {
 
                                
@@ -345,7 +345,7 @@ public class Arrow : Item
                     }
                     else
                     {
-                        if (gb.isLocked == false)
+                        if (gb.isLocked == false && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                         {
                             gb.changeColor (owner.gridColor);
                             gb.changeOwner (owner);
@@ -362,7 +362,7 @@ public class Arrow : Item
                 {
                    if (owner.hasItem && owner.item && owner.item.GetType () == typeof (Lock))
                     {
-                        if (gb.isLocked == false)
+                        if (gb.isLocked == false && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                         {
 
                             gb.changeColor (owner.blackGridColor);
@@ -378,7 +378,7 @@ public class Arrow : Item
 
                         if (plist.Count > 0 && idx >= 0 && idx < plist.Count)
                         {
-                            if (!gb.isLocked)
+                            if (!gb.isLocked && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                             {
 
                                
@@ -399,7 +399,7 @@ public class Arrow : Item
                     }
                     else
                     {
-                        if (gb.isLocked == false)
+                        if (gb.isLocked == false && !gb.isFallen && gb.GridType == GridBlock.gridType.Normal)
                         {
                             gb.changeColor (owner.gridColor);
                             gb.changeOwner (owner);

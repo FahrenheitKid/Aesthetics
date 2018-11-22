@@ -17,6 +17,8 @@ TagManager:
   - GridBlockUI
   - Player 3 UI
   - Player 4 UI
+  - Menu
+  - MenuSceen
   layers:
   - Default
   - TransparentFX
@@ -29,8 +31,8 @@ TagManager:
   - 'Global Post Processing '
   - ScoreMakerLighting
   - Grid
-  - 
-  - 
+  - CameraInvisible
+  - Characters Menu
   - 
   - 
   - 

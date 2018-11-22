@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Aesthetics;
 using DG.Tweening;
 using SonicBloom.Koreo;
 using UnityEngine;
-
-using Aesthetics;
 public class RhythmTarget : MonoBehaviour
 {
 
@@ -62,7 +61,7 @@ public class RhythmTarget : MonoBehaviour
 
     void OnMainBeat (KoreographyEvent evt)
     {
-        if(transform.localScale.x > beatPunchScale) transform.localScale = Vector3.one * beatPunchScale;
+        if (transform.localScale.x > beatPunchScale) transform.localScale = Vector3.one * beatPunchScale;
         transform.DOPunchScale (transform.localScale * beatPunchScale, duration, vibrato, elasticity);
 
     }

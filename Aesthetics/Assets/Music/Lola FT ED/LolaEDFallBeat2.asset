@@ -1,0 +1,180 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1223223985, guid: aa81bbec85a3f423193272a7c6154986, type: 3}
+  m_Name: LolaEDFallBeat2
+  m_EditorClassIdentifier: 
+  mEventID: FallBeat2
+  mEventList:
+  - mStartSample: 3756697
+    mEndSample: 3756697
+  - mStartSample: 3778036
+    mEndSample: 3778036
+  - mStartSample: 3799375
+    mEndSample: 3799375
+  - mStartSample: 3820714
+    mEndSample: 3820714
+  - mStartSample: 3842052
+    mEndSample: 3842052
+  - mStartSample: 3863391
+    mEndSample: 3863391
+  - mStartSample: 3884730
+    mEndSample: 3884730
+  - mStartSample: 3906068
+    mEndSample: 3906068
+  - mStartSample: 3927407
+    mEndSample: 3927407
+  - mStartSample: 3948746
+    mEndSample: 3948746
+  - mStartSample: 3970084
+    mEndSample: 3970084
+  - mStartSample: 3991423
+    mEndSample: 3991423
+  - mStartSample: 4012762
+    mEndSample: 4012762
+  - mStartSample: 4034101
+    mEndSample: 4034101
+  - mStartSample: 4055439
+    mEndSample: 4055439
+  - mStartSample: 4076778
+    mEndSample: 4076778
+  - mStartSample: 4098117
+    mEndSample: 4098117
+  - mStartSample: 4119455
+    mEndSample: 4119455
+  - mStartSample: 4140794
+    mEndSample: 4140794
+  - mStartSample: 4162133
+    mEndSample: 4162133
+  - mStartSample: 4183472
+    mEndSample: 4183472
+  - mStartSample: 4204810
+    mEndSample: 4204810
+  - mStartSample: 4226149
+    mEndSample: 4226149
+  - mStartSample: 4247488
+    mEndSample: 4247488
+  - mStartSample: 4268826
+    mEndSample: 4268826
+  - mStartSample: 4290165
+    mEndSample: 4290165
+  - mStartSample: 4311504
+    mEndSample: 4311504
+  - mStartSample: 4332843
+    mEndSample: 4332843
+  - mStartSample: 4354181
+    mEndSample: 4354181
+  - mStartSample: 4375520
+    mEndSample: 4375520
+  - mStartSample: 4396859
+    mEndSample: 4396859
+  - mStartSample: 4418197
+    mEndSample: 4418197
+  - mStartSample: 4439536
+    mEndSample: 4439536
+  - mStartSample: 4460875
+    mEndSample: 4460875
+  - mStartSample: 4482214
+    mEndSample: 4482214
+  - mStartSample: 4503552
+    mEndSample: 4503552
+  - mStartSample: 4524891
+    mEndSample: 4524891
+  - mStartSample: 4546230
+    mEndSample: 4546230
+  - mStartSample: 4567568
+    mEndSample: 4567568
+  - mStartSample: 4588907
+    mEndSample: 4588907
+  - mStartSample: 4610246
+    mEndSample: 4610246
+  - mStartSample: 4631584
+    mEndSample: 4631584
+  - mStartSample: 4652923
+    mEndSample: 4652923
+  - mStartSample: 4674262
+    mEndSample: 4674262
+  - mStartSample: 4695601
+    mEndSample: 4695601
+  - mStartSample: 4716939
+    mEndSample: 4716939
+  - mStartSample: 4738278
+    mEndSample: 4738278
+  - mStartSample: 4759617
+    mEndSample: 4759617
+  - mStartSample: 4780955
+    mEndSample: 4780955
+  _SerializedPayloadTypes:
+  - SonicBloom.Koreo.TextPayload
+  _AssetPayloads: []
+  _AssetPayloadIdxs: 
+  _ColorPayloads: []
+  _ColorPayloadIdxs: 
+  _CurvePayloads: []
+  _CurvePayloadIdxs: 
+  _FloatPayloads: []
+  _FloatPayloadIdxs: 
+  _GradientPayloads: []
+  _GradientPayloadIdxs: 
+  _IntPayloads: []
+  _IntPayloadIdxs: 
+  _SpectrumPayloads: []
+  _SpectrumPayloadIdxs: 
+  _TextPayloads:
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  - mTextVal: 0,2,2
+  _TextPayloadIdxs: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d0000001e0000001f000000200000002100000022000000230000002400000025000000260000002700000028000000290000002a0000002b0000002c0000002d0000002e0000002f00000030000000

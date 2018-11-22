@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using TMPro;
 using Aesthetics;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -85,6 +86,9 @@ namespace Aesthetics
         private RhythmSystem rhythmSystem_ref;
 
         [SerializeField]
+        public Menu menu_ref;
+
+        [SerializeField]
         private List<GameObject> playerPrefabList = new List<GameObject> (4);
 
         [SerializeField]
@@ -92,6 +96,14 @@ namespace Aesthetics
 
         [SerializeField]
         private GameObject missFloatingText_prefab;
+
+         [SerializeField]
+        public List<Color> stageHighlightColors = new List<Color>(3);
+
+        [SerializeField]
+        public TextMeshProUGUI winnerText = new TextMeshProUGUI();
+        [SerializeField]
+        public TextMeshProUGUI endGameText = new TextMeshProUGUI();
 
         [SerializeField]
         private List<PlayerUI> playerUIList = new List<PlayerUI> (2);
@@ -114,7 +126,7 @@ namespace Aesthetics
         [SerializeField]
         public List<Item> itemList;
 
-        public IEnumerable<Item> typesOfItemList;
+        public ICollection<Item> typesOfItemList;
 
         [SerializeField]
         public List<FloatingText> floatingTextList;
@@ -193,6 +205,10 @@ namespace Aesthetics
         [SerializeField]
         float scoreMakerCurrentSpawnRatio = 5;
 
+         [Tooltip ("item height from ground")]
+        [SerializeField]
+        float itemHeightFromGround = 0.2f;
+
         [SerializeField]
         int amountScoreMaker = 0;
         [SerializeField]
@@ -220,15 +236,67 @@ namespace Aesthetics
 
         void Awake ()
         {
+            
+
+            typesOfItemList = ReflectiveEnumerator.GetEnumerableOfType<Item> ().ToList();
+
+            
+              Menu menuaux = null;
+
+           if(GameObject.FindGameObjectWithTag("Menu"))
+             menuaux = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+
+            if(menuaux && menuaux != null )
+            {
+                menu_ref = menuaux;
+
+                playerList.Clear();
+                for(int i = 0; i < menu_ref.players.Count; i++) playerList.Add(null);
+
+                if(menuaux.stage.filename != null)
+                fileNameToLoad = menu_ref.stage.filename;
+                
+                RenderSettings.skybox = menu_ref.stage.skybox_mat;
+
+                List<Item> typeClone =  new List<Item>();
+
+                typeClone = typesOfItemList.ToList();
+               
+               
+                    for(int j = menu_ref.itemSetup.Count -1; j >= 0; j--)
+                    {
+                        
+                        
+                        typeClone.RemoveAll( t => t.GetType().Name == menu_ref.itemSetup[j].Name );
+                        
+                    }
+                
+
+                typesOfItemList = typeClone;
+
+                itemBaseSpawnRatio = menu_ref.itemFrequency;
+
+             
+
+            }
+
+
             tiles = Load (Application.streamingAssetsPath + "\\" + fileNameToLoad);
             BuildMap ();
+
+           
 
             itemTimersAwake ();
             SpawnPlayers ();
 
-            Application.targetFrameRate = 60;
-            typesOfItemList = ReflectiveEnumerator.GetEnumerableOfType<Item> ();
+            numberOfPlayers = playerList.Count;
 
+            
+
+            Application.targetFrameRate = 60; // -1 uncapp
+            
+            
+            
         }
 
         // Use this for initialization
@@ -243,6 +311,19 @@ namespace Aesthetics
 #endif
 
             itemTimersStart ();
+
+            for(int i = 0; i < numberOfPlayers; i++)
+            {
+                //if(i > numberOfPlayers - 1) playerUIList[i].gameObject.SetActive(false);
+               
+                PlayerUI pu = Resources.FindObjectsOfTypeAll<PlayerUI>().ToList().Find( p=> p.gameObject.name.ToLower().Contains("player " + (i + 1) + " ui"));
+                pu.gameObject.SetActive(true);
+                GetPlayerUIList().Add(pu);
+            }
+            
+            //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
+
+           
 
             // print("ScoreMaker: " + getItemCurrentCount<ScoreMaker>() + " | " + getItemCurrentPercentage<ScoreMaker>());
 
@@ -299,11 +380,17 @@ namespace Aesthetics
                 //print ("cabou tempo");
                 if (getItemCurrentCount<Item> () < maxItens)
                 {
-                    ReGamble:
+                    int count_max = 100;
+                    int count = 0;
 
-                        if (!GambleItemToSpawn ())
+                    ReGamble:
+                    count++;
+
+                        if (!GambleItemToSpawn () && count <= count_max && typesOfItemList.Count > 1)
                         {
                             print ("GAMBLE FAILED!");
+
+                            if(count <= count_max)
                             goto ReGamble;
                         }
                     else
@@ -315,7 +402,7 @@ namespace Aesthetics
                 }
                 else
                 {
-                    print ("current items = " + getItemCurrentCount<Item> () + " | max: " + maxItens);
+                    //print ("current items = " + getItemCurrentCount<Item> () + " | max: " + maxItens);
                 }
 
             }
@@ -536,7 +623,7 @@ namespace Aesthetics
 
             }
 
-            print ("Sneakers chance: " + sneakers_currentRarity);
+           // print ("Sneakers chance: " + sneakers_currentRarity);
             float val = UnityEngine.Random.Range (0, chance_total);
 
             bool exitLoop = false;
@@ -627,7 +714,7 @@ namespace Aesthetics
                     case "RainbowLipstick":
                         if (val <= rainbow_currentRarity && RainbowLipstick.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                           // print ("Rolled" + itemtype.GetType ().Name);
                             return SpawnItem<RainbowLipstick> (defaultItemSpawnRange);
                             exitLoop = true;
                         }
@@ -679,7 +766,7 @@ namespace Aesthetics
                     case "Sneakers":
                         if (val <= sneakers_currentRarity && Sneakers.ruleCheck (this))
                         {
-                            print ("Rolled" + itemtype.GetType ().Name);
+                         
                             return SpawnItem<Sneakers> (defaultItemSpawnRange);
                             //exitLoop = true;
                         }
@@ -703,21 +790,35 @@ namespace Aesthetics
 
             amountScoreMaker = getItemCurrentCount<ScoreMaker> ();
             amountItens = getItemCurrentCount<Item> ();
-            if (Input.GetKeyDown (KeyCode.Escape))
+
+             if (Input.GetKeyDown (KeyCode.Escape))
             {
-                QuitGame ();
+                UtilityTools.QuitGame ();
             }
 
             if (Input.GetKeyDown (KeyCode.R))
             {
+                if(SceneManager.GetActiveScene ().buildIndex == 0)
+                SceneManager.MoveGameObjectToScene(menu_ref.gameObject, SceneManager.GetActiveScene());
 
-                SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
+               SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
+            
             }
 
-            if (Input.GetKeyDown (KeyCode.G))
+             if (Input.GetKeyDown (KeyCode.T))
             {
-                playerList[0].Stun (4);
+                 if(SceneManager.GetActiveScene ().buildIndex != 0)
+                 {
+                     SceneManager.MoveGameObjectToScene(menu_ref.gameObject, SceneManager.GetActiveScene());
+                     SceneManager.MoveGameObjectToScene(menu_ref.stage.gameObject, SceneManager.GetActiveScene());
+                     SceneManager.MoveGameObjectToScene(menu_ref.gameSong.gameObject, SceneManager.GetActiveScene());
+                 }
+                
+             
+               SceneManager.LoadScene (0);
             }
+
+ 
 
             itemTimersUpdate ();
 
@@ -751,12 +852,64 @@ namespace Aesthetics
                     initial_pos = GetGridBlock (mapWidth - 1, mapHeight - 1).gameObject.transform.position;
                     initial_pos.y = playerInitY;
                 }
-                GameObject player_prefab = Instantiate (playerPrefabList[i], initial_pos, Quaternion.identity) as GameObject;
-                player_prefab.GetComponent<Player> ().setGridRef (this);
-                player_prefab.GetComponent<Player> ().setRhythmSystemRef (rhythmSystem_ref);
-                playerList[i] = player_prefab.GetComponent<Player> ();
+                
+                GameObject prefabToInstantiate = null;
+                if(menu_ref && menu_ref !=null)
+                {
+                    
+                switch(menu_ref.players[i].character)
+                {
+
+                    
+
+                    case Player.Character.David:
+                    prefabToInstantiate = playerPrefabList.Find(p => p.name.ToLower().Contains("statue"));
+
+                    break;
+
+                    case Player.Character.Skull:
+                    prefabToInstantiate = playerPrefabList.Find(p => p.name.ToLower().Contains("skull"));
+                    break;
+
+                    case Player.Character.Afro:
+                    prefabToInstantiate = playerPrefabList.Find(p => p.name.ToLower().Contains("blackpower"));
+                    break;
+
+                    case Player.Character.AnimeGirl:
+                    default:
+                    prefabToInstantiate = playerPrefabList.Find(p => p.name.ToLower().Contains("girl"));
+
+                    break;
+                }
+                }
+                
+
+                if(!prefabToInstantiate || prefabToInstantiate == null) prefabToInstantiate = playerPrefabList[1];
+
+                GameObject player_prefab = Instantiate (prefabToInstantiate, initial_pos, Quaternion.identity) as GameObject;
+                Player pp = player_prefab.GetComponent<Player> ();
+                pp.setGridRef (this);
+                pp.setRhythmSystemRef (rhythmSystem_ref);
+                pp.ID = i;
+
+                if(menu_ref && menu_ref !=null)
+                {
+                pp.setModelColors(menu_ref.players[i].colorPrim, menu_ref.players[i].colorSec, menu_ref.players[i].colorTert);
+                pp.controllerType = menu_ref.players[i].controllerType;
+                pp.gridColor = menu_ref.players[i].gridblockColor;
+                pp.blackGridColor = menu_ref.players[i].blackGridblockColor;
+               }
+
+                playerList[i] = pp;
 
             }
+
+            
+
+            setupPlayersInputIDs();
+           
+
+
         }
 
         //spawn ScoreMaker Item
@@ -765,7 +918,7 @@ namespace Aesthetics
             GridBlock gb = GetGridBlock (x, z);
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (x, z, itemHeightFromGround), Quaternion.identity) as GameObject;
             ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
             sm.grid_ref = GetComponent<TheGrid> ();
             sm.rhythmSystem_ref = rhythmSystem_ref;
@@ -784,12 +937,13 @@ namespace Aesthetics
         private ScoreMaker SpawnScoreMaker (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
-            if (gb.isOccupied || gb.hasItem) return null;
+                if(gb == null) return null;
+              if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject scorePrefab = Instantiate (scoreMaker_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             ScoreMaker sm = scorePrefab.GetComponent<ScoreMaker> ();
             sm.grid_ref = GetComponent<TheGrid> ();
             sm.rhythmSystem_ref = rhythmSystem_ref;
@@ -827,7 +981,7 @@ namespace Aesthetics
                     break;
 
             }
-            GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (x, z, itemHeightFromGround), Quaternion.identity) as GameObject;
             Arrow a = arrowPrefab.GetComponent<Arrow> ();
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
@@ -847,9 +1001,10 @@ namespace Aesthetics
         private Arrow SpawnArrow (float range, Arrow.arrowType? typeOfArrow)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject prefab;
@@ -881,7 +1036,7 @@ namespace Aesthetics
 
             }
 
-            GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject arrowPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             Arrow a = arrowPrefab.GetComponent<Arrow> ();
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
@@ -903,9 +1058,10 @@ namespace Aesthetics
         private Ray SpawnRay (float range, Ray.rayType? typeOfRay)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
             GameObject prefab;
@@ -933,7 +1089,7 @@ namespace Aesthetics
 
             }
 
-            GameObject rayPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject rayPrefab = Instantiate (prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             Ray a = rayPrefab.GetComponent<Ray> ();
             a.grid_ref = GetComponent<TheGrid> ();
             a.rhythmSystem_ref = rhythmSystem_ref;
@@ -957,7 +1113,7 @@ namespace Aesthetics
             GridBlock gb = GetGridBlock (x, z);
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (x, z, itemHeightFromGround), Quaternion.identity) as GameObject;
 
             lockPrefab.GetComponent<Lock> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
@@ -970,12 +1126,13 @@ namespace Aesthetics
         private Lock SpawnLock (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject lockPrefab = Instantiate (lock_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             lockPrefab.GetComponent<Lock> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -987,12 +1144,13 @@ namespace Aesthetics
         private FastFoward SpawnFastFoward (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject ffPrefab = Instantiate (fastFoward_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject ffPrefab = Instantiate (fastFoward_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             ffPrefab.GetComponent<FastFoward> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1004,12 +1162,13 @@ namespace Aesthetics
         private SloMo SpawnSloMo (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject smPrefab = Instantiate (sloMo_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject smPrefab = Instantiate (sloMo_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             smPrefab.GetComponent<SloMo> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1021,12 +1180,13 @@ namespace Aesthetics
         private CompactDisk SpawnCompactDisk (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject smPrefab = Instantiate (compactDisk_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             smPrefab.GetComponent<CompactDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1037,12 +1197,13 @@ namespace Aesthetics
         private FloppyDisk SpawnFloppyDisk (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
-
+            
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject smPrefab = Instantiate (floppyDisk_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject smPrefab = Instantiate (floppyDisk_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             smPrefab.GetComponent<FloppyDisk> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1054,12 +1215,13 @@ namespace Aesthetics
         private Glasses3D SpawnGlasses3D (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject spPrefab = Instantiate (glasses3D_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject spPrefab = Instantiate (glasses3D_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             spPrefab.GetComponent<Glasses3D> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1071,12 +1233,13 @@ namespace Aesthetics
         private Sneakers SpawnSneakers (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject spPrefab = Instantiate (sneakers_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject spPrefab = Instantiate (sneakers_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             spPrefab.GetComponent<Sneakers> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1088,12 +1251,13 @@ namespace Aesthetics
         private Revolver SpawnRevolver (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject spPrefab = Instantiate (revolver_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject spPrefab = Instantiate (revolver_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             spPrefab.GetComponent<Revolver> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1105,12 +1269,13 @@ namespace Aesthetics
         private RainbowLipstick SpawnRainbowLipstick (float range)
         {
             GridBlock gb = null;
-            while (gb == null)
+            if (gb == null)
                 gb = GetRandomGridBlock (range, new GridBlock.GridBlockStatus (false, false, false, false, false, false, false));
 
+            if(gb == null) return null;
             if (gb.isOccupied || gb.hasItem) return null;
 
-            GameObject spPrefab = Instantiate (rainbowLipstick_prefab, getGridBlockPosition (gb.X, gb.Z, 0.8f), Quaternion.identity) as GameObject;
+            GameObject spPrefab = Instantiate (rainbowLipstick_prefab, getGridBlockPosition (gb.X, gb.Z, itemHeightFromGround), Quaternion.identity) as GameObject;
             spPrefab.GetComponent<RainbowLipstick> ().Setup (GetComponent<TheGrid> (), rhythmSystem_ref, gb);
 
             gb.hasItem = true;
@@ -1230,10 +1395,14 @@ namespace Aesthetics
                     GameObject TilePrefab = Instantiate (gridBlock_prefab1, new Vector3 (xOffset * j - mapWidth * xOffset, 0, zOffset * mapHeight - i * zOffset), Quaternion.identity) as GameObject;
 
                     TilePrefab.transform.parent = transform;
-                    TilePrefab.GetComponent<GridBlock> ().init (j, 0, i, GetComponent<TheGrid> (), rhythmSystem_ref);
-                    TilePrefab.GetComponent<GridBlock> ().changeColor ((GridBlock.gridBlockColor) tiles[i, j]);
-                    TilePrefab.GetComponent<GridBlock> ().startTransform = TilePrefab.transform;
-                    _GridBlockList.Add (TilePrefab.GetComponent<GridBlock> ());
+
+                    GridBlock gr = TilePrefab.GetComponent<GridBlock> ();
+                    gr.init (j, 0, i, GetComponent<TheGrid> (), rhythmSystem_ref);
+                    gr.GridType = (GridBlock.gridType)tiles[i, j];
+                    if(gr.GridType == GridBlock.gridType.Normal)
+                    gr.changeColor (GridBlock.gridBlockColor.White);
+                    gr.startTransform = TilePrefab.transform;
+                    _GridBlockList.Add (gr);
 
                 }
             }
@@ -1248,6 +1417,7 @@ namespace Aesthetics
             //Camera.main.transform.parent.LookAt(GetGridBlock (mapWidth / 2, mapHeight / 2).gameObject.transform);
 
             cameraScript.setViewBoundaries ();
+            
             cameraScript.ZoomOutLoopUntilSeen (100);
 
         }
@@ -1331,6 +1501,78 @@ namespace Aesthetics
             return null;
         }
 
+
+    public void setupPlayersInputIDs()
+    {
+        
+            // get list with all the players using controllers and sort inputID by it
+            List <Player> controllers = GetPlayerList().FindAll(p => p.controllerType == Player.InputType.Xbox || p.controllerType == Player.InputType.PS4);
+            List <Player> keyboards = GetPlayerList().FindAll(p => p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4);
+
+            List <int> xboxJoysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => name.ToLower().Contains("xbox"));
+            List <int> ps4Joysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => !name.ToLower().Contains("xbox") && name != "");
+
+            List <int> possibleIDs = new List<int>();
+
+            for(int i = 1; i <= playerList.Count; i++) possibleIDs.Add(i);
+
+            
+            foreach(Player p in controllers)
+            {
+              //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
+
+              if(p.controllerType == Player.InputType.Xbox )
+              {
+                  if(xboxJoysticks.Any())
+                  {
+                      p.inputID = xboxJoysticks.First() + 1;
+                      xboxJoysticks.Remove(xboxJoysticks.First());
+                      possibleIDs.Remove(p.inputID);
+
+                  }
+                  else
+                  {
+                      keyboards.Add(p);
+                  }
+                  
+              }
+              else if(p.controllerType == Player.InputType.PS4 )
+              {
+
+                  if(ps4Joysticks.Any())
+                  {
+                       p.inputID = ps4Joysticks.First() + 1;
+                  ps4Joysticks.Remove(ps4Joysticks.First());
+                  possibleIDs.Remove(p.inputID);
+
+                  }
+                  else
+                  {
+                      keyboards.Add(p);
+                  }
+                  
+
+              }
+              
+
+               
+
+            }
+            
+
+             foreach(Player p in keyboards)
+            {
+              //  if(p.controllerType != Player.InputType.Xbox && p.controllerType != Player.InputType.PS4)
+                p.inputID = possibleIDs.First();
+                possibleIDs.Remove(possibleIDs.First());
+
+            }
+
+
+            
+        
+    }
+
         // Score points for the player
         public void Score (Player p)
         {
@@ -1360,7 +1602,7 @@ namespace Aesthetics
             result *= p.multiplier;
 
             Vector3 pos = p.transform.position;
-            pos.y += p.GetComponent<Renderer> ().bounds.size.y + 0.0f;
+            pos.y += p.renderer_Ref.bounds.size.y + 0.0f;
             SpawnScoreFloatingText (pos, result.ToString (), GridBlock.getColorOfGridBlockColor (p.gridColor));
             p.score += result;
 
@@ -1636,7 +1878,7 @@ namespace Aesthetics
 
             if (pattern != GridBlock.gridBlockPattern.Single)
             {
-                if (availablePatterns != null)
+                if (availablePatterns != null && availablePatterns.Any())
                 {
 
                     list = availablePatterns[Random.Range (0, availablePatterns.Count)];
@@ -1644,6 +1886,7 @@ namespace Aesthetics
             }
             else //if(pattern == GridBlock.gridBlockPattern.Single)
             {
+                print("before");
                 list = GetRandomGridBlocks (range, status);
             }
 
@@ -1880,16 +2123,6 @@ namespace Aesthetics
             }
 
         }
-        public void QuitGame ()
-        {
-            // save any game data here
-#if UNITY_EDITOR
-            // Application.Quit() does not work in the editor so
-            // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit ();
-#endif
-        }
+        
     }
 }

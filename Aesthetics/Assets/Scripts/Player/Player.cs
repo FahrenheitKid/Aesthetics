@@ -19,6 +19,22 @@ namespace Aesthetics
             Up
         }
 
+        public enum InputType
+        {
+            WASD,
+            Arrows,
+            Xbox,
+            PS4
+        }
+
+        public enum Character
+        {
+            AnimeGirl,
+            David,
+            Skull,
+            Afro
+        }
+
         [SerializeField, Candlelight.PropertyBackingField]
         private static int _globalID = 0;
         public int globalID
@@ -44,6 +60,34 @@ namespace Aesthetics
             set
             {
                 _ID = value;
+            }
+        }
+
+        [SerializeField, Candlelight.PropertyBackingField]
+        private int _inputID = 0;
+        public int inputID
+        {
+            get
+            {
+                return _inputID;
+            }
+            set
+            {
+                _inputID = value;
+            }
+        }
+
+        [SerializeField, Candlelight.PropertyBackingField]
+        private InputType _controllerType = 0;
+        public InputType controllerType
+        {
+            get
+            {
+                return _controllerType;
+            }
+            set
+            {
+                _controllerType = value;
             }
         }
 
@@ -108,16 +152,17 @@ namespace Aesthetics
                     combo = 0;
                     multiplierCombo = 0;
                     disableInput = true;
-                    Shader shader_ref = gameObject.GetComponent<Renderer> ().materials[0].shader;
+                    setShaderColors (stunColor, stunColor, stunColor, stunColor, stunColor, stunColor);
 
-                    gameObject.GetComponent<Renderer> ().materials[0].SetColor ("_Color", Color.blue);
+                     
+                   
+                
+
                 }
                 else
                 {
 
-                    Shader shader_ref = gameObject.GetComponent<Renderer> ().materials[0].shader;
-
-                    gameObject.GetComponent<Renderer> ().materials[0].SetColor ("_Color", Color.white);
+                    setShaderColors (colorPrim[0], colorPrim[1], colorSec[0], colorSec[1], colorTert[0], colorTert[1]);
 
                     disableInput = false;
                 }
@@ -126,6 +171,16 @@ namespace Aesthetics
 
             }
         }
+
+        [SerializeField]
+        Color32 stunColor;
+
+        [SerializeField]
+        Color32[] colorPrim = new Color32[2];
+        [SerializeField]
+        Color32[] colorSec = new Color32[2];
+        [SerializeField]
+        Color32[] colorTert = new Color32[2];
 
         [Tooltip ("Is the player fallen?")]
         [SerializeField, Candlelight.PropertyBackingField]
@@ -140,6 +195,18 @@ namespace Aesthetics
             {
 
                 _isFallen = value;
+
+                if(_isFallen)
+                {
+                    if(moveTween != null)
+                    {
+                        if(moveTween.IsPlaying())
+                        {
+                            moveTween.Kill();
+                            isMoving = false;
+                        }
+                    }
+                }
 
             }
         }
@@ -157,6 +224,34 @@ namespace Aesthetics
             {
 
                 _isAiming = value;
+
+                if (_isAiming)
+                {
+                    if (renderer_Ref.materials[0].shader.name == "FX/Glass/Stained BumpDistort")
+                    {
+
+                    }
+                    else
+                    {
+                        setShaderColors (Color.red, colorPrim[1], Color.red, colorSec[1], Color.red, colorTert[1]);
+
+                    }
+
+                }
+                else
+                {
+
+                    if (renderer_Ref.materials[0].shader.name == "FX/Glass/Stained BumpDistort")
+                    {
+                        //renderer_Ref.materials[0].shader
+                    }
+                    else
+                    {
+                        setShaderColors (colorPrim[0], colorPrim[1], colorSec[0], colorSec[1], colorTert[0], colorTert[1]);
+
+                    }
+
+                }
 
             }
         }
@@ -179,6 +274,14 @@ namespace Aesthetics
         [Tooltip ("the block where the player fell?")]
         [SerializeField, ]
         public GridBlock fall_gridBlock_Ref = null;
+
+        [Tooltip ("model renderer ref")]
+        [SerializeField, ]
+        public Renderer renderer_Ref = null;
+
+        [Tooltip ("model renderer ref")]
+        [SerializeField, ]
+        public Animator animator_Ref = null;
 
         [Tooltip ("Is the player respawning?")]
         [SerializeField, Candlelight.PropertyBackingField]
@@ -212,13 +315,13 @@ namespace Aesthetics
                 {
 
                     Shader glass = Shader.Find ("FX/Glass/Stained BumpDistort");
-                    gameObject.GetComponent<Renderer> ().materials[0].shader = glass;
+                    renderer_Ref.sharedMaterials[0].shader = glass;
 
                 }
                 else
                 {
-                    Shader normal = Shader.Find ("Custom/Tint/2TintShader");
-                    gameObject.GetComponent<Renderer> ().materials[0].shader = normal;
+                    Shader normal = Shader.Find ("Toon/Lit ColorMask Gradient");
+                    renderer_Ref.sharedMaterials[0].shader = normal;
                 }
 
                 _isImmune = value;
@@ -273,7 +376,10 @@ namespace Aesthetics
 
                 _score = value;
                 int i = (ID > 0) ? ID - 1 : 0;
-                grid_ref.GetPlayerUIList () [i].setScore (_score);
+                PlayerUI pui = grid_ref.GetPlayerUIList ().Find (pu => pu.name.ToLower ().Contains ((ID + 1).ToString ()));
+
+                 if(pui)
+                pui.setScore (_score);
 
             }
         }
@@ -291,9 +397,13 @@ namespace Aesthetics
             {
 
                 _combo = value;
-                if (combo == 0) _multiplierCombo = 0;
+                if (combo <= 0) multiplierCombo = 0;
                 int i = (ID > 0) ? ID - 1 : 0;
-                grid_ref.GetPlayerUIList () [i].setCombo (_combo);
+
+                PlayerUI pui = grid_ref.GetPlayerUIList ().Find (pu => pu.name.ToLower ().Contains ((ID + 1).ToString ()));
+
+                if(pui)
+                pui.setCombo (_combo);
             }
         }
 
@@ -310,8 +420,9 @@ namespace Aesthetics
             {
                 _multiplierCombo = value;
 
-                if (_multiplierCombo / 10 >= 1) multiplier = _multiplierCombo / 10;
-                else if (_multiplierCombo == 0) multiplier = 1;
+                if (multiplierCombo / 10 >= 1) multiplier = _multiplierCombo / 10;
+                
+                if (multiplierCombo <= 0) multiplier = 1;
 
                 //int i = (ID > 0) ? ID - 1 : 0;
                 //grid_ref.GetPlayerUIList () [i].setCombo (_combo);
@@ -332,7 +443,11 @@ namespace Aesthetics
                 _multiplier = value;
                 if (_multiplier <= 0) _multiplier = 1;
                 int i = (ID > 0) ? ID - 1 : 0;
-                grid_ref.GetPlayerUIList () [i].setMultiplier (_multiplier);
+                
+                PlayerUI pui = grid_ref.GetPlayerUIList ().Find (pu => pu.name.ToLower ().Contains ((ID + 1).ToString ()));
+
+                if(pui)
+                pui.setMultiplier (_multiplier);
             }
         }
 
@@ -489,12 +604,14 @@ namespace Aesthetics
             private bool correctDiagonalSpeed = true;
             private Vector2 input;
 
-             public int inputCountX;
+            public int inputCountX;
             public int inputCountY;
             private bool X_isAxisInUse = false;
             private bool Y_isAxisInUse = false;
             [SerializeField]
             private bool isMoving = false;
+
+            private Tween moveTween = null;
 
             private Vector3 startPosition;
             private Vector3 endPosition;
@@ -506,8 +623,13 @@ namespace Aesthetics
             //Sets the player's ID
             private void Awake ()
             {
-            if (globalID >= 4) globalID = 0;
-            ID = ++globalID;
+
+                if( grid_ref)
+                {
+                     if (globalID > grid_ref.numberOfPlayers) globalID = 0;
+                     ID = ++globalID;
+                }
+           
 
             stunTimer = gameObject.AddComponent<Countdown> ();
         }
@@ -531,6 +653,8 @@ namespace Aesthetics
             fallenTimer = gameObject.AddComponent<Countdown> ();
             respawnTimer = gameObject.AddComponent<Countdown> ();
 
+            setShaderColors (colorPrim[0], colorPrim[1], colorSec[0], colorSec[1], colorTert[0], colorTert[1]);
+
         }
 
         private void OnTriggerEnter (Collider other)
@@ -539,8 +663,10 @@ namespace Aesthetics
             if (other.gameObject.CompareTag ("GridBlock"))
             {
                 GridBlock gb = other.GetComponent<GridBlock> ();
-                x = gb.X;
-                z = gb.Z;
+                if (x != gb.X)
+                    x = gb.X;
+                if (z != gb.Z)
+                    z = gb.Z;
 
                 if (other.GetComponent<GridBlock> ().isFallen) //if stepped on fallen gridblock
                 {
@@ -581,6 +707,12 @@ namespace Aesthetics
 
             if (other.gameObject.CompareTag ("GridBlock"))
             {
+
+                GridBlock gb = other.GetComponent<GridBlock> ();
+                if (x != gb.X)
+                    x = gb.X;
+                if (z != gb.Z)
+                    z = gb.Z;
 
                 if (other.GetComponent<GridBlock> ().isFallen) //if stepped on fallen gridblock
                 {
@@ -663,20 +795,21 @@ namespace Aesthetics
             }
         }
 
+        string getHorizontalInputName ()
+        {
+            return "Horizontal " + inputID + " " + controllerType.ToString ();
+        }
+
+        string getVerticalInputName ()
+        {
+            return "Vertical " + inputID + " " + controllerType.ToString ();
+        }
         void handleInput ()
         {
             //int numPressed = 0;
-            if(ID <2)
-            {
-                HandleAxisState (ref horizontalAxisState, "Horizontal" + ID);
-                HandleAxisState (ref verticalAxisState, "Vertical" + ID);
-            }
-            else
-            {
-                HandleAxisStateDPad (ref horizontalAxisState, "Horizontal" + ID);
-                HandleAxisStateDPad (ref verticalAxisState, "Vertical" + ID);
-            }
-            
+
+            HandleAxisState (ref horizontalAxisState, getHorizontalInputName ());
+            HandleAxisState (ref verticalAxisState, getVerticalInputName ());
 
             if (isStunned)
             {
@@ -685,7 +818,7 @@ namespace Aesthetics
 
             if (!isMoving)
             {
-                input = new Vector2 (Input.GetAxis ("Horizontal" + ID), Input.GetAxis ("Vertical" + ID));
+                input = new Vector2 (Input.GetAxis (getHorizontalInputName ()), Input.GetAxis (getVerticalInputName ()));
                 if (!allowDiagonals)
                 {
                     if (Mathf.Abs (input.x) > Mathf.Abs (input.y))
@@ -739,7 +872,7 @@ namespace Aesthetics
                             //lose combo
 
                             Vector3 pos = transform.position;
-                            pos.y += GetComponent<Renderer> ().bounds.size.y + 0.0f;
+                            pos.y += renderer_Ref.bounds.size.y + 0.0f;
                             grid_ref.SpawnMissFloatingText (pos);
 
                             combo = 0;
@@ -751,7 +884,7 @@ namespace Aesthetics
                 }
                 else
 
-                if (Input.GetButtonDown ("ActionA" + ID) &&
+                if (Input.GetButtonDown ("ActionA " + inputID + " " + controllerType) &&
                     ((verticalAxisState == AxisState.Idle) &&
                         (horizontalAxisState == AxisState.Idle)))
                 {
@@ -782,7 +915,7 @@ namespace Aesthetics
                             //lose combo
 
                             Vector3 pos = transform.position;
-                            pos.y += GetComponent<Renderer> ().bounds.size.y + 0.0f;
+                            pos.y += renderer_Ref.bounds.size.y + 0.0f;
                             grid_ref.SpawnMissFloatingText (pos);
 
                             combo = 0;
@@ -800,10 +933,10 @@ namespace Aesthetics
 
         public void Immune (float duration)
         {
-            print ("imune duratino: " + duration + " | timeleft: " + immunityTimer.timeLeft);
+
             if (duration == 0) return;
             if (immunityTimer.timeLeft >= duration && !immunityTimer.stop) return;
-            print ("imunityTrue applied");
+
             isImmune = true;
             immunityTimer.startTimer (duration);
         }
@@ -879,6 +1012,8 @@ namespace Aesthetics
             respawnBlock.respawnTimer.startTimer (respawn_duration);
 
         }
+
+      
         public bool Stun (float duration)
         {
             if (isImmune) return false;
@@ -901,6 +1036,45 @@ namespace Aesthetics
             isStunned = true;
             return true;
 
+        }
+
+        public bool Stun (float duration, bool stopMovement)
+        {
+
+             if (isImmune) return false;
+            if (isShielded)
+            {
+                if (item)
+                {
+                    if (item.GetType () == typeof (FloppyDisk))
+                    {
+                        item.Kill (null);
+                    }
+                }
+
+                Immune (shieldImmunity_duration);
+                isShielded = false;
+                return false;
+            }
+
+            stunTimer.startTimer (duration);
+            isStunned = true;
+            
+                if(stopMovement)
+                {
+
+                    if(moveTween != null)
+                    {
+                        if(moveTween.IsPlaying())
+                        {
+                            moveTween.Kill();
+                            isMoving = false;
+                        }
+                    }
+                }
+                    
+
+                    return true;
         }
 
         public bool Steal (Player target, bool stealLocked)
@@ -961,8 +1135,9 @@ namespace Aesthetics
             endGridBlock = getDestinationBlock (player_direction, 1);
 
             //if the player is with sneakers, need to move double
-            if (hasItem && item.GetType () == typeof (Sneakers))
+            if (hasItem && item.GetType ().Name == typeof (Sneakers).Name)
             {
+
                 // if both blocks are availaable, move to second, otherwise move only one.
                 if (isMyDestinationBlockAvailable (player_direction, 1) && isMyDestinationBlockAvailable (player_direction, 2))
                 {
@@ -976,24 +1151,89 @@ namespace Aesthetics
             if (endGridBlock == null)
             {
 
-                //print ("Block (" + endGridBlock.X + ", " + endGridBlock.Z + ") occupied!");
                 return false;
 
             }
             else
             {
+
                 endGridBlock.isOccupied = true;
 
                 endGridPosition = endGridBlock.transform.position;
                 endGridPosition.y = 0.1f;
 
                 isMoving = true;
-                transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
+                moveTween = transform.DOMove (endGridPosition, rhythmSystem_ref.rhythmTarget_Ref.duration).OnComplete (() => isMoving = false).SetEase (Ease.OutQuart);
                 transform.DOLookAt (endGridPosition, 0.2f);
+                x = endGridBlock.X;
+                z = endGridBlock.Z;
                 return true;
 
             }
 
+        }
+        
+        //hard moving the player, not the common move
+        public bool Move (GridBlock destination, float moveDuration)
+        {
+
+            Vector3 startGridPosition = new Vector3 (x, y, z);
+            Vector3 endGridPosition = destination.transform.position;
+
+
+            GridBlock startGridBlock;
+            startGridBlock = grid_ref.GetGridBlock (x, z);
+
+            //if destination gridBlock is already occupied
+            if (destination == null)
+            {
+
+                return false;
+
+            }
+            else
+            {
+
+                destination.isOccupied = true;
+
+                endGridPosition = destination.transform.position;
+                endGridPosition.y = 0.1f;
+
+                
+                transform.DOMove (endGridPosition, moveDuration).SetEase (Ease.OutQuart);
+                transform.DOLookAt (endGridPosition, 0.2f);
+                x = destination.X;
+                z = destination.Z;
+                return true;
+
+            }
+        }
+
+        void setShaderColors (Color32 colorPrim1, Color32 colorPrim2, Color32 colorSec1, Color32 colorSec2, Color32 colorTert1, Color32 colorTert2)
+        {
+            if (!renderer_Ref) return;
+
+            Shader shader_ref = renderer_Ref.sharedMaterials[0].shader;
+
+            renderer_Ref.materials[0].SetColor ("_ColorPrim1", colorPrim1);
+            renderer_Ref.materials[0].SetColor ("_ColorPrim2", colorPrim2);
+
+            renderer_Ref.materials[0].SetColor ("_ColorSec1", colorSec1);
+            renderer_Ref.materials[0].SetColor ("_ColorSec2", colorSec2);
+
+            renderer_Ref.sharedMaterials[0].SetColor ("_ColorTert1", colorTert1);
+            renderer_Ref.materials[0].SetColor ("_ColorTert2", colorTert2);
+        }
+
+        public void setModelColors (Color32[] prim, Color32[] sec, Color32[] tert)
+        {
+            if (!renderer_Ref) return;
+
+            colorPrim = prim;
+            colorSec = sec;
+            colorTert = tert;
+
+            setShaderColors (colorPrim[0], colorPrim[1], colorSec[0], colorSec[1], colorTert[0], colorTert[1]);
         }
 
         CameraScript.windRose? getDirectionFromInput ()
@@ -1236,7 +1476,11 @@ namespace Aesthetics
 
             endGridBlock = grid_ref.GetGridBlock ((int) endGridPosition.x, (int) endGridPosition.z);
 
-            if (!endGridBlock) return null;
+            if (!endGridBlock)
+            {
+
+                return null;
+            }
 
             //if destination gridBlock is already occupied
             if (endGridBlock.isOccupied || endGridBlock.isBlocked || endGridBlock.isRespawning)
@@ -1436,11 +1680,13 @@ namespace Aesthetics
                 case AxisState.Idle:
                     if (Input.GetAxis (axi) < -deadZone || Input.GetAxis (axi) > deadZone)
                     {
+
                         state = AxisState.Down;
                     }
                     break;
 
                 case AxisState.Down:
+
                     state = AxisState.Held;
                     break;
 
@@ -1461,7 +1707,7 @@ namespace Aesthetics
         void HandleAxisStateDPad (ref AxisState state, string axi)
         {
 
-                /*
+            /*
                 if (Input.GetAxisRaw ("DpadX") != 0)
             {
                 if (X_isAxisInUse == false)
@@ -1502,7 +1748,6 @@ namespace Aesthetics
                 Y_isAxisInUse = false;
             }
                  */
-            
 
             switch (state)
             {

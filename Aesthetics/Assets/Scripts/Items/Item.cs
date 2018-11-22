@@ -187,6 +187,16 @@ namespace Aesthetics
             }
         }
 
+        
+        [SerializeField]
+        protected AudioClip equipSound;
+
+        [SerializeField]
+        protected AudioClip useSound;
+
+         [SerializeField]
+        protected AudioClip activateSound;
+
         [Tooltip (" How much scaling of the Punch Scale done in the main beat")]
         [Range (0, 2)]
         [SerializeField]
@@ -255,12 +265,15 @@ namespace Aesthetics
         //multiple time use items use Use
         public virtual void Use ()
         {
-            print ("Base item used");
+           // print ("Base item used");
+           
+           if(useSound ) AudioSource.PlayClipAtPoint(useSound,gameObject.transform.position, 1f);
         }
 
         //one time use only itens use activate. All itens use Activate upon getting  picked up
         public virtual bool Activate ()
         {
+             if(activateSound ) AudioSource.PlayClipAtPoint(activateSound,gameObject.transform.position, 1f);
 
             gameObject.GetComponent<BoxCollider> ().enabled = false;
             gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
@@ -282,6 +295,8 @@ namespace Aesthetics
 
         public virtual void Equip (Player p)
         {
+              if(equipSound ) AudioSource.PlayClipAtPoint(equipSound,gameObject.transform.position, 1f);
+
             if (p.hasItem)
             {
                 if (p.item)
@@ -302,7 +317,7 @@ namespace Aesthetics
                 gameObject.transform.localScale = new Vector3 (0.4f, 0.4f, 0.4f);
 
             //print("new local scale: " + transform.localScale);
-            float player_height = p.gameObject.GetComponent<MeshRenderer> ().bounds.max.y;
+            float player_height = p.renderer_Ref.bounds.max.y;
             transform.localPosition = new Vector3 (0.0f, player_height, 0.0f);
 
             grid_ref.updateItemSpawnRatio ();

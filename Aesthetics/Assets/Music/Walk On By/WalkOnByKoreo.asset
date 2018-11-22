@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -2076007791, guid: aa81bbec85a3f423193272a7c6154986, type: 3}
+  m_Name: WalkOnByKoreo
+  m_EditorClassIdentifier: 
+  mSourceClip: {fileID: 8300000, guid: 2ba02d39b4d5c174fab2c2b31e3c8194, type: 3}
+  mAudioFilePath: 
+  mSampleRate: 44100
+  mIgnoreLatencyOffset: 0
+  mTempoSections:
+  - sectionName: default
+    startSample: 0
+    samplesPerBeat: 26727.272727272728
+    beatsPerMeasure: 4
+    bStartNewMeasure: 1
+  - sectionName: first
+    startSample: 7140
+    samplesPerBeat: 26727.272727272728
+    beatsPerMeasure: 4
+    bStartNewMeasure: 1
+  mTracks:
+  - {fileID: 11400000, guid: f54f5dfc3df87c64fb89f1bee2b13605, type: 2}
+  - {fileID: 11400000, guid: dd54b311b8db8a44b9e0513ddf841144, type: 2}
+  - {fileID: 11400000, guid: c030d783481613044922fedd453eaed5, type: 2}
+  - {fileID: 11400000, guid: 184cd84d1dd7b754b9d3969e1060bc3d, type: 2}

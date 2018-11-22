@@ -152,7 +152,44 @@ public class GridBlock : MonoBehaviour
     }
     #endregion
 
-    public static gridType GridType;
+
+    [SerializeField, Candlelight.PropertyBackingField]
+    private gridType _GridType;
+    public gridType GridType
+    {
+        get
+        {
+            return _GridType;
+
+        }
+        set
+        {
+            _GridType = value;
+            
+            if(_GridType == gridType.Hole)
+            {
+                isBlocked = false;
+                isPreBlocked = false;
+
+                isFallen = true;
+                isPreFallen = true;
+                transform.localScale = new Vector3 (0.001f, 0.001f, 0.001f);
+                
+            }
+
+            if(_GridType == gridType.Obstacle)
+            {
+                isBlocked = true;
+                isPreBlocked = true;
+                
+                isFallen = false;
+                isPreFallen = false;
+                transform.localScale = blockScale;
+                changeColor(gridBlockColor.Black);
+            }
+
+        }
+    }
 
     [SerializeField]
     private TheGrid grid_ref;
@@ -312,7 +349,19 @@ public class GridBlock : MonoBehaviour
         {
             _hasItem = value;
             if (_hasItem == false)
+            {
                 Item = null;
+                GetComponent<MeshRenderer>().material.SetColor("_TintColor2",Color.white);
+                //GetComponent<MeshRenderer>().material.SetFloat("_Tint2Gamma",0.3f);
+                
+
+            }
+                else
+                {
+                    //GetComponent<MeshRenderer>().material.SetFloat("_Tint2Gamma",0.2f);
+                    
+                    GetComponent<MeshRenderer>().material.SetColor("_TintColor2",grid_ref.stageHighlightColors.First());
+                }
         }
     }
 
@@ -605,7 +654,11 @@ public class GridBlock : MonoBehaviour
 
             if (haveBlockStunned == false && isBlocked)
             {
-                haveBlockStunned = p.Stun (grid_ref.blockStunDuration);
+                haveBlockStunned = p.Stun (grid_ref.blockStunDuration,true);
+                if(p.x != this.X || p.z != this.Z)
+                {
+                    p.Move(this,0.1f);
+                }
                 //haveBlockStunned = true;
             }
 
@@ -709,27 +762,26 @@ public class GridBlock : MonoBehaviour
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().text = (result).ToString ();
 
-                Color col = new Color (1, 2, 3);
-                if (crossResult >= 66)
+                Color col = Color.green;
+                if (result <= 5 && result > 3)
                 {
                     //print("first mudei");
                     col = new Color (0.2f, 0.7f, 0.4f, 1.0f);
                     col = Color.yellow;
                 }
                 else
-                if (crossResult < 66 && crossResult >= 33)
+                if (result < 3 && result > 2 )
                 {
                     //print("second mudei");
                     col = new Color (0.8f, 0.7f, 0.4f, 1.0f);
                     col = Color.red;
                 }
-                else if (crossResult < 33)
+                else if (result <= 2)
                 {
                     //print("third mudei");
                     col = new Color (0.2f, 0.5f, 0.3f, 1.0f);
                     col = Color.red;
                 }
-
                 textCountdown_ref.GetComponent<TextMeshPro> ().color = col;
 
             }
@@ -800,21 +852,21 @@ public class GridBlock : MonoBehaviour
 
                 textCountdown_ref.GetComponent<TextMeshPro> ().text = (result).ToString ();
 
-                Color col = new Color (1, 2, 3);
-                if (crossResult >= 66)
+                Color col = Color.green;
+                 if (result <= 5 && result > 3)
                 {
                     //print("first mudei");
                     col = new Color (0.2f, 0.7f, 0.4f, 1.0f);
                     col = Color.yellow;
                 }
                 else
-                if (crossResult < 66 && crossResult >= 33)
+                if (result < 3 && result > 2 )
                 {
                     //print("second mudei");
                     col = new Color (0.8f, 0.7f, 0.4f, 1.0f);
                     col = Color.red;
                 }
-                else if (crossResult < 33)
+                else if (result <= 2)
                 {
                     //print("third mudei");
                     col = new Color (0.2f, 0.5f, 0.3f, 1.0f);
@@ -900,57 +952,57 @@ public class GridBlock : MonoBehaviour
         switch (col)
         {
             case gridBlockColor.Blue_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Blue_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Blue_W];
 
                 break;
             case gridBlockColor.Green_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Green_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Green_W];
 
                 break;
 
             case gridBlockColor.Pink_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Pink_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Pink_W];
 
                 break;
 
             case gridBlockColor.Purple_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Purple_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Purple_W];
                 break;
 
             case gridBlockColor.Yellow_W:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Yellow_W];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Yellow_W];
 
                 break;
 
             case gridBlockColor.White:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.White];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.White];
 
                 break;
 
             case gridBlockColor.Blue_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Blue_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Blue_B];
                 break;
             case gridBlockColor.Green_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Green_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Green_B];
 
                 break;
 
             case gridBlockColor.Pink_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Pink_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Pink_B];
 
                 break;
 
             case gridBlockColor.Purple_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Purple_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Purple_B];
                 break;
 
             case gridBlockColor.Yellow_B:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Yellow_B];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Yellow_B];
 
                 break;
 
             case gridBlockColor.Black:
-                GetComponent<MeshRenderer> ().material = materials[(int) gridBlockColor.Black];
+                GetComponent<MeshRenderer> ().sharedMaterial = materials[(int) gridBlockColor.Black];
                 print ("painted back");
                 break;
 

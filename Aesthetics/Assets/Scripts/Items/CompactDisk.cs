@@ -33,6 +33,7 @@ public class CompactDisk : Item
 
     public override void Use ()
     {
+         base.Use();
         owner.Immune (owner.multiplier * immunity_multiplier);
         Kill (null);
     }

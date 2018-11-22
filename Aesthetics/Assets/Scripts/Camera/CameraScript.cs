@@ -86,6 +86,8 @@ public class CameraScript : MonoBehaviour
         }
     }
 
+    public float safeZoomOut = 0f;
+
     [SerializeField, Candlelight.PropertyBackingField]
     private float _xVerticalOffset = 0.5f;
     public float xVerticalOffset
@@ -356,6 +358,7 @@ public class CameraScript : MonoBehaviour
     public void ZoomOutLoopUntilSeen (uint loopLimit)
     {
         int count = 0;
+
         while (!UtilityTools.isPointInViewport (GetViewportBoundaryPoints ()) && count <= loopLimit)
         {
             GetComponent<Camera> ().orthographicSize += autoZoomAmount;
@@ -369,6 +372,7 @@ public class CameraScript : MonoBehaviour
         {
             print ("Loop do zoom passou do limite!!!");
         }
+        
         stageOrtoSize = GetComponent<Camera> ().orthographicSize;
     }
 
