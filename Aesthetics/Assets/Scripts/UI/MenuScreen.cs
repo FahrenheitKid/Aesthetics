@@ -74,6 +74,11 @@ public class MenuScreen : MonoBehaviour
                         List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (namee => namee.ToLower ().Contains ("xbox"));
                         List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (namee => !namee.ToLower ().Contains ("xbox") && namee != "");
 
+                         while (ps4Joysticks.Count > 1)
+        {
+            ps4Joysticks.RemoveAt(0);
+        }
+
                         bool onlyPS4 = false;
                         bool onlyXbox = false;
                         bool onlyKeyboard = false;

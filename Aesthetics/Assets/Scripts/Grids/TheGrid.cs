@@ -1539,6 +1539,11 @@ namespace Aesthetics
             List <int> xboxJoysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => name.ToLower().Contains("xbox"));
             List <int> ps4Joysticks = Input.GetJoystickNames().ToList().FindAllIndex(name => !name.ToLower().Contains("xbox") && name != "");
 
+             while (ps4Joysticks.Count > 1)
+        {
+            ps4Joysticks.RemoveAt(0);
+        }
+        
             List <int> possibleIDs = new List<int>();
 
             for(int i = 1; i <= playerList.Count; i++) possibleIDs.Add(i);

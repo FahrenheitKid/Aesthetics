@@ -709,6 +709,23 @@ public class Menu : MonoBehaviour
         List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => name.ToLower ().Contains ("xbox"));
         List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (name => !name.ToLower ().Contains ("xbox") && name != "");
 
+        while (ps4Joysticks.Count > 1)
+        {
+            ps4Joysticks.RemoveAt(0);
+        }
+
+        /*
+        
+         
+        print("size of ps4s: " + ps4Joysticks.Count);
+        print("size of Xbox: " + xboxJoysticks.Count);
+
+        foreach(int p in ps4Joysticks)
+        {
+            print ("index ps4 : " + p);
+        }
+        */
+        
         List<int> possibleIDs = new List<int> ();
 
         for (int i = 1; i <= players.Count; i++) possibleIDs.Add (i);
