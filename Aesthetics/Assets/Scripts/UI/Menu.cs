@@ -40,16 +40,29 @@ public class Menu : MonoBehaviour
 
     [Header ("Input Settings")]
     [SerializeField]
-    private Player.AxisState[] horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+    private Player.AxisState[] horizontalAxisStateDPad = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
 
     [SerializeField]
-    private Player.AxisState[] verticalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+    private Player.AxisState[] verticalAxisStateDpad = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+
+    [Header ("Input Settings")]
+    [SerializeField]
+    private Player.AxisState[] horizontalAxisStateAnalog = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+
+    [SerializeField]
+    private Player.AxisState[] verticalAxisStateAnalog = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
 
     [Tooltip ("Deadzone for the axis press/down")]
     [SerializeField]
-    private float deadZone = 0.01f;
+    private float deadZoneDPad = 0.01f;
 
-    public Vector2[] input = new Vector2[4];
+    [Tooltip ("Deadzone for the axis press/down")]
+    [SerializeField]
+    private float deadZoneAnalog = 0.5f;
+
+    public Vector2[] dPadInput = new Vector2[4];
+
+    public Vector2[] analogInput = new Vector2[4];
 
     [Header ("Setup Settings")]
 
@@ -78,8 +91,11 @@ public class Menu : MonoBehaviour
         if (stage && stage != null)
             SceneManager.MoveGameObjectToScene (stage.gameObject, SceneManager.GetActiveScene ());
 
-        horizontalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
-        verticalAxisState = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+        horizontalAxisStateDPad = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+        verticalAxisStateDpad = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+
+        horizontalAxisStateAnalog = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
+        verticalAxisStateAnalog = new Player.AxisState[4] { Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle, Player.AxisState.Idle };
 
         List<int> xboxJoysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (namee => namee.ToLower ().Contains ("xbox"));
         List<int> ps4Joysticks = Input.GetJoystickNames ().ToList ().FindAllIndex (namee => !namee.ToLower ().Contains ("xbox") && namee != "");
@@ -353,7 +369,7 @@ public class Menu : MonoBehaviour
             if (currentScreen.currentOptions[i] && currentScreen.currentOptions[i] != null)
             {
 
-                if (horizontalAxisState[i] == Player.AxisState.Down && input[i].x > 0) // right
+                if ((horizontalAxisStateDPad[i] == Player.AxisState.Down && dPadInput[i].x > 0) || (horizontalAxisStateAnalog[i] == Player.AxisState.Down && analogInput[i].x > 0)) // right
                 {
                     if (currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
@@ -375,7 +391,7 @@ public class Menu : MonoBehaviour
                         }
                     }
                 }
-                else if (horizontalAxisState[i] == Player.AxisState.Down && input[i].x < 0) // left
+                else if ((horizontalAxisStateDPad[i] == Player.AxisState.Down && dPadInput[i].x < 0) || (horizontalAxisStateAnalog[i] == Player.AxisState.Down && analogInput[i].x < 0)) // left
                 {
                     if (currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
@@ -398,7 +414,7 @@ public class Menu : MonoBehaviour
                 }
 
                 // vertical
-                if (verticalAxisState[i] == Player.AxisState.Down && input[i].y > 0) // up
+                if ((verticalAxisStateDpad[i] == Player.AxisState.Down && dPadInput[i].y > 0) || (verticalAxisStateAnalog[i] == Player.AxisState.Down && analogInput[i].y > 0)) // up
                 {
                     if (!currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
                     {
@@ -418,7 +434,7 @@ public class Menu : MonoBehaviour
                         }
                     }
                 }
-                else if (verticalAxisState[i] == Player.AxisState.Down && input[i].y < 0) // down
+                else if ((verticalAxisStateDpad[i] == Player.AxisState.Down && dPadInput[i].y < 0) || (verticalAxisStateAnalog[i] == Player.AxisState.Down && analogInput[i].y < 0)) // down
                 {
 
                     if (!currentScreen.isHorizontal && !currentScreen.currentOptions[i].isMultipleOptions)
@@ -551,19 +567,36 @@ public class Menu : MonoBehaviour
         {
             string horizontalName = "Horizontal " + (players[i].inputID) + " " + players[i].controllerType.ToString ();
             string verticalName = "Vertical " + (players[i].inputID) + " " + players[i].controllerType.ToString ();
-            input[i] = new Vector2 (Input.GetAxis (horizontalName), Input.GetAxis (verticalName));
+            dPadInput[i] = new Vector2 (Input.GetAxis (horizontalName), Input.GetAxis (verticalName));
 
-            if (Mathf.Abs (input[i].x) > Mathf.Abs (input[i].y))
             {
-                input[i].y = 0;
-            }
-            else
-            {
-                input[i].x = 0;
+                if (Mathf.Abs (dPadInput[i].x) > Mathf.Abs (dPadInput[i].y))
+                {
+                    dPadInput[i].y = 0;
+                }
+                else
+                {
+                    dPadInput[i].x = 0;
+                }
+
             }
 
-            HandleAxisState (ref horizontalAxisState[i], horizontalName);
-            HandleAxisState (ref verticalAxisState[i], verticalName);
+            HandleAxisState (ref horizontalAxisStateDPad[i], horizontalName);
+            HandleAxisState (ref verticalAxisStateDpad[i], verticalName);
+
+            if (players[i].controllerType != Player.InputType.Arrows && players[i].controllerType != Player.InputType.WASD)
+            {
+
+                //handle analog stick controls
+                horizontalName = "Horizontal Axis " + (players[i].inputID) + " " + players[i].controllerType.ToString ();
+                verticalName = "Vertical Axis " + (players[i].inputID) + " " + players[i].controllerType.ToString ();
+                analogInput[i] = new Vector2 (Input.GetAxis (horizontalName), Input.GetAxis (verticalName));
+
+                HandleAxisStateAnalog (ref horizontalAxisStateAnalog[i], horizontalName);
+                HandleAxisStateAnalog (ref verticalAxisStateAnalog[i], verticalName);
+
+            }
+
         }
 
         //HandleAxisStateDPad (ref horizontalAxisState, "Horizontal" + 2);
@@ -675,7 +708,7 @@ public class Menu : MonoBehaviour
         switch (state)
         {
             case Player.AxisState.Idle:
-                if (Input.GetAxis (axi) < -deadZone || Input.GetAxis (axi) > deadZone)
+                if (Input.GetAxis (axi) < -deadZoneDPad || Input.GetAxis (axi) > deadZoneDPad)
                 {
                     state = Player.AxisState.Down;
                 }
@@ -686,7 +719,36 @@ public class Menu : MonoBehaviour
                 break;
 
             case Player.AxisState.Held:
-                if (Input.GetAxis (axi) > -deadZone && Input.GetAxis (axi) < deadZone)
+                if (Input.GetAxis (axi) > -deadZoneDPad && Input.GetAxis (axi) < deadZoneDPad)
+                {
+                    state = Player.AxisState.Up;
+                }
+                break;
+
+            case Player.AxisState.Up:
+                state = Player.AxisState.Idle;
+                break;
+        }
+
+    }
+
+    void HandleAxisStateAnalog (ref Player.AxisState state, string axi)
+    {
+        switch (state)
+        {
+            case Player.AxisState.Idle:
+                if (Input.GetAxis (axi) < -deadZoneAnalog || Input.GetAxis (axi) > deadZoneAnalog)
+                {
+                    state = Player.AxisState.Down;
+                }
+                break;
+
+            case Player.AxisState.Down:
+                state = Player.AxisState.Held;
+                break;
+
+            case Player.AxisState.Held:
+                if (Input.GetAxis (axi) > -deadZoneAnalog && Input.GetAxis (axi) < deadZoneAnalog)
                 {
                     state = Player.AxisState.Up;
                 }
@@ -711,7 +773,7 @@ public class Menu : MonoBehaviour
 
         while (ps4Joysticks.Count > 1)
         {
-            ps4Joysticks.RemoveAt(0);
+            ps4Joysticks.RemoveAt (0);
         }
 
         /*
@@ -725,7 +787,7 @@ public class Menu : MonoBehaviour
             print ("index ps4 : " + p);
         }
         */
-        
+
         List<int> possibleIDs = new List<int> ();
 
         for (int i = 1; i <= players.Count; i++) possibleIDs.Add (i);
@@ -813,7 +875,7 @@ public class Menu : MonoBehaviour
         switch (state)
         {
             case Player.AxisState.Idle:
-                if (Input.GetAxisRaw (axi) < -deadZone || Input.GetAxisRaw (axi) > deadZone)
+                if (Input.GetAxisRaw (axi) < -deadZoneDPad || Input.GetAxisRaw (axi) > deadZoneDPad)
                 {
                     state = Player.AxisState.Down;
                 }
@@ -824,7 +886,7 @@ public class Menu : MonoBehaviour
                 break;
 
             case Player.AxisState.Held:
-                if (Input.GetAxisRaw (axi) > -deadZone && Input.GetAxisRaw (axi) < deadZone)
+                if (Input.GetAxisRaw (axi) > -deadZoneDPad && Input.GetAxisRaw (axi) < deadZoneDPad)
                 {
                     state = Player.AxisState.Up;
                 }

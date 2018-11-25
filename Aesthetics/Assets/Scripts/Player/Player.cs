@@ -92,14 +92,41 @@ namespace Aesthetics
         }
 
         [SerializeField]
-        private AxisState horizontalAxisState = AxisState.Idle;
+        private AxisState horizontalAxisStateDPad = AxisState.Idle;
 
         [SerializeField]
-        private AxisState verticalAxisState = AxisState.Idle;
+        private AxisState verticalAxisStateDPad = AxisState.Idle;
+
+        [SerializeField]
+        private AxisState horizontalAxisStateAnalog = AxisState.Idle;
+
+        [SerializeField]
+        private AxisState verticalAxisStateAnalog = AxisState.Idle;
+
+        [SerializeField]
+        float heldTime = 0;
+
+        [SerializeField]
+        float heldThreshold = 10;
+
+        [SerializeField]
+        float timeSinceLastShot = 0;
+
+        [SerializeField]
+        float lastShotThreshold = 10;
+
+        [SerializeField]
+        private Vector2 inputDPad;
+        [SerializeField]
+        private Vector2 inputAnalog;
 
         [Tooltip ("Deadzone for the axis press/down")]
         [SerializeField]
-        private float deadZone = 0.02f;
+        private float deadZoneDPad = 0.02f;
+
+        [Tooltip ("Deadzone for the axis press/down")]
+        [SerializeField]
+        private float deadZoneAnalog = 0.8f;
 
         [Tooltip ("The size of one girdblock, it used in movement calculations")]
         [SerializeField]
@@ -154,10 +181,6 @@ namespace Aesthetics
                     disableInput = true;
                     setShaderColors (stunColor, stunColor, stunColor, stunColor, stunColor, stunColor);
 
-                     
-                   
-                
-
                 }
                 else
                 {
@@ -196,13 +219,13 @@ namespace Aesthetics
 
                 _isFallen = value;
 
-                if(_isFallen)
+                if (_isFallen)
                 {
-                    if(moveTween != null)
+                    if (moveTween != null)
                     {
-                        if(moveTween.IsPlaying())
+                        if (moveTween.IsPlaying ())
                         {
-                            moveTween.Kill();
+                            moveTween.Kill ();
                             isMoving = false;
                         }
                     }
@@ -378,8 +401,8 @@ namespace Aesthetics
                 int i = (ID > 0) ? ID - 1 : 0;
                 PlayerUI pui = grid_ref.GetPlayerUIList ().Find (pu => pu.name.ToLower ().Contains ((ID + 1).ToString ()));
 
-                 if(pui)
-                pui.setScore (_score);
+                if (pui)
+                    pui.setScore (_score);
 
             }
         }
@@ -402,8 +425,8 @@ namespace Aesthetics
 
                 PlayerUI pui = grid_ref.GetPlayerUIList ().Find (pu => pu.name.ToLower ().Contains ((ID + 1).ToString ()));
 
-                if(pui)
-                pui.setCombo (_combo);
+                if (pui)
+                    pui.setCombo (_combo);
             }
         }
 
@@ -421,7 +444,7 @@ namespace Aesthetics
                 _multiplierCombo = value;
 
                 if (multiplierCombo / 10 >= 1) multiplier = _multiplierCombo / 10;
-                
+
                 if (multiplierCombo <= 0) multiplier = 1;
 
                 //int i = (ID > 0) ? ID - 1 : 0;
@@ -443,11 +466,11 @@ namespace Aesthetics
                 _multiplier = value;
                 if (_multiplier <= 0) _multiplier = 1;
                 int i = (ID > 0) ? ID - 1 : 0;
-                
+
                 PlayerUI pui = grid_ref.GetPlayerUIList ().Find (pu => pu.name.ToLower ().Contains ((ID + 1).ToString ()));
 
-                if(pui)
-                pui.setMultiplier (_multiplier);
+                if (pui)
+                    pui.setMultiplier (_multiplier);
             }
         }
 
@@ -602,12 +625,7 @@ namespace Aesthetics
             private Orientation gridOrientation = Orientation.Horizontal;
             private bool allowDiagonals = false;
             private bool correctDiagonalSpeed = true;
-            private Vector2 input;
 
-            public int inputCountX;
-            public int inputCountY;
-            private bool X_isAxisInUse = false;
-            private bool Y_isAxisInUse = false;
             [SerializeField]
             private bool isMoving = false;
 
@@ -624,12 +642,11 @@ namespace Aesthetics
             private void Awake ()
             {
 
-                if( grid_ref)
-                {
-                     if (globalID > grid_ref.numberOfPlayers) globalID = 0;
-                     ID = ++globalID;
-                }
-           
+            if (grid_ref)
+            {
+            if (globalID > grid_ref.numberOfPlayers) globalID = 0;
+            ID = ++globalID;
+            }
 
             stunTimer = gameObject.AddComponent<Countdown> ();
         }
@@ -795,21 +812,56 @@ namespace Aesthetics
             }
         }
 
-        string getHorizontalInputName ()
+        string getHorizontalDPadInputName ()
         {
             return "Horizontal " + inputID + " " + controllerType.ToString ();
         }
 
-        string getVerticalInputName ()
+        string getVerticalDPadInputName ()
         {
             return "Vertical " + inputID + " " + controllerType.ToString ();
         }
+
+        string getHorizontalAnalogInputName ()
+        {
+            if (controllerType != Player.InputType.Arrows && controllerType != Player.InputType.WASD)
+                return "Horizontal Axis " + inputID + " " + controllerType.ToString ();
+            else
+                return "Horizontal " + inputID + " " + controllerType.ToString ();
+        }
+
+        string getVerticalAnalogInputName ()
+        {
+            if (controllerType != Player.InputType.Arrows && controllerType != Player.InputType.WASD)
+                return "Vertical Axis " + inputID + " " + controllerType.ToString ();
+            else
+                return "Vertical " + inputID + " " + controllerType.ToString ();
+        }
+
         void handleInput ()
         {
             //int numPressed = 0;
+            if (verticalAxisStateAnalog == AxisState.Held || horizontalAxisStateAnalog == AxisState.Held) heldTime++;
+            else heldTime = 0;
 
-            HandleAxisState (ref horizontalAxisState, getHorizontalInputName ());
-            HandleAxisState (ref verticalAxisState, getVerticalInputName ());
+            if (timeSinceLastShot > 0) timeSinceLastShot++;
+            if (timeSinceLastShot > lastShotThreshold) timeSinceLastShot = 0;
+
+            HandleAxisState (ref horizontalAxisStateDPad, getHorizontalDPadInputName ());
+            HandleAxisState (ref verticalAxisStateDPad, getVerticalDPadInputName ());
+
+            if (controllerType != Player.InputType.Arrows && controllerType != Player.InputType.WASD)
+            {
+                if (Mathf.Abs (inputAnalog.x) < deadZoneAnalog) horizontalAxisStateAnalog = AxisState.Idle;
+                if (Mathf.Abs (inputAnalog.y) < deadZoneAnalog) verticalAxisStateAnalog = AxisState.Idle;
+
+                if (horizontalAxisStateAnalog == AxisState.Idle) inputAnalog.x = 0;
+                if (verticalAxisStateAnalog == AxisState.Idle) inputAnalog.y = 0;
+
+                HandleAxisAnalogState (ref horizontalAxisStateAnalog, getHorizontalAnalogInputName ());
+                HandleAxisAnalogState (ref verticalAxisStateAnalog, getVerticalAnalogInputName ());
+
+            }
 
             if (isStunned)
             {
@@ -818,25 +870,29 @@ namespace Aesthetics
 
             if (!isMoving)
             {
-                input = new Vector2 (Input.GetAxis (getHorizontalInputName ()), Input.GetAxis (getVerticalInputName ()));
+                inputDPad = new Vector2 (Input.GetAxis (getHorizontalDPadInputName ()), Input.GetAxis (getVerticalDPadInputName ()));
+
+                inputAnalog = new Vector2 (Input.GetAxis (getHorizontalAnalogInputName ()), Input.GetAxis (getVerticalAnalogInputName ()));
+
                 if (!allowDiagonals)
                 {
-                    if (Mathf.Abs (input.x) > Mathf.Abs (input.y))
+                    if (Mathf.Abs (inputDPad.x) > Mathf.Abs (inputDPad.y))
                     {
-                        input.y = 0;
+                        inputDPad.y = 0;
                     }
                     else
                     {
-                        input.x = 0;
+                        inputDPad.x = 0;
                     }
+
                 }
 
-                if (input != Vector2.zero && !_isStunned)
+                if (inputDPad != Vector2.zero && !_isStunned && (horizontalAxisStateAnalog == AxisState.Idle && verticalAxisStateAnalog == AxisState.Idle))
                 {
 
                     //only compute durinf pressed Down, not on hold
-                    if ((input.y != 0 && verticalAxisState == AxisState.Down) !=
-                        (input.x != 0 && horizontalAxisState == AxisState.Down))
+                    if ((inputDPad.y != 0 && verticalAxisStateDPad == AxisState.Down) !=
+                        (inputDPad.x != 0 && horizontalAxisStateDPad == AxisState.Down))
                     {
 
                         //Move ();
@@ -851,15 +907,16 @@ namespace Aesthetics
                             if (isAiming && hasItem && item && item.GetType () == typeof (Revolver))
                             {
                                 Revolver r = (Revolver) item;
-                                r.shot_direction = getDirectionFromInput ();
-                                r.Shoot (getDirectionFromInput ());
+                                r.shot_direction = getDirectionFromInput (false);
+                                r.Shoot (getDirectionFromInput (false));
                                 //print("NEW SHOT = " + r.shot_direction);
+                                timeSinceLastShot++;
 
                             }
                             else
                             {
                                 //move player and increase combo
-                                if (Move ())
+                                if (Move (false))
                                 {
                                     combo++;
                                     multiplierCombo++;
@@ -883,10 +940,63 @@ namespace Aesthetics
 
                 }
                 else
+                if (inputAnalog != Vector2.zero && !_isStunned && (horizontalAxisStateDPad == AxisState.Idle && verticalAxisStateDPad == AxisState.Idle))
+                {
+                    if ((inputAnalog.y != 0 && (verticalAxisStateAnalog == AxisState.Down || (verticalAxisStateAnalog == AxisState.Held && heldTime <= heldThreshold))) &&
+                        (inputAnalog.x != 0 && (horizontalAxisStateAnalog == AxisState.Down || (horizontalAxisStateAnalog == AxisState.Held && heldTime <= heldThreshold))))
+                    {
+
+                        //Move ();
+                        // combo++;
+
+                        //if Pressed on the beat
+                        if (rhythmSystem_ref.WasNoteHit ())
+                        {
+                            //print ("Player" + ID.ToString () + " Hit it!");
+
+                            //if aiming, shoot in direction pressed
+                            if (isAiming && hasItem && item && item.GetType () == typeof (Revolver))
+                            {
+                                Revolver r = (Revolver) item;
+                                r.shot_direction = getDirectionFromInput (true);
+                                r.Shoot (getDirectionFromInput (true));
+                                //print("NEW SHOT = " + r.shot_direction);
+                                timeSinceLastShot++;
+
+                            }
+                            else
+                            {
+                                if (timeSinceLastShot <= 0)
+                                    //move player and increase combo
+                                    if (Move (true))
+                                    {
+
+                                        combo++;
+                                        multiplierCombo++;
+                                    }
+                            }
+
+                        }
+                        else
+                        {
+                            //lose combo
+
+                            Vector3 pos = transform.position;
+                            pos.y += renderer_Ref.bounds.size.y + 0.0f;
+                            grid_ref.SpawnMissFloatingText (pos);
+
+                            combo = 0;
+                        }
+
+                    }
+
+                }
 
                 if (Input.GetButtonDown ("ActionA " + inputID + " " + controllerType) &&
-                    ((verticalAxisState == AxisState.Idle) &&
-                        (horizontalAxisState == AxisState.Idle)))
+                    ((verticalAxisStateDPad == AxisState.Idle) &&
+                        (horizontalAxisStateDPad == AxisState.Idle) &&
+                        (verticalAxisStateAnalog == AxisState.Idle) &&
+                        (horizontalAxisStateAnalog == AxisState.Idle)))
                 {
 
                     //not allow action with movement
@@ -924,19 +1034,19 @@ namespace Aesthetics
 
                 }
 
-                if(controllerType != Player.InputType.Arrows && controllerType != Player.InputType.WASD)
+                if (controllerType != Player.InputType.Arrows && controllerType != Player.InputType.WASD)
                 {
-                     if (Input.GetButtonDown ("Pause " + inputID + " " + controllerType) &&
-                    ((verticalAxisState == AxisState.Idle) &&
-                        (horizontalAxisState == AxisState.Idle)))
-                {
+                    if (Input.GetButtonDown ("Pause " + inputID + " " + controllerType) &&
+                        ((verticalAxisStateDPad == AxisState.Idle) &&
+                            (horizontalAxisStateDPad == AxisState.Idle) &&
+                            (verticalAxisStateAnalog == AxisState.Idle) &&
+                            (horizontalAxisStateAnalog == AxisState.Idle)))
+                    {
 
-                    grid_ref.Pause();
+                        grid_ref.Pause ();
+                    }
+
                 }
-
-                }
-               
-
 
             }
 
@@ -1028,7 +1138,6 @@ namespace Aesthetics
 
         }
 
-      
         public bool Stun (float duration)
         {
             if (isImmune) return false;
@@ -1056,7 +1165,7 @@ namespace Aesthetics
         public bool Stun (float duration, bool stopMovement)
         {
 
-             if (isImmune) return false;
+            if (isImmune) return false;
             if (isShielded)
             {
                 if (item)
@@ -1074,22 +1183,21 @@ namespace Aesthetics
 
             stunTimer.startTimer (duration);
             isStunned = true;
-            
-                if(stopMovement)
-                {
 
-                    if(moveTween != null)
+            if (stopMovement)
+            {
+
+                if (moveTween != null)
+                {
+                    if (moveTween.IsPlaying ())
                     {
-                        if(moveTween.IsPlaying())
-                        {
-                            moveTween.Kill();
-                            isMoving = false;
-                        }
+                        moveTween.Kill ();
+                        isMoving = false;
                     }
                 }
-                    
+            }
 
-                    return true;
+            return true;
         }
 
         public bool Steal (Player target, bool stealLocked)
@@ -1132,8 +1240,9 @@ namespace Aesthetics
             return true;
 
         }
-        public bool Move ()
+        public bool Move (bool isAnalog)
         {
+            print ("move = " + isAnalog);
             CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
 
             Vector3 startGridPosition = new Vector3 (x, y, z);
@@ -1145,7 +1254,7 @@ namespace Aesthetics
 
             CameraScript.windRose? player_direction = null;
 
-            player_direction = getDirectionFromInput ();
+            player_direction = getDirectionFromInput (isAnalog);
 
             endGridBlock = getDestinationBlock (player_direction, 1);
 
@@ -1187,14 +1296,13 @@ namespace Aesthetics
             }
 
         }
-        
+
         //hard moving the player, not the common move
         public bool Move (GridBlock destination, float moveDuration)
         {
 
             Vector3 startGridPosition = new Vector3 (x, y, z);
             Vector3 endGridPosition = destination.transform.position;
-
 
             GridBlock startGridBlock;
             startGridBlock = grid_ref.GetGridBlock (x, z);
@@ -1214,7 +1322,6 @@ namespace Aesthetics
                 endGridPosition = destination.transform.position;
                 endGridPosition.y = 0.1f;
 
-                
                 transform.DOMove (endGridPosition, moveDuration).SetEase (Ease.OutQuart);
                 transform.DOLookAt (endGridPosition, 0.2f);
                 x = destination.X;
@@ -1251,7 +1358,7 @@ namespace Aesthetics
             setShaderColors (colorPrim[0], colorPrim[1], colorSec[0], colorSec[1], colorTert[0], colorTert[1]);
         }
 
-        CameraScript.windRose? getDirectionFromInput ()
+        CameraScript.windRose? getDirectionFromInput (bool isAnalog)
         {
             CameraScript cameraScript = Camera.main.gameObject.GetComponent<CameraScript> ();
 
@@ -1261,25 +1368,29 @@ namespace Aesthetics
             {
                 case CameraScript.windRose.North:
 
-                    if (input.x > 0)
+                    if ((inputDPad.x > 0 && !isAnalog) || (inputAnalog.x > 0 && inputAnalog.y < 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.East;
 
                     }
-                    else if (input.x < 0)
+                    else if ((inputDPad.x < 0 && !isAnalog) || (inputAnalog.x < 0 && inputAnalog.y > 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.West;
 
                     }
-                    else if (input.y > 0)
+                    else if ((inputDPad.y > 0 && !isAnalog) || (inputAnalog.x < 0 && inputAnalog.y < 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.North;
 
                     }
-                    else if (input.y < 0)
+                    else if ((inputDPad.y < 0 && !isAnalog) || (inputAnalog.x > 0 && inputAnalog.y > 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.South;
@@ -1288,24 +1399,28 @@ namespace Aesthetics
                     break;
 
                 case CameraScript.windRose.East:
-                    if (input.x > 0)
+                    if ((inputDPad.x > 0 && !isAnalog) || (inputAnalog.x > 0 && inputAnalog.y < 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.South;
 
                     }
-                    else if (input.x < 0)
+                    else if ((inputDPad.x < 0 && !isAnalog) || (inputAnalog.x < 0 && inputAnalog.y > 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.North;
                     }
-                    else if (input.y > 0)
+                    else if ((inputDPad.y > 0 && !isAnalog) || (inputAnalog.x < 0 && inputAnalog.y < 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.East;
 
                     }
-                    else if (input.y < 0)
+                    else if ((inputDPad.y < 0 && !isAnalog) || (inputAnalog.x > 0 && inputAnalog.y > 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.West;
@@ -1315,24 +1430,28 @@ namespace Aesthetics
 
                 case CameraScript.windRose.South:
 
-                    if (input.x > 0)
+                    if ((inputDPad.x > 0 && !isAnalog) || (inputAnalog.x > 0 && inputAnalog.y < 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.West;
 
                     }
-                    else if (input.x < 0)
+                    else if ((inputDPad.x < 0 && !isAnalog) || (inputAnalog.x < 0 && inputAnalog.y > 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.East;
                     }
-                    else if (input.y > 0)
+                    else if ((inputDPad.y > 0 && !isAnalog) || (inputAnalog.x < 0 && inputAnalog.y < 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.South;
 
                     }
-                    else if (input.y < 0)
+                    else if ((inputDPad.y < 0 && !isAnalog) || (inputAnalog.x > 0 && inputAnalog.y > 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.North;
@@ -1343,24 +1462,28 @@ namespace Aesthetics
 
                 case CameraScript.windRose.West:
 
-                    if (input.x > 0)
+                    if ((inputDPad.x > 0 && !isAnalog) || (inputAnalog.x > 0 && inputAnalog.y < 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.North;
 
                     }
-                    else if (input.x < 0)
+                    else if ((inputDPad.x < 0 && !isAnalog) || (inputAnalog.x < 0 && inputAnalog.y > 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.South;
                     }
-                    else if (input.y > 0)
+                    else if ((inputDPad.y > 0 && !isAnalog) || (inputAnalog.x < 0 && inputAnalog.y < 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.West;
 
                     }
-                    else if (input.y < 0)
+                    else if ((inputDPad.y < 0 && !isAnalog) || (inputAnalog.x > 0 && inputAnalog.y > 0 &&
+                            horizontalAxisStateAnalog != AxisState.Idle && verticalAxisStateAnalog != AxisState.Idle))
                     {
 
                         player_direction = CameraScript.windRose.East;
@@ -1525,7 +1648,7 @@ namespace Aesthetics
             {
                 case CameraScript.windRose.North:
 
-                    if (input.x > 0)
+                    if (inputDPad.x > 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1534,7 +1657,7 @@ namespace Aesthetics
                             endGridPosition.x++;
 
                     }
-                    else if (input.x < 0)
+                    else if (inputDPad.x < 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1543,7 +1666,7 @@ namespace Aesthetics
                             endGridPosition.x--;
 
                     }
-                    else if (input.y > 0)
+                    else if (inputDPad.y > 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1551,7 +1674,7 @@ namespace Aesthetics
                             endGridPosition.z--;
 
                     }
-                    else if (input.y < 0)
+                    else if (inputDPad.y < 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1563,7 +1686,7 @@ namespace Aesthetics
                     break;
 
                 case CameraScript.windRose.East:
-                    if (input.x > 0)
+                    if (inputDPad.x > 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1572,7 +1695,7 @@ namespace Aesthetics
                             endGridPosition.z++;
 
                     }
-                    else if (input.x < 0)
+                    else if (inputDPad.x < 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1580,7 +1703,7 @@ namespace Aesthetics
                         if (endGridPosition.z > 0)
                             endGridPosition.z--;
                     }
-                    else if (input.y > 0)
+                    else if (inputDPad.y > 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1589,7 +1712,7 @@ namespace Aesthetics
                             endGridPosition.x++;
 
                     }
-                    else if (input.y < 0)
+                    else if (inputDPad.y < 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1602,7 +1725,7 @@ namespace Aesthetics
 
                 case CameraScript.windRose.South:
 
-                    if (input.x > 0)
+                    if (inputDPad.x > 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1611,14 +1734,14 @@ namespace Aesthetics
                             endGridPosition.x--;
 
                     }
-                    else if (input.x < 0)
+                    else if (inputDPad.x < 0)
                     {
 
                         endGridPosition = startGridPosition;
                         if (endGridPosition.x < grid_ref.mapWidth - 1)
                             endGridPosition.x++;
                     }
-                    else if (input.y > 0)
+                    else if (inputDPad.y > 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1627,7 +1750,7 @@ namespace Aesthetics
                             endGridPosition.z++;
 
                     }
-                    else if (input.y < 0)
+                    else if (inputDPad.y < 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1640,7 +1763,7 @@ namespace Aesthetics
 
                 case CameraScript.windRose.West:
 
-                    if (input.x > 0)
+                    if (inputDPad.x > 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1649,7 +1772,7 @@ namespace Aesthetics
                             endGridPosition.z--;
 
                     }
-                    else if (input.x < 0)
+                    else if (inputDPad.x < 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1658,7 +1781,7 @@ namespace Aesthetics
                             endGridPosition.z++;
 
                     }
-                    else if (input.y > 0)
+                    else if (inputDPad.y > 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1667,7 +1790,7 @@ namespace Aesthetics
                             endGridPosition.x--;
 
                     }
-                    else if (input.y < 0)
+                    else if (inputDPad.y < 0)
                     {
 
                         endGridPosition = startGridPosition;
@@ -1693,7 +1816,7 @@ namespace Aesthetics
             switch (state)
             {
                 case AxisState.Idle:
-                    if (Input.GetAxis (axi) < -deadZone || Input.GetAxis (axi) > deadZone)
+                    if (Input.GetAxis (axi) < -deadZoneDPad || Input.GetAxis (axi) > deadZoneDPad)
                     {
 
                         state = AxisState.Down;
@@ -1706,7 +1829,7 @@ namespace Aesthetics
                     break;
 
                 case AxisState.Held:
-                    if (Input.GetAxis (axi) > -deadZone && Input.GetAxis (axi) < deadZone)
+                    if (Input.GetAxis (axi) > -deadZoneDPad && Input.GetAxis (axi) < deadZoneDPad)
                     {
                         state = AxisState.Up;
                     }
@@ -1719,73 +1842,43 @@ namespace Aesthetics
 
         }
 
-        void HandleAxisStateDPad (ref AxisState state, string axi)
+        void HandleAxisAnalogState (ref Player.AxisState state, string axi)
         {
-
-            /*
-                if (Input.GetAxisRaw ("DpadX") != 0)
-            {
-                if (X_isAxisInUse == false)
-                {
-                    if (Input.GetAxisRaw ("DpadX") == +1)
-                    {
-                        inputCountX += 1;
-                    }
-                    else if (Input.GetAxisRaw ("DpadX") == -1)
-                    {
-                        inputCountX -= 1;
-                    }
-                    X_isAxisInUse = true;
-                }
-            }
-            if (Input.GetAxisRaw ("DpadX") == 0)
-            {
-                X_isAxisInUse = false;
-            }
-            //----------------------------------------
-            if (Input.GetAxisRaw ("DpadY") != 0)
-            {
-                if (Y_isAxisInUse == false)
-                {
-                    if (Input.GetAxisRaw ("DpadY") == +1)
-                    {
-                        inputCountY += 1;
-                    }
-                    else if (Input.GetAxisRaw ("DpadY") == -1)
-                    {
-                        inputCountY -= 1;
-                    }
-                    Y_isAxisInUse = true;
-                }
-            }
-            if (Input.GetAxisRaw ("DpadY") == 0)
-            {
-                Y_isAxisInUse = false;
-            }
-                 */
-
             switch (state)
             {
-                case AxisState.Idle:
-                    if (Input.GetAxisRaw (axi) < -deadZone || Input.GetAxisRaw (axi) > deadZone)
+                case Player.AxisState.Idle:
+                    if ((Input.GetAxisRaw (axi) < -deadZoneAnalog || Input.GetAxisRaw (axi) > deadZoneAnalog) && Mathf.Abs (Input.GetAxisRaw (axi)) == 1)
                     {
-                        state = AxisState.Down;
+                        state = Player.AxisState.Down;
+                    }
+                    else
+                    {
+
+                        inputAnalog.x = 0;
+
+                        inputAnalog.y = 0;
+
                     }
                     break;
 
-                case AxisState.Down:
-                    state = AxisState.Held;
+                case Player.AxisState.Down:
+                    state = Player.AxisState.Held;
                     break;
 
-                case AxisState.Held:
-                    if (Input.GetAxisRaw (axi) > -deadZone && Input.GetAxisRaw (axi) < deadZone)
+                case Player.AxisState.Held:
+                    if ((Input.GetAxisRaw (axi) > -deadZoneAnalog || Input.GetAxisRaw (axi) < deadZoneAnalog) && Mathf.Abs (Input.GetAxisRaw (axi)) != 1)
                     {
-                        state = AxisState.Up;
+                        state = Player.AxisState.Up;
                     }
                     break;
 
-                case AxisState.Up:
-                    state = AxisState.Idle;
+                case Player.AxisState.Up:
+                    state = Player.AxisState.Idle;
+
+                    inputAnalog.x = 0;
+
+                    inputAnalog.y = 0;
+
                     break;
             }
 
@@ -1811,16 +1904,16 @@ namespace Aesthetics
 
             if (gridOrientation == Orientation.Horizontal)
             {
-                endPosition = new Vector3 (startPosition.x + System.Math.Sign (input.x) * gridSize,
-                    startPosition.y, startPosition.z + System.Math.Sign (input.y) * gridSize);
+                endPosition = new Vector3 (startPosition.x + System.Math.Sign (inputDPad.x) * gridSize,
+                    startPosition.y, startPosition.z + System.Math.Sign (inputDPad.y) * gridSize);
             }
             else
             {
-                endPosition = new Vector3 (startPosition.x + System.Math.Sign (input.x) * gridSize,
-                    startPosition.y + System.Math.Sign (input.y) * gridSize, startPosition.z);
+                endPosition = new Vector3 (startPosition.x + System.Math.Sign (inputDPad.x) * gridSize,
+                    startPosition.y + System.Math.Sign (inputDPad.y) * gridSize, startPosition.z);
             }
 
-            if (allowDiagonals && correctDiagonalSpeed && input.x != 0 && input.y != 0)
+            if (allowDiagonals && correctDiagonalSpeed && inputDPad.x != 0 && inputDPad.y != 0)
             {
                 factor = 0.7071f;
             }

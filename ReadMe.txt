@@ -53,25 +53,34 @@ as a shield for the player. Once any negative effect affects the player, the dis
 {3D Glasses} (Passive, Instant): A goggles that at the moment that is caught causes the camera to rotate 90 degrees, changing the perspective of the game, and also increasing the {Multiplier} of the player in 3.
 
 
-Controls:
-The game gives preference to controllers, so if any is plugged, is gonna set them as default, and the remaining players with the keyboard. Only the Player 1 can navigate the menu (except for the charcter selection screen)
-The game supports Xbox and PS4 controllers.
+Controls: The game gives preference to controllers, so if any is plugged, it is going to set them as default, and any remaining players without controllers with keyboard. Only the Player 1 can navigate the menu (except for the charcter selection screen)
 
+
+The game supports any number of Xbox and only one PS4 (or any generic) controllers. But only one PS4 controller is allowed.
+
+Using DS4Windows or other programs to make PS4 controllers to behave like Xbox ones will result in bugs, unfortunately.
 
 Styles:
+
 WASD:
 WASD - 4 directions
 SPACE - Confirm/Use Item
 X - Go back (in the menu)
+
 Arrows:
 Arrows - 4 directions
 Right Shift- Confirm/Use Item
 Right Ctrl - Go back (in the menu)
+
 Xbox 360/One:
-Dpad - 4 directions
+Dpad - 4 directions (non diagonals)
+Left Stick - 4 directionas (only diagonals)
 A - Confirm/Use Item
 B - Go back (in the menu)
+
 Playstation:
+Dpad - 4 directions (non diagonals)
+Left Stick - 4 directionas (only diagonals)
 DPad - 4 directions
 X - Confirm/Use Item
 Circle - Go back (in the menu)

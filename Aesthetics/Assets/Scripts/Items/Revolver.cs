@@ -85,7 +85,7 @@ public class Revolver : Item
 
         List<Player> targets = new List<Player> ();
 
-        print ("Atirei :" + shot_direction + "| sizelist: " + grid_ref.GetPlayerList ().Count);
+        //print ("Atirei :" + shot_direction + "| sizelist: " + grid_ref.GetPlayerList ().Count);
 
         foreach (Player p in grid_ref.GetPlayerList ())
         {

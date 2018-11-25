@@ -232,7 +232,7 @@ namespace Aesthetics
             if (grid_ref.menu_ref && grid_ref.menu_ref != null)
                 songName = getKoreoNameBySongName (grid_ref.menu_ref.gameSong.songName);
 
-            if (songName == null) songName = "LolaEdKoreo";
+            if (songName == null) songName = "Pleasure";
 
             LoadKoreography (koreographyList.Find (element => element.name.ToLower ().Contains (songName.ToLower ())), 0, true);
 
