@@ -107,13 +107,25 @@ namespace Aesthetics
         float heldTime = 0;
 
         [SerializeField]
-        float heldThreshold = 10;
+        float heldThreshold = 0.18f;
+
+        [SerializeField]
+        float timeSinceLastMove = 0;
 
         [SerializeField]
         float timeSinceLastShot = 0;
 
         [SerializeField]
+        float timeSinceLastMiss = 0;
+
+        [SerializeField]
+        float lastMissThreshold = 0.3f;
+
+        [SerializeField]
         float lastShotThreshold = 10;
+
+        [SerializeField]
+        float lastMoveThreshold = 10;
 
         [SerializeField]
         private Vector2 inputDPad;
@@ -126,7 +138,7 @@ namespace Aesthetics
 
         [Tooltip ("Deadzone for the axis press/down")]
         [SerializeField]
-        private float deadZoneAnalog = 0.8f;
+        private float deadZoneAnalog = 0.35f;
 
         [Tooltip ("The size of one girdblock, it used in movement calculations")]
         [SerializeField]
@@ -653,6 +665,10 @@ namespace Aesthetics
 
         private void Start ()
         {
+
+            heldThreshold = rhythmSystem_ref.hitWindowRangeInMS / 10000;
+            lastMoveThreshold = rhythmSystem_ref.hitWindowRangeInMS / 1000;
+            lastMissThreshold = 0.5f;
             _multiplier = 1;
             _score = 1;
             _combo = 0;
@@ -841,8 +857,13 @@ namespace Aesthetics
         void handleInput ()
         {
             //int numPressed = 0;
-            if (verticalAxisStateAnalog == AxisState.Held || horizontalAxisStateAnalog == AxisState.Held) heldTime++;
+            if (verticalAxisStateAnalog == AxisState.Held || horizontalAxisStateAnalog == AxisState.Held) heldTime+= Time.deltaTime;
             else heldTime = 0;
+
+            if(timeSinceLastMiss < lastMissThreshold) timeSinceLastMiss+= Time.deltaTime;
+
+            if(timeSinceLastMove < lastMoveThreshold + rhythmSystem_ref.rhythmTarget_Ref.duration) timeSinceLastMove+= Time.deltaTime;
+            
 
             if (timeSinceLastShot > 0) timeSinceLastShot++;
             if (timeSinceLastShot > lastShotThreshold) timeSinceLastShot = 0;
@@ -950,7 +971,7 @@ namespace Aesthetics
                         // combo++;
 
                         //if Pressed on the beat
-                        if (rhythmSystem_ref.WasNoteHit ())
+                        if (rhythmSystem_ref.WasNoteHit () && timeSinceLastMove >= lastMoveThreshold + rhythmSystem_ref.rhythmTarget_Ref.duration)
                         {
                             //print ("Player" + ID.ToString () + " Hit it!");
 
@@ -976,9 +997,14 @@ namespace Aesthetics
                                     }
                             }
 
+                            timeSinceLastMove = 0;
+
+                            
+
                         }
-                        else
+                        else if(timeSinceLastMiss >= lastMissThreshold)
                         {
+                            timeSinceLastMiss = 0;
                             //lose combo
 
                             Vector3 pos = transform.position;
@@ -1847,7 +1873,7 @@ namespace Aesthetics
             switch (state)
             {
                 case Player.AxisState.Idle:
-                    if ((Input.GetAxisRaw (axi) < -deadZoneAnalog || Input.GetAxisRaw (axi) > deadZoneAnalog) && Mathf.Abs (Input.GetAxisRaw (axi)) == 1)
+                    if ((Input.GetAxisRaw (axi) < -deadZoneAnalog || Input.GetAxisRaw (axi) > deadZoneAnalog) && Mathf.Abs (Input.GetAxisRaw (axi)) >= 0)
                     {
                         state = Player.AxisState.Down;
                     }
@@ -1866,7 +1892,7 @@ namespace Aesthetics
                     break;
 
                 case Player.AxisState.Held:
-                    if ((Input.GetAxisRaw (axi) > -deadZoneAnalog || Input.GetAxisRaw (axi) < deadZoneAnalog) && Mathf.Abs (Input.GetAxisRaw (axi)) != 1)
+                    if ((Input.GetAxisRaw (axi) > -deadZoneAnalog || Input.GetAxisRaw (axi) < deadZoneAnalog) && Mathf.Abs (Input.GetAxisRaw (axi)) < 1)
                     {
                         state = Player.AxisState.Up;
                     }
